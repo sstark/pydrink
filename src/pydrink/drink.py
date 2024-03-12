@@ -13,7 +13,7 @@ KINDS = {
 def warn(s):
     print(s)
 
-def show_untracked_files(selected_kind=None):
+def show_untracked_files(selected_kind: str=None):
     '''Show untracked files / possible drink candidates'''
     # 1. Differenziere, welches $kind global über die cli angegeben wurde
     #   a. alle kinds
@@ -41,7 +41,12 @@ def show_untracked_files(selected_kind=None):
         else:
             pat = "*"
         for f in Path(targetdir).glob(pat):
-            print(f)
+            rel_path = f.relative_to(targetdir)
+            # run ignore code here
+            if rel_path == targetdir:
+                warn(f"Object {rel_path} has the same name as kind {kind}, skipping")
+                continue
+            print(rel_path)
 
 
 def cli():
@@ -51,5 +56,5 @@ def cli():
         result.check_returncode()
     except CalledProcessError as e:
         print(f"Error {e.returncode}\n{result.stderr}")
-    print(result.stdout)
+    # print(result.stdout)
     show_untracked_files()
