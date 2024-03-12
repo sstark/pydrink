@@ -31,7 +31,6 @@ def show_untracked_files(selected_kind=None):
     #       3. is_tracked(file, kind)
     #       Jetzt je nach tracking status ausgeben
 
-    os.chdir("/home/seb")
     for kind, targetdir in KINDS.items():
         # Skip the others, if user has selected only a certain kind
         if selected_kind and selected_kind != kind:
@@ -46,6 +45,7 @@ def show_untracked_files(selected_kind=None):
 
 
 def cli():
+    os.chdir(Path.home())
     try:
         result = run("echo bla",shell=True, capture_output=True, text=True)
         result.check_returncode()
