@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 
 from subprocess import run, CalledProcessError
 from pathlib import Path
@@ -14,12 +13,11 @@ def warn(s):
     # TODO: Implement logging
     print(s)
 
-def tracking_status(kind: str, p: Path) -> int:
+def tracking_status(target: str, kind: str, p: Path) -> int:
     # TODO: get DRINKDIR
-    # FIXME: TARGET is global in original
-    print(kind, p)
+    print(target, kind, p)
 
-def show_untracked_files(selected_kind: str=None):
+def show_untracked_files(target: str, selected_kind: str=None):
     '''Show untracked files / possible drink candidates'''
     # 1. Differenziere, welches $kind global über die cli angegeben wurde
     #   a. alle kinds
@@ -53,7 +51,7 @@ def show_untracked_files(selected_kind: str=None):
                 warn(f"Object {rel_path} has the same name as kind {kind}, skipping")
                 continue
             # TODO: Return something instead of printing directly
-            tracking_status(kind, rel_path)
+            tracking_status(target, kind, rel_path)
 
 
 def cli():
@@ -65,4 +63,4 @@ def cli():
     except CalledProcessError as e:
         print(f"Error {e.returncode}\n{result.stderr}")
     # print(result.stdout)
-    show_untracked_files()
+    show_untracked_files("singold")
