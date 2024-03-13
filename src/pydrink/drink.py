@@ -18,7 +18,6 @@ def tracking_status(kind: str, p: Path) -> int:
     # TODO: get DRINKDIR
     # FIXME: TARGET is global in original
     print(kind, p)
-    pass
 
 def show_untracked_files(selected_kind: str=None):
     '''Show untracked files / possible drink candidates'''
@@ -54,7 +53,7 @@ def show_untracked_files(selected_kind: str=None):
                 warn(f"Object {rel_path} has the same name as kind {kind}, skipping")
                 continue
             # TODO: Return something instead of printing directly
-            print(tracking_status(rel_path))
+            tracking_status(kind, rel_path)
 
 
 def cli():
