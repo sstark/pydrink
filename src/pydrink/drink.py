@@ -10,6 +10,8 @@ KINDS = {
     "conf":     "."
 }
 
+CONFIG_FILENAME = ".drinkrc"
+
 def warn(s):
     # TODO: Implement logging
     print(s)
@@ -65,5 +67,5 @@ def cli():
         print(f"Error {e.returncode}\n{result.stderr}")
     # print(result.stdout)
     show_untracked_files("singold")
-    c = Config("/home/seb/.drinkrc")
+    c = Config(Path.home() / CONFIG_FILENAME)
     print(c)
