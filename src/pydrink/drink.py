@@ -2,6 +2,7 @@
 from subprocess import run, CalledProcessError
 from pathlib import Path
 import os
+from pydrink.config import Config
 
 KINDS = {
     "bin":      "bin",
@@ -64,3 +65,5 @@ def cli():
         print(f"Error {e.returncode}\n{result.stderr}")
     # print(result.stdout)
     show_untracked_files("singold")
+    c = Config("/home/seb/.drinkrc")
+    print(c)
