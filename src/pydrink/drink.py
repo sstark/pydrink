@@ -3,6 +3,7 @@ from subprocess import run, CalledProcessError
 from pathlib import Path
 import os
 from pydrink.config import Config
+from pydrink.log import warn, err, debug
 
 KINDS = {
     "bin":      "bin",
@@ -12,13 +13,10 @@ KINDS = {
 
 CONFIG_FILENAME = ".drinkrc"
 
-def warn(s):
-    # TODO: Implement logging
-    print(s)
 
 def tracking_status(target: str, kind: str, p: Path) -> int:
     # TODO: get DRINKDIR
-    print(target, kind, p)
+    debug(f"{target}, {kind}, {p}")
 
 def show_untracked_files(target: str, selected_kind: str=None):
     '''Show untracked files / possible drink candidates'''
@@ -64,8 +62,8 @@ def cli():
         result = run("echo bla",shell=True, capture_output=True, text=True)
         result.check_returncode()
     except CalledProcessError as e:
-        print(f"Error {e.returncode}\n{result.stderr}")
+        err(f"{e.returncode}\n{result.stderr}")
     # print(result.stdout)
     show_untracked_files("singold")
     c = Config(Path.home() / CONFIG_FILENAME)
-    print(c)
+    debug(c)

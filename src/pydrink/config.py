@@ -1,5 +1,6 @@
 
 from subprocess import run, CalledProcessError
+from pydrink.log import err
 
 # Variable names for ~/.drinkrc and their defaults
 VARNAMES = {
@@ -56,7 +57,7 @@ class Config():
                 if result.stdout:
                     self.config[v] = result.stdout
             except CalledProcessError as e:
-                print(f"Error {e.returncode}\n{result.stderr}")
+                err(f"{e.returncode}\n{result.stderr}")
 
     def __getitem__(self, item: str) -> str:
         return self.config[item]
