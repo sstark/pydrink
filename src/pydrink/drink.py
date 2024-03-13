@@ -2,23 +2,18 @@
 from subprocess import run, CalledProcessError
 from pathlib import Path
 import os
-from pydrink.config import Config
+from pydrink.config import Config, KINDS
 from pydrink.log import warn, err, debug
-
-KINDS = {
-    "bin":      "bin",
-    "zfunc":    ".zfunc",
-    "conf":     "."
-}
 
 CONFIG_FILENAME = ".drinkrc"
 
 
-def tracking_status(target: str, kind: str, p: Path) -> int:
+def tracking_status(c: Config, kind: str, p: Path) -> int:
     # TODO: get DRINKDIR
-    debug(f"{target}, {kind}, {p}")
+    debug(f"{c['TARGET']}, {kind}, {p}")
+    return 0
 
-def show_untracked_files(target: str, selected_kind: str=None):
+def show_untracked_files(c: Config, selected_kind: str=None):
     '''Show untracked files / possible drink candidates'''
     # 1. Differenziere, welches $kind global über die cli angegeben wurde
     #   a. alle kinds
@@ -36,7 +31,8 @@ def show_untracked_files(target: str, selected_kind: str=None):
     #       3. is_tracked(file, kind)
     #       Jetzt je nach tracking status ausgeben
 
-    for kind, targetdir in KINDS.items():
+    for kind, varname in KINDS.items():
+        targetdir = c[varname]
         # Skip the others, if user has selected only a certain kind
         if selected_kind and selected_kind != kind:
             warn(f"skipping {kind}")
@@ -52,7 +48,7 @@ def show_untracked_files(target: str, selected_kind: str=None):
                 warn(f"Object {rel_path} has the same name as kind {kind}, skipping")
                 continue
             # TODO: Return something instead of printing directly
-            tracking_status(target, kind, rel_path)
+            tracking_status(c, kind, rel_path)
 
 
 def cli():
@@ -64,6 +60,6 @@ def cli():
     except CalledProcessError as e:
         err(f"{e.returncode}\n{result.stderr}")
     # print(result.stdout)
-    show_untracked_files("singold")
     c = Config(Path.home() / CONFIG_FILENAME)
     debug(c)
+    show_untracked_files(c, selected_kind='bin')

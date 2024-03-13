@@ -4,15 +4,22 @@ from pydrink.log import err
 
 # Variable names for ~/.drinkrc and their defaults
 VARNAMES = {
-    "TARGET":       "localhost",      # FIXME: Use hostname
+    "TARGET":       "localhost",    # FIXME: Use hostname
     "DRINKDIR":     "git/drink",    # A directory in $HOME
     "DRINKBASE":    "base",         # The central git remote
     "MASTERBRANCH":  "master",
     "BINDIR":       "bin",
     "ZFUNCDIR":     ".zfunc",
     "CONFDIR":      ".",
-
 }
+
+# Short names to variable names mapping
+KINDS = {
+    "bin":      "BINDIR",
+    "zfunc":    "ZFUNCDIR",
+    "conf":     "CONFDIR",
+}
+
 
 class Config():
     '''The Config class holds the drink configuration and can update its
@@ -35,7 +42,7 @@ class Config():
 
         Examples
         --------
-        >>> c = Config(pathlib.Path.home() + '.drinkrc')
+        >>> c = Config(pathlib.Path.home() / '.drinkrc')
         >>> val = c['TARGET']
         '''
         self.configFileName = f
@@ -62,5 +69,5 @@ class Config():
     def __getitem__(self, item: str) -> str:
         return self.config[item]
 
-    def __str__(self):
+    def __str__(self) -> str:
         return str(self.config)
