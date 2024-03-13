@@ -14,14 +14,29 @@ VARNAMES = {
 }
 
 class Config():
-    '''The Config class holds the drink configuration and can update
-       its default values from a configuration file in drinkrc format.
+    '''The Config class holds the drink configuration and can update its
+    default values from a configuration file in drinkrc format.
 
-       This configuration file is in shell format and is sourced several
-       times.
+    This configuration file is in shell format and is sourced several times.
     '''
 
     def __init__(self, f: str):
+        '''Initialize Config
+
+        Parameters
+        ----------
+        f: str
+            Filename to load. Must be a string with the full path.
+
+        Returns
+        -------
+        A configuration object that can be used like a dictionary.
+
+        Examples
+        --------
+        >>> c = Config(pathlib.Path.home() + '.drinkrc')
+        >>> val = c['TARGET']
+        '''
         self.configFileName = f
         self.config = VARNAMES
         # Override the defaults from config file
