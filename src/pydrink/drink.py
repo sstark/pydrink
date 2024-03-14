@@ -2,6 +2,8 @@
 from subprocess import run, CalledProcessError
 from pathlib import Path
 import os
+from collections import defaultdict
+
 from pydrink.config import Config, KINDS
 from pydrink.log import warn, err, debug
 
@@ -30,17 +32,16 @@ def show_untracked_files(c: Config, selected_kind: str=None):
     #       3. is_tracked(file, kind)
     #       Jetzt je nach tracking status ausgeben
 
+    pat = defaultdict(lambda:"*")
+    pat["conf"] = ".*"
+
     for kind, varname in KINDS.items():
         targetdir = c[varname]
         # Skip the others, if user has selected only a certain kind
         if selected_kind and selected_kind != kind:
             warn(f"skipping {kind}")
             continue
-        if kind == "conf":
-            pat = ".*"
-        else:
-            pat = "*"
-        for f in Path(targetdir).glob(pat):
+        for f in Path(targetdir).glob(pat[kind]):
             rel_path = f.relative_to(targetdir)
             # TODO: run ignore code here
             if rel_path == targetdir:
