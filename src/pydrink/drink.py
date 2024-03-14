@@ -6,6 +6,7 @@ from collections import defaultdict
 
 from pydrink.config import Config, KINDS
 from pydrink.log import warn, err, debug
+from pydrink.obj import DrinkObject
 
 CONFIG_FILENAME = ".drinkrc"
 DOT_PREFIX = "dot"
@@ -63,3 +64,5 @@ def cli():
     c = Config(Path.home() / CONFIG_FILENAME)
     debug(c)
     show_untracked_files(c, selected_kind='conf')
+    do = DrinkObject('bin', 'singold', 'tiv')
+    debug(do)
