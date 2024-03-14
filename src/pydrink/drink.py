@@ -6,11 +6,10 @@ from pydrink.config import Config, KINDS
 from pydrink.log import warn, err, debug
 
 CONFIG_FILENAME = ".drinkrc"
-
+DOT_PREFIX = "dot"
 
 def tracking_status(c: Config, kind: str, p: Path) -> int:
-    # TODO: get DRINKDIR
-    debug(f"{c['TARGET']}, {kind}, {p}")
+    debug(f"target: {c['TARGET']}, kind: {kind}, file: {p}")
     return 0
 
 def show_untracked_files(c: Config, selected_kind: str=None):
@@ -62,4 +61,4 @@ def cli():
     # print(result.stdout)
     c = Config(Path.home() / CONFIG_FILENAME)
     debug(c)
-    show_untracked_files(c, selected_kind='bin')
+    show_untracked_files(c, selected_kind='conf')
