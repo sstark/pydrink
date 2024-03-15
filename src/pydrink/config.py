@@ -1,6 +1,6 @@
 from pathlib import Path
 from subprocess import run, CalledProcessError
-from pydrink.log import err
+from pydrink.log import debug, err
 
 # Variable names for ~/.drinkrc and their defaults
 VARNAMES = {
@@ -73,6 +73,13 @@ class Config():
 
     def kindDir(self, kind: str) -> Path:
         return self.config[KINDS[kind]]
+
+    def managedTargets(self):
+        # All possible values of target as of now
+        dd = Path.home() / self["DRINKDIR"]
+        mt = set([x.name for x in (dd.glob("*/by-target/*"))])
+        debug(mt)
+        return mt
 
     def __str__(self) -> str:
         return str(self.config)
