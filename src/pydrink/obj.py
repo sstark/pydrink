@@ -3,14 +3,15 @@ from enum import Enum
 from pathlib import Path
 
 from pydrink.config import KINDS, Config
+from pydrink.log import debug
 
 
-class DrinkInvalidKind(Exception):
+class InvalidKind(Exception):
     '''Raised when an invalid kind is requested or used'''
     pass
 
 
-class DrinkObjectState(Enum):
+class ObjectState(Enum):
     Unmanaged = 1
     ManagedHere = 2
     ManageHerePending = 3
@@ -36,7 +37,7 @@ class DrinkObject():
     symlinked into the environment, usually but not necessarily a hostname.
     '''
 
-    def __init__(self, kind: str, target: str, path: Path):
+    def __init__(self, conf: Config, kind: str, target: str, path: Path):
         '''Initialize a drink object
 
         Parameters
@@ -52,7 +53,7 @@ class DrinkObject():
         self.kind = kind
         self.target = target
         self.path = path
-        self.state = self.detectState()
+        self.state = self.detectState(conf)
 
     @property
     def kind(self):
@@ -61,11 +62,15 @@ class DrinkObject():
     @kind.setter
     def kind(self, val):
         if val not in KINDS:
-            raise DrinkInvalidKind
+            raise InvalidKind
         self._kind = val
 
     def __str__(self):
-        return f"DrinkObject: kind:{self.kind}, target:{self.target}, path:{self.path}"
+        return f"DrinkObject: ({self.state}) kind:{self.kind}, target:{self.target}, path:{self.path}"
 
-    def detectState(self, conf: Config) -> DrinkObjectState:
-        pass
+    def detectState(self, conf: Config) -> ObjectState:
+        destdir = Path.home() / conf.kindDir(self.kind) / self.kind
+        debug(f"destdir: {destdir}")
+        p = destdir / "by-target" / conf["TARGET"] / self.path
+        debug(f"p: {p}")
+        return ObjectState.ManagedHere

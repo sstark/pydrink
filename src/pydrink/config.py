@@ -1,4 +1,5 @@
 
+from pathlib import Path
 from subprocess import run, CalledProcessError
 from pydrink.log import err
 
@@ -68,6 +69,9 @@ class Config():
 
     def __getitem__(self, item: str) -> str:
         return self.config[item]
+
+    def kindDir(self, kind: str) -> Path:
+        return self.config[KINDS[kind]]
 
     def __str__(self) -> str:
         return str(self.config)
