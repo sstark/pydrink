@@ -69,8 +69,22 @@ class DrinkObject():
         return f"DrinkObject: ({self.state}) kind:{self.kind}, target:{self.target}, path:{self.path}"
 
     def detectState(self, conf: Config) -> ObjectState:
-        destdir = Path.home() / conf.kindDir(self.kind) / self.kind
-        debug(f"destdir: {destdir}")
-        p = destdir / "by-target" / conf["TARGET"] / self.path
-        debug(f"p: {p}")
-        return ObjectState.ManagedHere
+        home = Path.home()
+        drinkDir = conf["DRINKDIR"]
+        kindDir = conf.kindDir(self.kind)
+        target = conf["TARGET"]
+        dest = home / kindDir / self.path
+        debug(f"dest: {dest}")
+
+        src = home / drinkDir / kindDir / "by-target" / target / self.path
+        debug(f"src: {src}")
+        if dest.exists() and dest.is_symlink() and dest.readlink() == src:
+                debug(f"dest.readlink: {dest.readlink()}")
+                return ObjectState.ManagedHere
+
+        src = home / drinkDir / kindDir / "by-target" / target / self.path
+        debug(f"src: {src}")
+        if dest.exists() and dest.is_symlink() and dest.readlink() == src:
+                debug(f"dest.readlink: {dest.readlink()}")
+                return ObjectState.ManagedHere
+        return ObjectState.Unmanaged
