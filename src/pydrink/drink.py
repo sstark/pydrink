@@ -67,5 +67,5 @@ def cli():
     c = Config(Path.home() / CONFIG_FILENAME)
     debug(c)
     show_untracked_files(c, selected_kind='conf')
-    do = DrinkObject(c, 'bin', 'singold', 'batt')
+    do = DrinkObject(c, 'bin', 'singold', 'timesym')
     debug(do)

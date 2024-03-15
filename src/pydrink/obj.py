@@ -1,9 +1,10 @@
-
 from enum import Enum
 from pathlib import Path
 
 from pydrink.config import KINDS, Config
 from pydrink.log import debug
+
+GLOBAL_TARGET = "global"
 
 
 class InvalidKind(Exception):
@@ -77,14 +78,17 @@ class DrinkObject():
         debug(f"dest: {dest}")
 
         src = home / drinkDir / kindDir / "by-target" / target / self.path
-        debug(f"src: {src}")
+        debug(f"Check if {src} is ManagedHere")
         if dest.exists() and dest.is_symlink() and dest.readlink() == src:
-                debug(f"dest.readlink: {dest.readlink()}")
-                return ObjectState.ManagedHere
+            debug(f"dest.readlink: {dest.readlink()}")
+            self.target = target
+            return ObjectState.ManagedHere
 
-        src = home / drinkDir / kindDir / "by-target" / target / self.path
-        debug(f"src: {src}")
+        src = home / drinkDir / kindDir / self.path
+        debug(f"Check if {src} is ManagedOther")
         if dest.exists() and dest.is_symlink() and dest.readlink() == src:
-                debug(f"dest.readlink: {dest.readlink()}")
-                return ObjectState.ManagedHere
+            debug(f"dest.readlink: {dest.readlink()}")
+            self.target = GLOBAL_TARGET
+            return ObjectState.ManagedOther
+
         return ObjectState.Unmanaged
