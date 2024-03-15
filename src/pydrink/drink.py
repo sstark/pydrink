@@ -1,4 +1,3 @@
-
 from subprocess import run, CalledProcessError
 from pathlib import Path
 import os
@@ -11,11 +10,13 @@ from pydrink.obj import DrinkObject
 CONFIG_FILENAME = ".drinkrc"
 DOT_PREFIX = "dot"
 
+
 def tracking_status(c: Config, kind: str, p: Path) -> int:
     debug(f"target: {c['TARGET']}, kind: {kind}, file: {p}")
     return 0
 
-def show_untracked_files(c: Config, selected_kind: str=None):
+
+def show_untracked_files(c: Config, selected_kind: str = None):
     '''Show untracked files / possible drink candidates'''
     # 1. Differenziere, welches $kind global über die cli angegeben wurde
     #   a. alle kinds
@@ -33,7 +34,7 @@ def show_untracked_files(c: Config, selected_kind: str=None):
     #       3. is_tracked(file, kind)
     #       Jetzt je nach tracking status ausgeben
 
-    pat = defaultdict(lambda:"*")
+    pat = defaultdict(lambda: "*")
     pat["conf"] = ".*"
 
     for kind, varname in KINDS.items():
@@ -46,7 +47,9 @@ def show_untracked_files(c: Config, selected_kind: str=None):
             rel_path = f.relative_to(targetdir)
             # TODO: run ignore code here
             if rel_path == targetdir:
-                warn(f"Object {rel_path} has the same name as kind {kind}, skipping")
+                warn(
+                    f"Object {rel_path} has the same name as kind {kind}, skipping"
+                )
                 continue
             # TODO: Return something instead of printing directly
             tracking_status(c, kind, rel_path)
@@ -56,7 +59,7 @@ def cli():
     # FIXME: Try to not depend on changing PWD
     os.chdir(Path.home())
     try:
-        result = run("echo bla",shell=True, capture_output=True, text=True)
+        result = run("echo bla", shell=True, capture_output=True, text=True)
         result.check_returncode()
     except CalledProcessError as e:
         err(f"{e.returncode}\n{result.stderr}")

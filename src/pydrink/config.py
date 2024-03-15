@@ -1,24 +1,23 @@
-
 from pathlib import Path
 from subprocess import run, CalledProcessError
 from pydrink.log import err
 
 # Variable names for ~/.drinkrc and their defaults
 VARNAMES = {
-    "TARGET":       "localhost",    # FIXME: Use hostname
-    "DRINKDIR":     "git/drink",    # A directory in $HOME
-    "DRINKBASE":    "base",         # The central git remote
-    "MASTERBRANCH":  "master",
-    "BINDIR":       "bin",
-    "ZFUNCDIR":     ".zfunc",
-    "CONFDIR":      ".",
+    "TARGET": "localhost",  # FIXME: Use hostname
+    "DRINKDIR": "git/drink",  # A directory in $HOME
+    "DRINKBASE": "base",  # The central git remote
+    "MASTERBRANCH": "master",
+    "BINDIR": "bin",
+    "ZFUNCDIR": ".zfunc",
+    "CONFDIR": ".",
 }
 
 # Short names to variable names mapping
 KINDS = {
-    "bin":      "BINDIR",
-    "zfunc":    "ZFUNCDIR",
-    "conf":     "CONFDIR",
+    "bin": "BINDIR",
+    "zfunc": "ZFUNCDIR",
+    "conf": "CONFDIR",
 }
 
 
@@ -60,7 +59,9 @@ class Config():
                 # It is also close to the original shell based implementation
                 # that was simply sourcing the file too.
                 result = run(f"source {f} && echo -n ${v}",
-                             shell=True, capture_output=True, text=True)
+                             shell=True,
+                             capture_output=True,
+                             text=True)
                 result.check_returncode()
                 if result.stdout:
                     self.config[v] = result.stdout
