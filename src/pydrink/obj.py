@@ -25,8 +25,7 @@ class DrinkObject():
     A drink object can be a "binary", a zsh function or configuration file.
 
     Actual drink objects are those that exist in the drink repository. They can
-    be already symlinked into their destination or have a symlink operation
-    pending.
+    be already symlinked into place or have a symlink operation pending.
 
     Potential drink objects are those that do not exist in the drink repository, but
     are valid candidates.
@@ -74,20 +73,20 @@ class DrinkObject():
         drinkDir = conf["DRINKDIR"]
         kindDir = conf.kindDir(self.kind)
         target = conf["TARGET"]
-        dest = home / kindDir / self.path
-        debug(f"dest: {dest}")
+        src = home / kindDir / self.path
+        debug(f"src: {src}")
 
-        src = home / drinkDir / kindDir / "by-target" / target / self.path
-        debug(f"Check if {src} is ManagedHere")
-        if dest.exists() and dest.is_symlink() and dest.readlink() == src:
-            debug(f"dest.readlink: {dest.readlink()}")
+        dest = home / drinkDir / kindDir / "by-target" / target / self.path
+        debug(f"Check for {dest}")
+        if src.exists() and src.is_symlink() and src.readlink() == dest:
+            debug(f"{src} -> {dest}")
             self.target = target
             return ObjectState.ManagedHere
 
-        src = home / drinkDir / kindDir / self.path
-        debug(f"Check if {src} is ManagedOther")
-        if dest.exists() and dest.is_symlink() and dest.readlink() == src:
-            debug(f"dest.readlink: {dest.readlink()}")
+        dest = home / drinkDir / kindDir / self.path
+        debug(f"Check for {dest}")
+        if src.exists() and src.is_symlink() and src.readlink() == dest:
+            debug(f"{src} -> {dest}")
             self.target = GLOBAL_TARGET
             return ObjectState.ManagedOther
 
