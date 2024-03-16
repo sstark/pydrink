@@ -1,5 +1,6 @@
 from pathlib import Path
 from pydrink.config import KINDS, Config
+from pydrink.obj import BY_TARGET
 import pytest
 import tempfile
 
@@ -18,14 +19,14 @@ def tmpfile():
 def drinkdir(tmppath):
     for kind in KINDS:
         (tmppath / kind).mkdir(parents=True)
-    (tmppath / "bin" / "by-target" / "foo").mkdir(parents=True)
-    (tmppath / "bin" / "by-target" / "foo" / "obj1").touch()
+    (tmppath / "bin" / BY_TARGET / "foo").mkdir(parents=True)
+    (tmppath / "bin" / BY_TARGET / "foo" / "obj1").touch()
     (tmppath / "bin" / "obj2").touch()
     (tmppath / "bin" / "obj3").touch()
-    (tmppath / "bin" / "by-target" / "bar").mkdir(parents=True)
-    (tmppath / "bin" / "by-target" / "bar" / "obj2").touch()
-    (tmppath / "conf" / "by-target" / "bapf").mkdir(parents=True)
-    (tmppath / "conf" / "by-target" / "bapf" / "obj4").touch()
+    (tmppath / "bin" / BY_TARGET / "bar").mkdir(parents=True)
+    (tmppath / "bin" / BY_TARGET / "bar" / "obj2").touch()
+    (tmppath / "conf" / BY_TARGET / "bapf").mkdir(parents=True)
+    (tmppath / "conf" / BY_TARGET / "bapf" / "obj4").touch()
     return tmppath
 
 

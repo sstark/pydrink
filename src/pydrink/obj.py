@@ -5,7 +5,8 @@ from pydrink.config import KINDS, Config
 from pydrink.log import debug
 
 GLOBAL_TARGET = "global"
-
+# The subdirectory within DRINKDIR in which per target objects are located
+BY_TARGET = "by-target"
 
 class InvalidKind(Exception):
     '''Raised when an invalid kind is requested or used'''
@@ -76,7 +77,7 @@ class DrinkObject():
         src = home / kindDir / self.path
         debug(f"src: {src}")
 
-        dest = drinkDir / kindDir / "by-target" / target / self.path
+        dest = drinkDir / kindDir / BY_TARGET / target / self.path
         debug(f"Check for {dest}")
         if src.exists() and src.is_symlink() and src.readlink() == dest:
             debug(f"{src} -> {dest}")
