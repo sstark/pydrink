@@ -69,6 +69,9 @@ class Config():
                 err(f"{e.returncode}\n{result.stderr}")
 
     def __getitem__(self, item: str) -> str:
+        if item == "DRINKDIR":
+            if not Path(self.config[item]).is_absolute():
+                return Path.home() / self.config[item]
         return self.config[item]
 
     def kindDir(self, kind: str) -> Path:
@@ -76,7 +79,7 @@ class Config():
 
     def managedTargets(self):
         # All possible values of target as of now
-        dd = Path.home() / self["DRINKDIR"]
+        dd = self["DRINKDIR"]
         mt = set([x.name for x in (dd.glob("*/by-target/*"))])
         debug(mt)
         return mt

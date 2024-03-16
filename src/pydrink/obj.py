@@ -76,14 +76,14 @@ class DrinkObject():
         src = home / kindDir / self.path
         debug(f"src: {src}")
 
-        dest = home / drinkDir / kindDir / "by-target" / target / self.path
+        dest = drinkDir / kindDir / "by-target" / target / self.path
         debug(f"Check for {dest}")
         if src.exists() and src.is_symlink() and src.readlink() == dest:
             debug(f"{src} -> {dest}")
             self.target = target
             return ObjectState.ManagedHere
 
-        dest = home / drinkDir / kindDir / self.path
+        dest = drinkDir / kindDir / self.path
         debug(f"Check for {dest}")
         if src.exists() and src.is_symlink() and src.readlink() == dest:
             debug(f"{src} -> {dest}")
