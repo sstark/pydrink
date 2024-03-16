@@ -20,6 +20,8 @@ KINDS = {
     "conf": "CONFDIR",
 }
 
+# The subdirectory within DRINKDIR in which per target objects are located
+BY_TARGET = "by-target"
 
 class Config():
     '''The Config class holds the drink configuration and can update its
@@ -82,7 +84,8 @@ class Config():
         # All possible values of target as of now
         dd = Path(self["DRINKDIR"])
         debug(dd)
-        mt = set([x.name for x in (dd.glob("*/by-target/*"))])
+        target_glob = "*/" + BY_TARGET + "/*"
+        mt = set([x.name for x in dd.glob(target_glob)])
         debug(mt)
         return mt
 
