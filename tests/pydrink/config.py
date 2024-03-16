@@ -12,8 +12,7 @@ def tmppath():
 @pytest.fixture
 def drinkdir(tmppath):
     for kind in KINDS:
-        p = (tmppath / kind)
-        p.mkdir(parents=True)
+        (tmppath / kind).mkdir(parents=True)
     (tmppath / "bin" / "by-target" / "foo").mkdir(parents=True)
     (tmppath / "bin" / "by-target" / "foo" / "obj1").touch()
     (tmppath / "bin" / "obj2").touch()
