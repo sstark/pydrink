@@ -1,11 +1,12 @@
 from subprocess import run, CalledProcessError
 from pathlib import Path
 import os
+import argparse
 from collections import defaultdict
 
 from pydrink.config import Config, KINDS
 from pydrink.log import warn, err, debug
-from pydrink.obj import DrinkObject
+from pydrink.obj import DrinkObject, GLOBAL_TARGET
 
 CONFIG_FILENAME = "drinkrc"
 DOT_PREFIX = "dot"
@@ -75,6 +76,45 @@ def find_drinkrc() -> Path:
 
 
 def cli():
+    parser = argparse.ArgumentParser(
+        prog='pydrink',
+        description='--- DRaft symlINKs in your home ---',
+        epilog='Please consult the README for more information.')
+    args_main = parser.add_mutually_exclusive_group()
+    args_main.add_argument('-i',
+                           '--import',
+                           action="store_true",
+                           help="import an object")
+    args_main.add_argument('-l',
+                           '--link',
+                           action="store_true",
+                           help="add missing symlinks")
+    args_main.add_argument('-s',
+                           '--show',
+                           action="store_true",
+                           help="show untracked files")
+    args_main.add_argument('-c',
+                           '--changed',
+                           action="store_true",
+                           help="show objects with changes")
+    args_main.add_argument('-g',
+                           '--git',
+                           action="store_true",
+                           help="interactive git menu")
+    args_main.add_argument('-u',
+                           '--dump',
+                           action="store_true",
+                           help="dump config")
+    args_selector = parser.add_argument_group("selectors")
+    args_selector.add_argument('-k', '--kind', help=f"one of {set(KINDS)}")
+    args_selector.add_argument(
+        '-t', '--target', help=f"one of your targets or '{GLOBAL_TARGET}'")
+    args_flags = parser.add_argument_group("flags")
+    args_flags.add_argument('-v', '--verbose', action="store_true")
+    args_flags.add_argument('-q', '--quiet', action="store_true")
+    args_flags.add_argument('-d', '--debug', action="store_true")
+    parser.add_argument('filename')
+    parser.parse_args()
     # FIXME: Try to not depend on changing PWD
     os.chdir(Path.home())
     try:
@@ -85,6 +125,6 @@ def cli():
     # print(result.stdout)
     c = Config(find_drinkrc())
     debug(c)
-    show_untracked_files(c, selected_kind='conf')
+    # show_untracked_files(c, selected_kind='conf')
     do = DrinkObject(c, 'bin', 'singold', 'timesym')
     debug(do)
