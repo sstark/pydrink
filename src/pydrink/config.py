@@ -67,6 +67,7 @@ class Config():
                     self.config[v] = result.stdout
             except CalledProcessError as e:
                 err(f"{e.returncode}\n{result.stderr}")
+                raise
 
     def __getitem__(self, item: str) -> str:
         if item == "DRINKDIR":
