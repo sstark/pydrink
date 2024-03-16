@@ -7,6 +7,7 @@ from pydrink.config import Config, KINDS
 from pydrink.log import warn, err, debug
 from pydrink.obj import DrinkObject
 
+# TODO: implement XDG_CONFIG_HOME lookup
 CONFIG_FILENAME = ".drinkrc"
 DOT_PREFIX = "dot"
 

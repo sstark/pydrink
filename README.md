@@ -3,6 +3,30 @@ pydrink
 
 Python implemenation of drink dotfile management system
 
+
+Configuration File
+------------------
+
+The only configuration file for pydrink is in your home and must be either
+located in `$XDG_CONFIG_HOME/drinkrc` or, if XDG_CONFIG_HOME is not set,
+`$HOME/.drinkrc`.
+
+Example drinkrc with the minimal settings:
+
+    TARGET="somestring"
+    DRINKDIR="some/path/to/gitdir"
+
+For TARGET you should chose a value that is unique to the environment in which
+you want to use a certain set of pydrink objects. That could be your hostname
+or workplace name. Pydrink will only link objects that are either in your
+configured target or in the special 'global' target.
+
+DRINKDIR must be a path to the directory where your pydrink object repository
+is located. This contains all your files and it will be the place where
+symlinked objects point to. If it is a relative path, $HOME will be prepended
+to it implicitly.
+
+
 'Destination' vs. 'Target'
 --------------------------
 
