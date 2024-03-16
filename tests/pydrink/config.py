@@ -16,3 +16,20 @@ def test_drinkrc_drinkdir_is_absolute(drinkrc):
 def test_managed_targets(drinkrc_and_drinkdir):
     c = Config(drinkrc_and_drinkdir)
     assert c.managedTargets() == {'bapf', 'foo', 'bar'}
+
+
+def test_dump_config(drinkrc):
+    c = Config(drinkrc)
+    c_str_list = sorted(str(c).split("\n"))
+    wanted_str_list = [
+        "BINDIR=bin",
+        "CONFDIR=.",
+        "DRINKBASE=base",
+        "DRINKDIR=relative/path",
+        "MASTERBRANCH=master",
+        "SUPPORTED_KINDS='bin conf zfunc'",
+        "TARGET=somehost",
+        "ZFUNCDIR=.zfunc",
+    ]
+    assert c_str_list == wanted_str_list
+

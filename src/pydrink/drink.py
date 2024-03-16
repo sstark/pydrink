@@ -1,4 +1,3 @@
-from subprocess import run, CalledProcessError
 from pathlib import Path
 import os
 import argparse
@@ -7,7 +6,7 @@ from collections import defaultdict
 from pydrink.config import Config, KINDS
 import pydrink.log
 from pydrink.log import warn, err, debug
-from pydrink.obj import DrinkObject, GLOBAL_TARGET
+from pydrink.obj import GLOBAL_TARGET
 
 CONFIG_FILENAME = "drinkrc"
 DOT_PREFIX = "dot"
@@ -67,7 +66,7 @@ def createArgumentParser():
         prog='pydrink',
         description='--- DRaft symlINKs in your home ---',
         epilog='Please consult the README for more information.')
-    args_main = parser.add_mutually_exclusive_group()
+    args_main = parser.add_mutually_exclusive_group(required=True)
     args_main.add_argument('-i',
                            '--import',
                            action="store_true",
@@ -116,17 +115,12 @@ def createArgumentParser():
 def cli():
     parser = createArgumentParser()
     args = parser.parse_args()
+    debug(args)
     pydrink.log.DEBUG = args.debug
     # FIXME: Try to not depend on changing PWD
     os.chdir(Path.home())
-    try:
-        result = run("echo bla", shell=True, capture_output=True, text=True)
-        result.check_returncode()
-    except CalledProcessError as e:
-        err(f"{e.returncode}\n{result.stderr}")
-    # print(result.stdout)
     c = Config(find_drinkrc())
     debug(c)
-    # show_untracked_files(c, selected_kind='conf')
-    do = DrinkObject(c, 'bin', 'singold', 'timesym')
-    debug(do)
+    if args.dump:
+        print(c)
+        return 0

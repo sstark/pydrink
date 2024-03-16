@@ -3,6 +3,13 @@ from subprocess import run, CalledProcessError
 from pydrink.log import debug, err
 from typing_extensions import Any
 
+
+# Short names to variable names mapping
+KINDS = {
+    "bin": "BINDIR",
+    "zfunc": "ZFUNCDIR",
+    "conf": "CONFDIR",
+}
 # Variable names for ~/.drinkrc and their defaults
 VARNAMES = {
     "TARGET": "localhost",
@@ -12,13 +19,7 @@ VARNAMES = {
     "BINDIR": "bin",
     "ZFUNCDIR": ".zfunc",
     "CONFDIR": ".",
-}
-
-# Short names to variable names mapping
-KINDS = {
-    "bin": "BINDIR",
-    "zfunc": "ZFUNCDIR",
-    "conf": "CONFDIR",
+    "SUPPORTED_KINDS": f"'{' '.join(sorted(KINDS.keys()))}'", # used by _drink completion
 }
 
 # The subdirectory within DRINKDIR in which per target objects are located
@@ -95,4 +96,4 @@ class Config():
         return mt
 
     def __str__(self) -> str:
-        return str(self.config)
+        return "\n".join([f"{k}={v}" for k, v in self.config.items()])
