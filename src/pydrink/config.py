@@ -53,11 +53,11 @@ class Config():
     def sourceConfigFile(self, f: str):
         for v in VARNAMES:
             try:
-                # Yes, this is silly and sources the config file for every variable.
-                # The assumption is that it is very cheap, cheaper than importing
-                # and using something like the dotenv module.
-                # It is also close to the original shell based implementation
-                # that was simply sourcing the file too.
+                # HACK: Yes, this is silly and sources the config file for
+                # every variable. The assumption is that it is very cheap,
+                # cheaper than importing and using something like the dotenv
+                # module. It is also close to the original shell based
+                # implementation that was simply sourcing the file too.
                 result = run(f"source {f} && echo -n ${v}",
                              shell=True,
                              capture_output=True,
