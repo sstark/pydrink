@@ -1,7 +1,37 @@
 pydrink
 =======
 
-Python implemenation of drink dotfile management system
+Very much "WORK IN PROGRESS" Python implemenation of the drink dotfile
+management system.
+
+This will maintain files in a git repository and create symlinks to them in
+appropriate places in your home directory. You will only need a single
+repository for all your different environments. Drink will only symlink the
+files that are configured for a target.
+
+A target can be the name of a host, a shared file system or your company name,
+whatever makes sense to you in order to group your objects.
+
+Objects are files. Supported kinds are: bin, zfunc, conf. They will be
+symlinked into configurable places in your home.
+
+  - 'bin' are scripts or binaries, usually in `~/bin`
+  - 'zfuncs' are shell functions, usually in `~/.zfuncs`
+  - 'conf' are configuration files in your home, e. g. `~/.vimrc` or
+    `~/.config/hypr/hyprland.conf`
+
+The interactive git menu of drink provides a convenient way to manage and
+distribute your shell environment.
+
+
+History
+-------
+
+This is yet another dotfile management system. I wrote this originally in zsh
+(first commit Mar 14 2008) and use it daily since then.
+
+The zsh version was never published because it is too much entangeled with my
+actual shell environment. This rewrite in Python aims to fix that.
 
 
 Configuration File
