@@ -68,6 +68,7 @@ class DrinkObject():
         return f"DrinkObject: ({self.state}) kind:{self.kind}, target:{self.target}, path:{self.path}"
 
     def detectState(self, conf: Config) -> ObjectState:
+        '''Try to determine the state of the drink object'''
         home = Path.home()
         drinkDir = Path(conf["DRINKDIR"])
         kindDir = Path(conf.kindDir(self.kind))

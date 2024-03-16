@@ -24,22 +24,6 @@ def tracking_status(c: Config, kind: str, p: Path) -> int:
 
 def show_untracked_files(c: Config, selected_kind: str = ""):
     '''Show untracked files / possible drink candidates'''
-    # 1. Differenziere, welches $kind global über die cli angegeben wurde
-    #   a. alle kinds
-    #   b. nur ein kind
-    # 2. Iteriere über alle angegebenen kinds
-    #   1. Finde targetdir für kind (get_kinddir())
-    #       -> Exception wenn nicht vorhanden
-    #   2. Fallunterscheidung:
-    #       a. kind=conf: kindfiles = $targetdir/.*
-    #       b. ansonsten: kindfiles = $targetdir/*
-    #   3. Iteriere über alle kindfiles:
-    #       0. Schneide Pfad ab, also /home/bla/bin/foo -> foo
-    #       1. Wenn in "ignore", skippen
-    #       2. Wenn der filename einem key aus KINDDIR entspricht, skippen
-    #       3. is_tracked(file, kind)
-    #       Jetzt je nach tracking status ausgeben
-
     pat = defaultdict(lambda: "*")
     pat["conf"] = ".*"
 
@@ -62,6 +46,7 @@ def show_untracked_files(c: Config, selected_kind: str = ""):
 
 
 def find_drinkrc() -> Path:
+    '''Find a drink configuration file and return its path'''
     if xdgch := os.getenv("XDG_CONFIG_HOME"):
         xdgch_p = Path(xdgch) / CONFIG_FILENAME
         if xdgch_p.exists():
@@ -75,7 +60,7 @@ def find_drinkrc() -> Path:
     raise NoConfigFound
 
 
-def cli():
+def createArgumentParser():
     parser = argparse.ArgumentParser(
         prog='pydrink',
         description='--- DRaft symlINKs in your home ---',
@@ -114,6 +99,11 @@ def cli():
     args_flags.add_argument('-q', '--quiet', action="store_true")
     args_flags.add_argument('-d', '--debug', action="store_true")
     parser.add_argument('filename')
+    return parser
+
+
+def cli():
+    parser = createArgumentParser()
     parser.parse_args()
     # FIXME: Try to not depend on changing PWD
     os.chdir(Path.home())

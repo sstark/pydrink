@@ -54,6 +54,7 @@ class Config():
         self.sourceConfigFile(f)
 
     def sourceConfigFile(self, f: Path):
+        '''Read a drink configuration file and populate the config object'''
         for v in VARNAMES:
             try:
                 # HACK: Yes, this is silly and sources the config file for
@@ -81,6 +82,7 @@ class Config():
         return self.config[item]
 
     def kindDir(self, kind: str) -> Path:
+        '''Return the symlink directory for a given kind'''
         return Path(self.config[KINDS[kind]])
 
     def managedTargets(self):
