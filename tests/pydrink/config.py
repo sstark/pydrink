@@ -24,6 +24,8 @@ def drinkdir(tmppath):
     (tmppath / "bin" / "obj3").touch()
     (tmppath / "bin" / "by-target" / "bar").mkdir(parents=True)
     (tmppath / "bin" / "by-target" / "bar" / "obj2").touch()
+    (tmppath / "conf" / "by-target" / "bapf").mkdir(parents=True)
+    (tmppath / "conf" / "by-target" / "bapf" / "obj4").touch()
     return tmppath
 
 
@@ -57,4 +59,4 @@ def test_drinkrc_drinkdir_is_absolute(drinkrc):
 
 def test_managed_targets(drinkrc_and_drinkdir):
     c = Config(drinkrc_and_drinkdir)
-    assert c.managedTargets() == {'foo', 'bar'}
+    assert c.managedTargets() == {'bapf', 'foo', 'bar'}
