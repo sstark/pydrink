@@ -5,11 +5,13 @@ import argparse
 from collections import defaultdict
 
 from pydrink.config import Config, KINDS
+import pydrink.log
 from pydrink.log import warn, err, debug
 from pydrink.obj import DrinkObject, GLOBAL_TARGET
 
 CONFIG_FILENAME = "drinkrc"
 DOT_PREFIX = "dot"
+DEBUG = False
 
 
 class NoConfigFound(Exception):
@@ -95,16 +97,26 @@ def createArgumentParser():
     args_selector.add_argument(
         '-t', '--target', help=f"one of your targets or '{GLOBAL_TARGET}'")
     args_flags = parser.add_argument_group("flags")
-    args_flags.add_argument('-v', '--verbose', action="store_true")
-    args_flags.add_argument('-q', '--quiet', action="store_true")
-    args_flags.add_argument('-d', '--debug', action="store_true")
-    parser.add_argument('filename')
+    args_flags.add_argument('-v',
+                            '--verbose',
+                            action="store_true",
+                            help="be louder")
+    args_flags.add_argument('-q',
+                            '--quiet',
+                            action="store_true",
+                            help="be quieter")
+    args_flags.add_argument('-d',
+                            '--debug',
+                            action="store_true",
+                            help="print a lot of debugging information")
+    parser.add_argument('filename', nargs="?")
     return parser
 
 
 def cli():
     parser = createArgumentParser()
-    parser.parse_args()
+    args = parser.parse_args()
+    pydrink.log.DEBUG = args.debug
     # FIXME: Try to not depend on changing PWD
     os.chdir(Path.home())
     try:
