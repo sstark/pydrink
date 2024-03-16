@@ -21,7 +21,7 @@ def tracking_status(c: Config, kind: str, p: Path) -> int:
     return 0
 
 
-def show_untracked_files(c: Config, selected_kind: str = None):
+def show_untracked_files(c: Config, selected_kind: str = ""):
     '''Show untracked files / possible drink candidates'''
     # 1. Differenziere, welches $kind global über die cli angegeben wurde
     #   a. alle kinds
