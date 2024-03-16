@@ -10,11 +10,6 @@ def tmppath():
 
 
 @pytest.fixture
-def tmpfile():
-    return Path(tempfile.NamedTemporaryFile().name)
-
-
-@pytest.fixture
 def drinkdir(tmppath):
     for kind in KINDS:
         p = (tmppath / kind)
@@ -29,14 +24,15 @@ def drinkdir(tmppath):
 
 
 @pytest.fixture
-def drinkrc(tmpfile):
-    with open(tmpfile, 'w') as f:
+def drinkrc(drinkdir):
+    rcfile = drinkdir / ".drinkrc"
+    with open(rcfile, 'w') as f:
         f.write('TARGET="singold"\n')
-        f.write('DRINKDIR="git/drink"\n')
-    return tmpfile
+        f.write(f'DRINKDIR="{drinkdir}"\n')
+    return rcfile
 
 
 def test_drinkrc_can_be_parsed(drinkrc):
     c = Config(drinkrc)
     assert c["TARGET"] == "singold"
-    assert c["DRINKDIR"] == "git/drink"
+    assert c["DRINKDIR"] == f"{drinkrc.parent}"
