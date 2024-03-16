@@ -1,9 +1,9 @@
 from pathlib import Path
 from subprocess import run, CalledProcessError
 from pydrink.log import debug, err
+from typing_extensions import Any
 
 # Variable names for ~/.drinkrc and their defaults
-# TODO: use HeterogenousDictionary(TypedDict)
 VARNAMES = {
     "TARGET": "localhost",
     "DRINKDIR": "git/drink",
@@ -72,8 +72,7 @@ class Config():
                 err(f"{e.returncode}\n{result.stderr}")
                 raise
 
-    # FIXME: We do not always return str here!
-    def __getitem__(self, item: str) -> str:
+    def __getitem__(self, item: str) -> Any:
         if item == "DRINKDIR":
             if not Path(self.config[item]).is_absolute():
                 return Path.home() / self.config[item]
