@@ -9,9 +9,18 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = "^3.11"
 
+[tool.poetry.group.dev.dependencies]  
+pytest = "*"
+
 [tool.poetry.scripts]
 drnk = "pydrink.drink:cli"
 
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.pytest.ini_options]
+addopts = "-ra -q"
+testpaths = [
+    "tests/pydrink/*",
+]
