@@ -7,9 +7,13 @@ from pydrink.config import Config, KINDS
 from pydrink.log import warn, err, debug
 from pydrink.obj import DrinkObject
 
-# TODO: implement XDG_CONFIG_HOME lookup
-CONFIG_FILENAME = ".drinkrc"
+CONFIG_FILENAME = "drinkrc"
 DOT_PREFIX = "dot"
+
+
+class NoConfigFound(Exception):
+    '''Raised when no valid configuration could be found'''
+    pass
 
 
 def tracking_status(c: Config, kind: str, p: Path) -> int:
@@ -56,6 +60,20 @@ def show_untracked_files(c: Config, selected_kind: str = None):
             tracking_status(c, kind, rel_path)
 
 
+def find_drinkrc() -> Path:
+    if xdgch := os.getenv("XDG_CONFIG_HOME"):
+        xdgch_p = Path(xdgch) / CONFIG_FILENAME
+        if xdgch_p.exists():
+            return xdgch_p
+    xdgdef_p = Path.home() / ".config" / CONFIG_FILENAME
+    if xdgdef_p.exists():
+        return xdgdef_p
+    drinkrc = Path.home() / ("." + CONFIG_FILENAME)
+    if drinkrc.exists():
+        return drinkrc
+    raise NoConfigFound
+
+
 def cli():
     # FIXME: Try to not depend on changing PWD
     os.chdir(Path.home())
@@ -65,7 +83,7 @@ def cli():
     except CalledProcessError as e:
         err(f"{e.returncode}\n{result.stderr}")
     # print(result.stdout)
-    c = Config(Path.home() / CONFIG_FILENAME)
+    c = Config(find_drinkrc())
     debug(c)
     show_untracked_files(c, selected_kind='conf')
     do = DrinkObject(c, 'bin', 'singold', 'timesym')

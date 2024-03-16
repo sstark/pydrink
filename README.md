@@ -7,9 +7,8 @@ Python implemenation of drink dotfile management system
 Configuration File
 ------------------
 
-The only configuration file for pydrink is in your home and must be either
-located in `$XDG_CONFIG_HOME/drinkrc` or, if XDG_CONFIG_HOME is not set,
-`$HOME/.drinkrc`.
+The only configuration file for pydrink is in your home and must be located in
+one of `$XDG_CONFIG_HOME/drinkrc`, `$HOME/.config/drinkrc` or `$HOME/.drinkrc`.
 
 Example drinkrc with the minimal settings:
 

@@ -28,7 +28,7 @@ class Config():
     This configuration file is in shell format and is sourced several times.
     '''
 
-    def __init__(self, f: str):
+    def __init__(self, f: Path):
         '''Initialize Config
 
         Parameters
@@ -50,7 +50,7 @@ class Config():
         # Override the defaults from config file
         self.sourceConfigFile(f)
 
-    def sourceConfigFile(self, f: str):
+    def sourceConfigFile(self, f: Path):
         for v in VARNAMES:
             try:
                 # HACK: Yes, this is silly and sources the config file for
