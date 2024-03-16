@@ -69,8 +69,8 @@ class DrinkObject():
 
     def detectState(self, conf: Config) -> ObjectState:
         home = Path.home()
-        drinkDir = conf["DRINKDIR"]
-        kindDir = conf.kindDir(self.kind)
+        drinkDir = Path(conf["DRINKDIR"])
+        kindDir = Path(conf.kindDir(self.kind))
         target = conf["TARGET"]
         src = home / kindDir / self.path
         debug(f"src: {src}")

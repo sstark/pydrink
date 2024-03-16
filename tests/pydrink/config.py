@@ -42,7 +42,7 @@ def drinkrc_and_drinkdir(drinkdir):
 def test_drinkrc_can_be_parsed(drinkrc_and_drinkdir):
     c = Config(drinkrc_and_drinkdir)
     assert c["TARGET"] == "singold"
-    assert c["DRINKDIR"] == f"{drinkrc_and_drinkdir.parent}"
+    assert c["DRINKDIR"] == drinkrc_and_drinkdir.parent
 
 
 @pytest.fixture
