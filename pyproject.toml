@@ -11,6 +11,7 @@ python = "^3.11"
 
 [tool.poetry.group.dev.dependencies]  
 pytest = "*"
+mypy = "^1.9.0"
 
 [tool.poetry.scripts]
 drnk = "pydrink.drink:cli"
