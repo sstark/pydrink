@@ -10,7 +10,6 @@ from pydrink.obj import GLOBAL_TARGET
 
 CONFIG_FILENAME = "drinkrc"
 DOT_PREFIX = "dot"
-DEBUG = False
 
 
 class NoConfigFound(Exception):
