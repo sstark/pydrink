@@ -118,7 +118,11 @@ def cli():
     pydrink.log.DEBUG = args.debug
     # FIXME: Try to not depend on changing PWD
     os.chdir(Path.home())
-    c = Config(find_drinkrc())
+    try:
+        c = Config(find_drinkrc())
+    except Exception as e:
+        err(e)
+        return 1
     debug(c)
     if args.dump:
         print(c)

@@ -52,6 +52,7 @@ class Config():
         self.configFileName = f
         self.config = VARNAMES
         # Override the defaults from config file
+        debug(f"Reading configuration from {f}")
         self.sourceConfigFile(f)
 
     def sourceConfigFile(self, f: Path):
