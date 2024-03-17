@@ -4,6 +4,13 @@ import sys
 from subprocess import CalledProcessError, call, run
 
 
+def unclean(c: Config) -> bool:
+    ret = call(["git", "-C", str(c['DRINKDIR']), "diff", "--quiet"])
+    if ret != 0:
+        err(f"drink repository is dirty")
+    return ret != 0
+
+
 def get_branches(c: Config) -> list[str]:
     '''Return a list of all remote branches found in drink repository'''
     try:
@@ -58,7 +65,9 @@ def menu(c: Config) -> int:
             else:
                 ret = 0
         if reply == "4":
-            # TODO: skip if git directory is unclean
+            if unclean(c):
+                err("Stopping automerge")
+                continue
             debug("git fetch from base")
             ret = call(git_cmd["2"])
             if ret != 0:
