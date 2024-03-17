@@ -1,5 +1,6 @@
 from pathlib import Path
-from pydrink.config import KINDS
+from subprocess import call
+from pydrink.config import KINDS, Config
 from pydrink.obj import BY_TARGET
 import pytest
 import tempfile
@@ -45,3 +46,13 @@ def drinkrc(tmpfile):
         f.write('TARGET="somehost"\n')
         f.write(f'DRINKDIR="relative/path"\n')
     return tmpfile
+
+
+@pytest.fixture
+def tracked_drinkrc_and_drinkdir(drinkrc_and_drinkdir):
+    c = Config(drinkrc_and_drinkdir)
+    git = ["git", "-C", str(c["DRINKDIR"])]
+    call(git + ["init"])
+    call(git + ["add", "."])
+    call(git + ["commit", "-m", "test"])
+    return drinkrc_and_drinkdir
