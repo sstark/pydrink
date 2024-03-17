@@ -1,7 +1,9 @@
 from pathlib import Path
 import os
+import sys
 import argparse
 from collections import defaultdict
+from subprocess import call
 
 from pydrink.config import Config, KINDS
 import pydrink.log
@@ -56,6 +58,39 @@ def find_drinkrc() -> Path:
         return drinkrc
     raise NoConfigFound("No drinkrc could be found")
 
+
+def git_menu(c: Config) -> int:
+    '''Interactive menu to run git commands on drink objects'''
+    while True:
+        print()
+        print(" 1) quit")
+        print(" 7) log -p")
+        print()
+        try:
+            reply = input("git action> ")
+        except EOFError:
+            return 0
+        debug(f"reply: {reply}")
+        if reply == "1":
+            return 0
+        if reply == "7":
+            cmd = ["git", "-C", str(c["DRINKDIR"]), "log", "-p"]
+            debug(f"calling: {' '.join(cmd)}")
+            ret = call(cmd)
+            # git will be killed with signal 13 (SIGPIPE) when there is a lot
+            # of output and 'q' is pressed early (broken pipe). We can ignore
+            # that.
+            if ret not in [-13, 0]:
+                err(f"git returned error {ret}")
+            else:
+                ret = 0
+        # Prevent showing the input prompt again when there is no tty.
+        # Even in case of no tty we want to ask for input() above to support
+        # things like "drink -g <<<7"
+        if not sys.stdin.isatty():
+            debug("no tty, exit from loop")
+            return ret
+            
 
 def createArgumentParser():
     parser = argparse.ArgumentParser(
@@ -113,8 +148,6 @@ def cli():
     args = parser.parse_args()
     debug(args)
     pydrink.log.DEBUG = args.debug
-    # FIXME: Try to not depend on changing PWD
-    os.chdir(Path.home())
     try:
         c = Config(find_drinkrc())
     except Exception as e:
@@ -129,4 +162,10 @@ def cli():
             show_untracked_files(c, selected_kind=args.kind)
         except Exception as e:
             err(e)
+            return 1
+    if args.git:
+        try:
+            return git_menu(c)
+        except KeyboardInterrupt:
+            err("git menu was cancelled")
             return 1
