@@ -55,4 +55,9 @@ def tracked_drinkrc_and_drinkdir(drinkrc_and_drinkdir):
     call(git + ["init"])
     call(git + ["add", "."])
     call(git + ["commit", "-m", "test"])
+    for remote in ["hostA", "hostB", "hostC"]:
+        ref = c["DRINKDIR"] / ".git" / "refs" / "remotes" / remote / "master"
+        ref.parent.mkdir(parents=True)
+        with open(ref, "w") as f:
+            f.write("45c00db8f531f6ad6414dd4fa048893dd8095ff2\n")
     return drinkrc_and_drinkdir
