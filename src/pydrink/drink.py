@@ -61,9 +61,21 @@ def find_drinkrc() -> Path:
 
 def git_menu(c: Config) -> int:
     '''Interactive menu to run git commands on drink objects'''
+    git = ["git", "-C", str(c["DRINKDIR"])]
+    git_cmd = {
+        "2": git + ["fetch", str(c["DRINKBASE"])],
+        "3": git + ["push", str(c["DRINKBASE"])],
+        "5": git + ["commit", "-a"],
+        "6": git + ["commit"],
+        "7": git + ["log", "-p"],
+    }
     while True:
         print()
         print(" 1) quit")
+        print(" 2) fetch from base")
+        print(" 3) push to base")
+        print(" 5) commit -a")
+        print(" 6) commit")
         print(" 7) log -p")
         print()
         try:
@@ -73,10 +85,9 @@ def git_menu(c: Config) -> int:
         debug(f"reply: {reply}")
         if reply == "1":
             return 0
-        if reply == "7":
-            cmd = ["git", "-C", str(c["DRINKDIR"]), "log", "-p"]
-            debug(f"calling: {' '.join(cmd)}")
-            ret = call(cmd)
+        if reply in git_cmd:
+            debug(f"calling: {' '.join(git_cmd[reply])}")
+            ret = call(git_cmd[reply])
             # git will be killed with signal 13 (SIGPIPE) when there is a lot
             # of output and 'q' is pressed early (broken pipe). We can ignore
             # that.
