@@ -10,6 +10,7 @@ readme = "README.md"
 python = "^3.11"
 rich = "^13.7.1"
 rich-argparse = "^1.4.0"
+typing-extensions = "^4.10.0"
 
 [tool.poetry.group.dev.dependencies]  
 pytest = "*"
