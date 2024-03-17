@@ -124,3 +124,9 @@ def cli():
     if args.dump:
         print(c)
         return 0
+    if args.show:
+        try:
+            show_untracked_files(c, selected_kind=args.kind)
+        except Exception as e:
+            err(e)
+            return 1
