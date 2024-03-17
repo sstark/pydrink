@@ -26,14 +26,16 @@ def test_git_menu_fetch(tracked_drinkrc_and_drinkdir):
     # So let's pretend we are not on a tty.
     sys.stdin.isatty = lambda: False
     c = Config(tracked_drinkrc_and_drinkdir)
-    ret = menu(c, lambda _: "2")
-    assert ret == 0
+    assert menu(c, lambda _: "2") == 0
 
 
 def test_git_menu_push(tracked_drinkrc_and_drinkdir):
-    # We will get a busy loop if we replace input() and are on a tty.
-    # So let's pretend we are not on a tty.
     sys.stdin.isatty = lambda: False
     c = Config(tracked_drinkrc_and_drinkdir)
-    ret = menu(c, lambda _: "3")
-    assert ret == 0
+    assert menu(c, lambda _: "3") == 0
+
+
+def test_git_menu_invalid_item(tracked_drinkrc_and_drinkdir):
+    sys.stdin.isatty = lambda: False
+    c = Config(tracked_drinkrc_and_drinkdir)
+    assert menu(c, lambda _: "99") == 99
