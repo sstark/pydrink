@@ -1,0 +1,68 @@
+#compdef drink drnk
+
+_drink_kinds () {
+    local objects
+    _message "select kind"
+    objects=(${(s: :)SUPPORTED_KINDS})
+    compadd $objects
+}
+
+_drink_targets () {
+    local targets
+        typeset -aU all_targets
+    _message "select target"
+    targets=(global "$HOME/$DRINKDIR"/*/by-target/*(/:t))
+    compadd $targets
+}
+
+_drink_importable () {
+    _message "files to import"
+    case "$opt_args[-k]"
+    in
+        conf)
+            _files -W ~/$CONFDIR -g ".*(.) .**/*(.)"
+            ;;
+        bin)
+            _files -W ~/$BINDIR -g "*(.)"
+            ;;
+        zfunc)
+            _files -W ~/$ZFUNCDIR -g "*(.)"
+            ;;
+        py)
+            _files -W ~/$PYDIR -g "*(.)"
+            ;;
+        as)
+            _files -W ~/$APPSUPPDIR -g "**/*(.)"
+            ;;
+        *)
+            _files
+            ;;
+    esac
+}
+
+_drinkargs () {
+    _arguments \
+        '-v[be more verbose sometimes]' \
+        '-q[be more quiet sometimes]' \
+        '-d[turn on debugging output]' \
+        '-h[show help]' \
+        '-k[select kind]:kind:_drink_kinds' \
+        '-t[select target]:target:_drink_targets' \
+        - import \
+        '-i[import files into drink]:file(s) to import:_drink_importable' \
+        - link \
+        '-l[generate symlinks for tracked files]' \
+        - show_untracked \
+        '-s[show untracked files]' \
+        - show_changed \
+        '-c[show changed drink objects]' \
+        - git_menu \
+        '-g[git menu]' \
+        - dump \
+        '-u[dump config]'
+}
+
+# Use the command that was used to trigger the completion.
+# Probably either "drnk" or "drink".
+source =($words[1] -u)
+_drinkargs "$@"
