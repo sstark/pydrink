@@ -42,7 +42,7 @@ one of `$XDG_CONFIG_HOME/drinkrc`, `$HOME/.config/drinkrc` or `$HOME/.drinkrc`.
 
 Example drinkrc with the minimal settings:
 
-    TARGET="somestring"
+    TARGET=somestring
     DRINKDIR="some/path/to/gitdir"
 
 For TARGET you should chose a value that is unique to the environment in which
@@ -54,6 +54,9 @@ DRINKDIR must be a path to the directory where your pydrink object repository
 is located. This contains all your files and it will be the place where
 symlinked objects point to. If it is a relative path, $HOME will be prepended
 to it implicitly.
+
+Values can be put in double quotes. Do not put spaces around the '=' if you
+want to use the _drink zsh completion file.
 
 
 'Destination' vs. 'Target'

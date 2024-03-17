@@ -1,7 +1,7 @@
 from pathlib import Path
-from subprocess import run, CalledProcessError
-from pydrink.log import debug, err
+from pydrink.log import debug, err, warn
 from typing_extensions import Any
+from configparser import ConfigParser
 
 
 # Short names to variable names mapping
@@ -57,23 +57,19 @@ class Config():
 
     def sourceConfigFile(self, f: Path):
         '''Read a drink configuration file and populate the config object'''
+        ini = ConfigParser()
+        with open(f) as cf:
+            # Unfortunately the python ini parser wants a section header
+            # although it is not strictly necessary for ini files. We need to
+            # add the section header to make configparser happy.
+            ini.read_string("[drink]\n" + cf.read())
         for v in VARNAMES:
             try:
-                # HACK: Yes, this is silly and sources the config file for
-                # every variable. The assumption is that it is very cheap,
-                # cheaper than importing and using something like the dotenv
-                # module. It is also close to the original shell based
-                # implementation that was simply sourcing the file too.
-                result = run(f"source {f} && echo -n ${v}",
-                             shell=True,
-                             capture_output=True,
-                             text=True)
-                result.check_returncode()
-                if result.stdout:
-                    self.config[v] = result.stdout
-            except CalledProcessError as e:
-                err(f"{e.returncode}\n{result.stderr}")
-                raise
+                # For backwards compatibility allow values to be in double
+                # quotes. (This used to be shell syntax)
+                self.config[v] = ini["drink"][v].strip('"')
+            except KeyError:
+                debug(f"using default value for {v}")
 
     def __getitem__(self, item: str) -> Any:
         if item == "DRINKDIR":
