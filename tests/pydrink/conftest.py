@@ -12,6 +12,11 @@ def tmppath():
 
 
 @pytest.fixture
+def base_repo_path():
+    return Path(tempfile.TemporaryDirectory().name)
+
+
+@pytest.fixture
 def tmpfile():
     return Path(tempfile.NamedTemporaryFile().name)
 
@@ -49,15 +54,32 @@ def drinkrc(tmpfile):
 
 
 @pytest.fixture
-def tracked_drinkrc_and_drinkdir(drinkrc_and_drinkdir):
+def git_base_repo(base_repo_path):
+    base_repo_path.mkdir(parents=True)
+    call(["git", "-C", base_repo_path, "init", "--bare"])
+    return base_repo_path
+
+
+@pytest.fixture
+def tracked_drinkrc_and_drinkdir(drinkrc_and_drinkdir, git_base_repo):
     c = Config(drinkrc_and_drinkdir)
     git = ["git", "-C", str(c["DRINKDIR"])]
-    call(git + ["init"])
+    call(git + ["init", "-b", c["MASTERBRANCH"]])
     call(git + ["add", "."])
     call(git + ["commit", "-m", "test"])
     for remote in ["hostA", "hostB", "hostC"]:
         ref = c["DRINKDIR"] / ".git" / "refs" / "remotes" / remote / "master"
         ref.parent.mkdir(parents=True)
         with open(ref, "w") as f:
-            f.write("45c00db8f531f6ad6414dd4fa048893dd8095ff2\n")
+            f.write("060c2e38b7147abbc8279f90e06d122aaaa72bad\n")
+    call(git + ["config", "remote.base.url", str(git_base_repo)])
+    call(git + [
+        "config", "remote.base.push",
+        f"+refs/heads/*:refs/remotes/{c['TARGET']}/*"
+    ])
+    call(git + [
+        "config",
+        "remote.base.fetch",
+        f"+refs/remotes/*/{c['MASTERBRANCH']}:refs/remotes/*/{c['MASTERBRANCH']}",
+    ])
     return drinkrc_and_drinkdir
