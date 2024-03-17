@@ -48,16 +48,13 @@ def show_untracked_files(c: Config, selected_kind: str = ""):
 def find_drinkrc() -> Path:
     '''Find a drink configuration file and return its path'''
     if xdgch := os.getenv("XDG_CONFIG_HOME"):
-        xdgch_p = Path(xdgch) / CONFIG_FILENAME
-        if xdgch_p.exists():
+        if (xdgch_p := Path(xdgch) / CONFIG_FILENAME).exists():
             return xdgch_p
-    xdgdef_p = Path.home() / ".config" / CONFIG_FILENAME
-    if xdgdef_p.exists():
+    if (xdgdef_p := Path.home() / ".config" / CONFIG_FILENAME).exists():
         return xdgdef_p
-    drinkrc = Path.home() / ("." + CONFIG_FILENAME)
-    if drinkrc.exists():
+    if (drinkrc := Path.home() / ("." + CONFIG_FILENAME)).exists():
         return drinkrc
-    raise NoConfigFound
+    raise NoConfigFound("No drinkrc could be found")
 
 
 def createArgumentParser():
