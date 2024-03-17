@@ -1,5 +1,6 @@
 import inspect
 from pathlib import Path
+from rich import print
 
 DEBUG = False
 

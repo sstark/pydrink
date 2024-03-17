@@ -2,6 +2,8 @@ from pathlib import Path
 import os
 import argparse
 from collections import defaultdict
+from rich.prompt import Prompt
+from rich_argparse import RichHelpFormatter
 
 from pydrink.config import Config, KINDS
 import pydrink.log
@@ -62,7 +64,8 @@ def createArgumentParser():
     parser = argparse.ArgumentParser(
         prog='pydrink',
         description='--- DRaft symlINKs in your home ---',
-        epilog='Please consult the README for more information.')
+        epilog='Please consult the README for more information.',
+        formatter_class=RichHelpFormatter)
     args_main = parser.add_mutually_exclusive_group(required=True)
     args_main.add_argument('-i',
                            '--import',
@@ -131,7 +134,7 @@ def cli():
             return 1
     if args.git:
         try:
-            return git.menu(c, input)
+            return git.menu(c, Prompt.ask)
         except KeyboardInterrupt:
             err("git menu was cancelled")
             return 1

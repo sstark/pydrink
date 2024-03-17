@@ -1,8 +1,9 @@
-from typing import Callable
 from pydrink.log import debug, err
 from pydrink.config import Config
 import sys
+from typing import Callable
 from subprocess import CalledProcessError, call, run
+from rich import print
 
 
 def unclean(c: Config) -> bool:
@@ -49,7 +50,7 @@ def menu(c: Config, input_function: Callable) -> int:
         print(" 7) log -p")
         print()
         try:
-            reply = input_function("git action> ")
+            reply = input_function("[dim]git action[/dim]")
         except EOFError:
             return 0
         debug(f"reply: {reply}")
