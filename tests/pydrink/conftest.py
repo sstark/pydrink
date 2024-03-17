@@ -4,21 +4,27 @@ from pydrink.config import KINDS, Config
 from pydrink.obj import BY_TARGET
 import pytest
 import tempfile
-
+from shutil import rmtree
 
 @pytest.fixture
 def tmppath():
-    return Path(tempfile.TemporaryDirectory().name)
+    p = Path(tempfile.TemporaryDirectory().name)
+    yield p
+    rmtree(p)
 
 
 @pytest.fixture
 def base_repo_path():
-    return Path(tempfile.TemporaryDirectory().name)
+    p = Path(tempfile.TemporaryDirectory().name)
+    yield p
+    rmtree(p)
 
 
 @pytest.fixture
 def tmpfile():
-    return Path(tempfile.NamedTemporaryFile().name)
+    p = Path(tempfile.NamedTemporaryFile().name)
+    yield p
+    p.unlink()
 
 
 @pytest.fixture
