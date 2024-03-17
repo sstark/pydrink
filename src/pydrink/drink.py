@@ -84,6 +84,9 @@ def git_menu(c: Config) -> int:
                 err(f"git returned error {ret}")
             else:
                 ret = 0
+        else:
+            err(f"Invalid menu item selected: {reply}")
+            ret = 99
         # Prevent showing the input prompt again when there is no tty.
         # Even in case of no tty we want to ask for input() above to support
         # things like "drink -g <<<7"
