@@ -64,7 +64,7 @@ def menu(c: Config) -> int:
                 err(f"git returned error {ret}")
             else:
                 ret = 0
-        if reply == "4":
+        elif reply == "4":
             if unclean(c):
                 err("Stopping automerge")
                 continue
