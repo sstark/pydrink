@@ -1,7 +1,23 @@
 from pydrink.log import debug, err
 from pydrink.config import Config
 import sys
-from subprocess import call
+from subprocess import CalledProcessError, call, run
+
+
+def get_branches(c: Config) -> list[str]:
+    '''Return a list of all remote branches found in drink repository'''
+    try:
+        result = run(
+            ["git", "-C",
+             str(c['DRINKDIR']), "branch", "-r", "--no-color"],
+            text=True,
+            capture_output=True)
+        result.check_returncode()
+        if result.stdout:
+            return [x.strip() for x in result.stdout.split("\n") if x]
+    except CalledProcessError as e:
+        err(f"{e.returncode}\n{result.stderr}")
+    return []
 
 
 def menu(c: Config) -> int:
@@ -40,6 +56,9 @@ def menu(c: Config) -> int:
                 err(f"git returned error {ret}")
             else:
                 ret = 0
+        if reply == "4":
+            branches = get_branches(c)
+            debug(f"found branches: {branches}")
         else:
             err(f"Invalid menu item selected: {reply}")
             ret = 99
