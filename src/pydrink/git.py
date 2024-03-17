@@ -35,6 +35,7 @@ def menu(c: Config) -> int:
         print(" 1) quit")
         print(" 2) fetch from base")
         print(" 3) push to base")
+        print(" 4) automerge all remote branches")
         print(" 5) commit -a")
         print(" 6) commit")
         print(" 7) log -p")
@@ -57,8 +58,21 @@ def menu(c: Config) -> int:
             else:
                 ret = 0
         if reply == "4":
+            # TODO: skip if git directory is unclean
+            debug("git fetch from base")
+            ret = call(git_cmd["2"])
+            if ret != 0:
+                err(f"git returned error {ret} when fetching from base")
+                err("Stopping automerge")
+                continue
             branches = get_branches(c)
             debug(f"found branches: {branches}")
+            for branch in branches:
+                ret = call(git + ["merge", branch])
+                if ret != 0:
+                    err(f"error {ret} when trying to merge {branch}")
+                    err("Stopping automerge")
+                    continue
         else:
             err(f"Invalid menu item selected: {reply}")
             ret = 99
