@@ -5,6 +5,7 @@ from pydrink.git import get_branches, menu, unclean
 
 def test_unclean_repo(tracked_drinkrc_and_drinkdir):
     c = Config(tracked_drinkrc_and_drinkdir)
+    assert not unclean(c)
     with open(c["DRINKDIR"] / "bin" / BY_TARGET / "bar" / "obj2", "a") as f:
         f.write("newly added line\n")
     assert unclean(c)
