@@ -6,6 +6,7 @@ import pytest
 import tempfile
 from shutil import rmtree
 
+
 @pytest.fixture
 def tmppath():
     p = Path(tempfile.TemporaryDirectory().name)
@@ -74,7 +75,7 @@ def tracked_drinkrc_and_drinkdir(drinkrc_and_drinkdir, git_base_repo):
     call(git + ["add", "."])
     call(git + ["commit", "-m", "test"])
     for remote in ["hostA", "hostB", "hostC"]:
-        ref = c["DRINKDIR"] / ".git" / "refs" / "remotes" / remote / "master"
+        ref = c["DRINKDIR"] / ".git" / "refs" / "remotes" / remote / c["MASTERBRANCH"]
         ref.parent.mkdir(parents=True)
         with open(ref, "w") as f:
             f.write("060c2e38b7147abbc8279f90e06d122aaaa72bad\n")
