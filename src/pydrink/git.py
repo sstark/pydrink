@@ -1,3 +1,4 @@
+from typing import Callable
 from pydrink.log import debug, err
 from pydrink.config import Config
 import sys
@@ -27,7 +28,7 @@ def get_branches(c: Config) -> list[str]:
     return []
 
 
-def menu(c: Config) -> int:
+def menu(c: Config, input_function: Callable) -> int:
     '''Interactive menu to run git commands on drink objects'''
     git = ["git", "-C", str(c["DRINKDIR"])]
     git_cmd = {
@@ -48,7 +49,7 @@ def menu(c: Config) -> int:
         print(" 7) log -p")
         print()
         try:
-            reply = input("git action> ")
+            reply = input_function("git action> ")
         except EOFError:
             return 0
         debug(f"reply: {reply}")

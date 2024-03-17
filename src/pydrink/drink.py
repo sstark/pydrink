@@ -131,7 +131,7 @@ def cli():
             return 1
     if args.git:
         try:
-            return git.menu(c)
+            return git.menu(c, input)
         except KeyboardInterrupt:
             err("git menu was cancelled")
             return 1
