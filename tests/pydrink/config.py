@@ -33,3 +33,8 @@ def test_dump_config(drinkrc):
     ]
     assert c_str_list == wanted_str_list
 
+
+def test_kindDir(drinkrc):
+    c = Config(drinkrc)
+    assert c.kindDir("conf") == Path.home()
+    assert c.kindDir("bin") == Path.home() / "bin"
