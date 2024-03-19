@@ -111,6 +111,7 @@ class DrinkObject():
 
         # 1)
         for kind in KINDS:
+            rkd = c.kindDir(kind, relative=True)
             # 1.1)
             if self.p.is_relative_to(c.kindDir(kind)):
                 debug(f"{self.p} is inside kinddir {kind}")
@@ -123,14 +124,17 @@ class DrinkObject():
                     # FIXME: In future versions drink must not be a symlink
                     # inside the repository
                     if resolved_p.is_symlink() and self.p.name != "drink":
-                        raise InvalidDrinkObject("No links allowed in kindDirs")
+                        raise InvalidDrinkObject(
+                            "No links allowed in kindDirs")
                     debug(f"Check if {self.p} is a directory")
                     if resolved_p.is_dir():
                         # TODO: Implement recursing into directories
                         # which is most relevant for kind "conf"
-                        raise InvalidDrinkObject("Directory recursion not implemented")
+                        raise InvalidDrinkObject(
+                            "Directory recursion not implemented")
                     for target in c.managedTargets():
-                        if resolved_p == c["DRINKDIR"] / c.kindDir(kind, relative=True) / BY_TARGET / target / self.p.name:
+                        if resolved_p == c[
+                                "DRINKDIR"] / rkd / BY_TARGET / target / self.p.name:
                             self.relpath = self.p.name
                             if target == c["TARGET"]:
                                 self.state = ObjectState.ManagedHere
@@ -139,18 +143,16 @@ class DrinkObject():
                             self.target = c["TARGET"]
                             self.kind = kind
                             break
-                    if resolved_p == c["DRINKDIR"] / c.kindDir(kind, relative=True) / self.p.name:
+                    if resolved_p == c["DRINKDIR"] / rkd / self.p.name:
                         self.relpath = self.p.name
                         self.state = ObjectState.ManagedOther
                         self.target = GLOBAL_TARGET
                         self.kind = kind
                         break
 
-
         # 2)
         if self.p.is_relative_to(c["DRINKDIR"]):
             if self.p.is_symlink():
                 raise InvalidDrinkObject(
                     "No symlinks allowed inside drink repository")
-            self.relpath = self.p.relative_to(c["DRINKDIR"]) 
-
+            self.relpath = self.p.relative_to(c["DRINKDIR"])

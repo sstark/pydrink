@@ -84,7 +84,6 @@ class Config():
            with relative=True return relative path (e. g. "bin").
         '''
         d = self.config[KINDS[kind]]
-        debug(f"kinddir for {kind} is: {d}")
         if relative:
             return Path(d)
         return Path.home() / d
