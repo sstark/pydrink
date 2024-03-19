@@ -22,10 +22,13 @@ def get_branches(c: Config) -> list[str]:
             text=True,
             capture_output=True)
         result.check_returncode()
+        if result.stderr:
+            err(f"{result.returncode}\n{result.stderr}")
+            return []
         if result.stdout:
             return [x.strip() for x in result.stdout.split("\n") if x]
     except CalledProcessError as e:
-        err(f"{e.returncode}\n{result.stderr}")
+        err(e.returncode)
     return []
 
 
