@@ -1,5 +1,7 @@
 {
     "executionEnvironments": [
         {"root": "src"}
-    ]
+    ],
+  "reportCertainlyUnboundVariable": "error",
+  "reportPossiblyUnboundVariable": "information"
 }
