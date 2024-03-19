@@ -8,7 +8,7 @@ from rich_argparse import RichHelpFormatter
 from pydrink.config import Config, KINDS
 import pydrink.log
 from pydrink.log import warn, err, debug
-from pydrink.obj import GLOBAL_TARGET
+from pydrink.obj import GLOBAL_TARGET, DrinkObject
 import pydrink.git as git
 
 CONFIG_FILENAME = "drinkrc"
@@ -20,8 +20,10 @@ class NoConfigFound(Exception):
     pass
 
 
-def tracking_status(c: Config, kind: str, p: Path) -> int:
-    debug(f"target: {c['TARGET']}, kind: {kind}, file: {p}")
+def tracking_status(c: Config, p: Path) -> int:
+    debug(f"target: {c['TARGET']}, path: {p}")
+    o = DrinkObject(c, p)
+    print(o)
     return 0
 
 
@@ -31,7 +33,7 @@ def show_untracked_files(c: Config, selected_kind: str = ""):
     pat["conf"] = ".*"
 
     for kind, varname in KINDS.items():
-        targetdir = c[varname]
+        targetdir = Path.home() / c[varname]
         # Skip the others, if user has selected only a certain kind
         if selected_kind and selected_kind != kind:
             warn(f"skipping {kind}")
@@ -45,7 +47,7 @@ def show_untracked_files(c: Config, selected_kind: str = ""):
                 )
                 continue
             # TODO: Return something instead of printing directly
-            tracking_status(c, kind, rel_path)
+            tracking_status(c, f)
 
 
 def find_drinkrc() -> Path:
