@@ -79,10 +79,15 @@ class Config():
                 return Path(self.config[item])
         return self.config[item]
 
-    def kindDir(self, kind: str) -> Path:
-        '''Return the symlink directory for a given kind'''
-        debug(f"kinddir for {kind} is: {self.config[KINDS[kind]]}")
-        return Path(Path.home() / self.config[KINDS[kind]])
+    def kindDir(self, kind: str, relative=False) -> Path:
+        '''Return the symlink directory for a given kind
+           with relative=True return relative path (e. g. "bin").
+        '''
+        d = self.config[KINDS[kind]]
+        debug(f"kinddir for {kind} is: {d}")
+        if relative:
+            return Path(d)
+        return Path.home() / d
 
     def managedTargets(self):
         # All possible values of target as of now
