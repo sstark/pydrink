@@ -91,7 +91,6 @@ class Config():
     def managedTargets(self):
         # All possible values of target as of now
         dd = Path(self["DRINKDIR"])
-        debug(dd)
         target_glob = "*/" + BY_TARGET + "/*"
         mt = set([x.name for x in dd.glob(target_glob)])
         debug(mt)

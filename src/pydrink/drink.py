@@ -23,7 +23,9 @@ class NoConfigFound(Exception):
 def tracking_status(c: Config, p: Path) -> int:
     debug(f"target: {c['TARGET']}, path: {p}")
     o = DrinkObject(c, p)
-    print(o)
+    debug(o)
+    x = DrinkObject(c, Path("/home/seb/git/drink/bin/blabla"))
+    debug(x)
     return 0
 
 
