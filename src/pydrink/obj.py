@@ -167,10 +167,11 @@ class DrinkObject():
                     "Directories can not be drink objects")
 
             for kind in KINDS:
-                kd = c.kindDir(kind)
-                if self.p.is_relative_to(kd):
-                    debug(f"{self.p} is relative to {kd}")
-                    subpath = self.p.relative_to(kd)
+                repo_kd = c["DRINKDIR"] / kind
+                debug(f"{kind} -> {repo_kd}")
+                if self.p.is_relative_to(repo_kd):
+                    debug(f"{self.p} is relative to {repo_kd}")
+                    subpath = self.p.relative_to(repo_kd)
                     for target in c.managedTargets():
                         if subpath == Path(BY_TARGET) / target / subpath:
                             self.relpath = subpath
