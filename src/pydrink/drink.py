@@ -24,8 +24,8 @@ def tracking_status(c: Config, p: Path) -> int:
     debug(f"target: {c['TARGET']}, path: {p}")
     o = DrinkObject(c, p)
     debug(o)
-    x = DrinkObject(c, Path("/home/seb/git/drink/bin/blabla"))
-    debug(x)
+    o = DrinkObject(c, Path("/home/seb/git/drink/bin/blabla"))
+    debug(o)
     return 0
 
 

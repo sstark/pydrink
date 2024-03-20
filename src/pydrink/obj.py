@@ -3,7 +3,7 @@ from pathlib import Path
 from textwrap import dedent
 
 from pydrink.config import KINDS, BY_TARGET, Config
-from pydrink.log import debug
+from pydrink.log import debug, warn
 
 GLOBAL_TARGET = "global"
 
@@ -21,7 +21,7 @@ class InvalidDrinkObject(Exception):
 class ObjectState(Enum):
     Unmanaged = 1
     ManagedHere = 2
-    ManageHerePending = 3
+    ManagePending = 3
     ManagedOther = 4
 
 
@@ -175,13 +175,21 @@ class DrinkObject():
                     for target in c.managedTargets():
                         if subpath == Path(BY_TARGET) / target / subpath:
                             self.relpath = subpath
-                            if target == c["TARGET"]:
-                                self.state = ObjectState.ManagedHere
-                            else:
-                                self.state = ObjectState.ManagedOther
                             self.target = c["TARGET"]
                             self.kind = kind
-                            break
+                            potential_link = c.kindDir(kind) / subpath
+                            debug(f"potential link: {potential_link}")
+                            if potential_link.is_symlink():
+                                if target == c["TARGET"]:
+                                    self.state = ObjectState.ManagedHere
+                                else:
+                                    self.state = ObjectState.ManagedOther
+                                break
+                            else:
+                                self.state = ObjectState.ManagePending
+                            if potential_link.exists():
+                                warn(f"{potential_link} will be overwritten")
+
                     self.relpath = subpath
                     self.state = ObjectState.ManagedOther
                     self.target = GLOBAL_TARGET
