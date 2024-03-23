@@ -1,6 +1,7 @@
 from enum import Enum
 from pathlib import Path
 from textwrap import dedent
+from typing_extensions import Optional
 
 from pydrink.config import KINDS, BY_TARGET, Config
 from pydrink.log import debug, warn
@@ -65,10 +66,10 @@ class DrinkObject():
         # it was created.
         self.p = p
         # This is the path relative to kindDir
-        self.relpath = None
-        self.state = None
-        self.kind = None
-        self.target = None
+        self.relpath: Optional[Path] = None
+        self.state: Optional[ObjectState] = None
+        self.kind: Optional[str] = None
+        self.target: Optional[str] = None
         self.updateState(c)
 
     def __str__(self):
@@ -137,7 +138,7 @@ class DrinkObject():
                     for target in c.managedTargets():
                         if resolved_p == c[
                                 "DRINKDIR"] / kind / BY_TARGET / target / self.p.name:
-                            self.relpath = self.p.name
+                            self.relpath = Path(self.p.name)
                             if target == c["TARGET"]:
                                 self.state = ObjectState.ManagedHere
                             else:
@@ -148,7 +149,7 @@ class DrinkObject():
                     debug(f"Check if {resolved_p} is global")
                     debug(c["DRINKDIR"] / kind / self.p.name)
                     if resolved_p == c["DRINKDIR"] / kind / self.p.name:
-                        self.relpath = self.p.name
+                        self.relpath = Path(self.p.name)
                         self.state = ObjectState.ManagedOther
                         self.target = GLOBAL_TARGET
                         self.kind = kind
@@ -173,6 +174,7 @@ class DrinkObject():
                     debug(f"{self.p} is relative to {repo_kd}")
                     subpath = self.p.relative_to(repo_kd)
                     for target in c.managedTargets():
+                        # FIXME: this if does not seem to make sense
                         if subpath == Path(BY_TARGET) / target / subpath:
                             self.relpath = subpath
                             self.target = c["TARGET"]
@@ -189,9 +191,15 @@ class DrinkObject():
                                 self.state = ObjectState.ManagePending
                             if potential_link.exists():
                                 warn(f"{potential_link} will be overwritten")
-
                     self.relpath = subpath
-                    self.state = ObjectState.ManagedOther
                     self.target = GLOBAL_TARGET
                     self.kind = kind
+                    potential_link = c.kindDir(kind) / subpath
+                    debug(f"potential link: {potential_link}")
+                    if potential_link.is_symlink():
+                        self.state = ObjectState.ManagedOther
+                    else:
+                        self.state = ObjectState.ManagePending
+                    if potential_link.exists():
+                        warn(f"{potential_link} will be overwritten")
                     break
