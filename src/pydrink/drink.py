@@ -142,3 +142,6 @@ def cli():
         except KeyboardInterrupt:
             err("git menu was cancelled")
             return 1
+    if args.changed:
+        # TODO: Implement verbose version (include diff in output)
+        print("\n".join(git.get_changed_files(c)))

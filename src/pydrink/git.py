@@ -32,6 +32,25 @@ def get_branches(c: Config) -> list[str]:
     return []
 
 
+def get_changed_files(c: Config) -> list[str]:
+    '''Return a list of all objects with uncommitted changes'''
+    try:
+        result = run(
+            ["git", "-C",
+             str(c['DRINKDIR']), "diff-files", "--name-only", "--no-color"],
+            text=True,
+            capture_output=True)
+        result.check_returncode()
+        if result.stderr:
+            err(f"{result.returncode}\n{result.stderr}")
+            return []
+        if result.stdout:
+            return [x.strip() for x in result.stdout.split("\n") if x]
+    except CalledProcessError as e:
+        err(e.returncode)
+    return []
+
+
 def menu(c: Config, input_function: Callable) -> int:
     '''Interactive menu to run git commands on drink objects'''
     git = ["git", "-C", str(c["DRINKDIR"])]
