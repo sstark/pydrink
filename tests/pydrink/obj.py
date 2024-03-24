@@ -35,15 +35,20 @@ def test_detect_target(tracked_drinkrc_and_drinkdir, obj_p, target):
     assert obj.target == target
 
 
-@pytest.mark.xfail
-@pytest.mark.parametrize(
-    "obj_p, state",
-    [(Path("bin") / BY_TARGET / "foo" / "obj1", ObjectState.ManagedHere),
-     (Path("bin") / "obj2", ObjectState.ManagedOther),
-     (Path("conf") / BY_TARGET / "bapf" / "obj4", ObjectState.ManagedHere)])
-def test_detect_state(tracked_drinkrc_and_drinkdir, obj_p, state):
+@pytest.mark.parametrize("obj_p, state", [
+    # FIXME: We should rather check if we are on the correct target
+    (Path("bin") / BY_TARGET / "singold" / "obj1", ObjectState.ManagedPending),
+    (Path("bin") / "obj2", ObjectState.ManagedOther),
+    (Path("conf") / BY_TARGET / "bapf" / "obj4", ObjectState.ManagedOther)
+])
+def test_detect_state(tmppath, monkeypatch, tracked_drinkrc_and_drinkdir,
+                      obj_p, state):
+    def mock_home():
+        return tmppath
+    monkeypatch.setattr(Path, "home", mock_home)
     c = Config(tracked_drinkrc_and_drinkdir)
     obj = DrinkObject(c, c["DRINKDIR"] / obj_p)
+    obj.link()
     assert obj.state == state
 
 

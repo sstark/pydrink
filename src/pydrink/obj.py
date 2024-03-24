@@ -172,3 +172,12 @@ class DrinkObject():
             return
         if self.state == ObjectState.Unmanaged:
             shutil.copy(str(self.get_linkpath()), str(self.get_repopath()))
+
+    def link(self):
+        if self.state == ObjectState.ManagedPending:
+            fromm = self.get_linkpath().absolute()
+            to = self.get_repopath().absolute()
+            debug(f"linking {fromm} -> {to}")
+            fromm.symlink_to(to)
+        self.update()
+        self.check()

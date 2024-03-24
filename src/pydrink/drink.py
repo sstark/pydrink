@@ -145,3 +145,6 @@ def cli():
     if args.changed:
         # TODO: Implement verbose version (include diff in output)
         print("\n".join(git.get_changed_files(c)))
+    if args.link:
+        o = DrinkObject(c, Path("/home/seb/git/drink/bin/by-target/singold/blabla"))
+        o.link()
