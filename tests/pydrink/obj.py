@@ -16,10 +16,9 @@ def test_detect_relpath(tracked_drinkrc_and_drinkdir, obj_p, relpath):
 
 
 @pytest.mark.parametrize(
-    "obj_p, kind",
-    [(Path("bin") / BY_TARGET / "foo" / "obj1", "bin"),
-     (Path("bin") / "obj2", "bin"),
-     (Path("conf") / BY_TARGET / "bapf" / "obj4", "conf")])
+    "obj_p, kind", [(Path("bin") / BY_TARGET / "foo" / "obj1", "bin"),
+                    (Path("bin") / "obj2", "bin"),
+                    (Path("conf") / BY_TARGET / "bapf" / "obj4", "conf")])
 def test_detect_kind(tracked_drinkrc_and_drinkdir, obj_p, kind):
     c = Config(tracked_drinkrc_and_drinkdir)
     obj = DrinkObject(c, c["DRINKDIR"] / obj_p)
@@ -27,10 +26,9 @@ def test_detect_kind(tracked_drinkrc_and_drinkdir, obj_p, kind):
 
 
 @pytest.mark.parametrize(
-    "obj_p, target",
-    [(Path("bin") / BY_TARGET / "foo" / "obj1", "foo"),
-     (Path("bin") / "obj2", GLOBAL_TARGET),
-     (Path("conf") / BY_TARGET / "bapf" / "obj4", "bapf")])
+    "obj_p, target", [(Path("bin") / BY_TARGET / "foo" / "obj1", "foo"),
+                      (Path("bin") / "obj2", GLOBAL_TARGET),
+                      (Path("conf") / BY_TARGET / "bapf" / "obj4", "bapf")])
 def test_detect_target(tracked_drinkrc_and_drinkdir, obj_p, target):
     c = Config(tracked_drinkrc_and_drinkdir)
     obj = DrinkObject(c, c["DRINKDIR"] / obj_p)
@@ -62,5 +60,15 @@ def test_get_linkpath(tracked_drinkrc_and_drinkdir, obj_p, str_p):
     assert str(obj.get_linkpath()) == str(str_p)
 
 
-def test_get_repopath():
-    pass
+@pytest.mark.parametrize("obj_p", [
+    Path("bin") / BY_TARGET / "foo" / "obj1",
+    Path("bin") / "obj2",
+    Path("conf") / BY_TARGET / "bapf" / "obj4"
+])
+def test_get_repopath(tracked_drinkrc_and_drinkdir, obj_p):
+    c = Config(tracked_drinkrc_and_drinkdir)
+    obj = DrinkObject(c, c["DRINKDIR"] / obj_p)
+    print(obj)
+    # We should get out what we put in, except that get_repopath is relative
+    assert obj.get_repopath() == obj.p
+    assert obj.get_repopath() == c["DRINKDIR"] / obj_p

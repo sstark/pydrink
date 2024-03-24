@@ -157,7 +157,7 @@ class DrinkObject():
             return self.config["DRINKDIR"] / self.kind / self.relpath
         else:
             return self.config[
-                "DRINKDIR"] / BY_TARGET / self.target / self.relpath
+                "DRINKDIR"] / self.kind / BY_TARGET / self.target / self.relpath
 
     def import_object(self):
         if self.state == ObjectState.ManagedHere:
