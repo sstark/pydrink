@@ -5,7 +5,7 @@ from typing import Optional
 import shutil
 
 from pydrink.config import KINDS, BY_TARGET, Config
-from pydrink.log import debug, warn, err
+from pydrink.log import debug, err
 
 GLOBAL_TARGET = "global"
 
@@ -61,7 +61,6 @@ class DrinkObject():
 
         '''
         self.config: Config = c
-        # TODO: check that path is absolute
         # Keep this path as a reminder how the object was referred to when
         # it was created.
         self.p = p
@@ -70,7 +69,7 @@ class DrinkObject():
         self.state: Optional[ObjectState] = None
         self.kind: str = ""
         self.target: Optional[str] = None
-        self.update_state(c)
+        self.update()
         self.check()
 
     def __str__(self):
@@ -93,35 +92,54 @@ class DrinkObject():
     def is_in_drinkdir(self) -> bool:
         return self.p.is_relative_to(self.config["DRINKDIR"])
 
-    def detect_kind(self) -> str:
+    def detect_relpath(self) -> Path:
+        '''Return the part of the object path that is below the
+           target node. Target node could be absent.
+        '''
         c = self.config
-        for kind in KINDS:
-            if self.p.is_relative_to(
-                    c.kindDir(kind)) and not self.p.is_relative_to(
-                        c["DRINKDIR"]):
-                debug(f"{self.p} is inside kinddir {kind}")
-                return kind
-        return ""
+        relpath = self.p.relative_to(c["DRINKDIR"])
+        debug(f"relpath: {relpath}")
+        if relpath.parts[1] == BY_TARGET:
+            debug(f"{relpath} has BY_TARGET")
+            return Path(*relpath.parts[3:])
+        else:
+            debug(f"{relpath} is global")
+            return Path(*relpath.parts[1:])
+
+    def detect_kind(self) -> str:
+        '''Return the kind of the object as derived from the path'''
+        c = self.config
+        kind = self.p.relative_to(c["DRINKDIR"]).parts[0]
+        if kind in KINDS:
+            return kind
+        else:
+            raise InvalidKind
 
     def detect_target(self) -> str:
-        # if not self.is_in_repo()
-        # c = self.config
-        # for target in c.managedTargets():
-        #     if
-        return ""
+        '''Return the target of the object as derived from the path
+           If there is no target, return the global target
+        '''
+        c = self.config
+        parts = self.p.relative_to(c["DRINKDIR"]).parts
+        if parts[1] == BY_TARGET:
+            target = parts[2]
+            debug(f"target is {target}")
+            return target
+        else:
+            return GLOBAL_TARGET
 
-    def update_state(self, c: Config):
-        pass
+    def update(self):
+        if not self.p.is_absolute():
+            raise InvalidDrinkObject(f"{self.p} is not absolute")
+        if self.p.is_symlink():
+            raise InvalidDrinkObject(f"{self.p} is a symlink")
+        self.relpath = self.detect_relpath()
+        self.kind = self.detect_kind()
+        self.target = self.detect_target()
 
     def get_linkpath(self) -> Optional[Path]:
         '''Return the path that this objects is or should be linked to'''
-        if self.target == GLOBAL_TARGET:
-            return self.config.kindDir(self.kind) / self.relpath
-        elif self.target:
-            return self.config.kindDir(
-                self.kind) / BY_TARGET / self.target / self.relpath
-        else:
-            return None
+        return self.config.kindDir(self.kind) / self.relpath
 
     def get_repopath(self) -> Optional[Path]:
         '''Return the path that this object has or should have inside the repo'''
