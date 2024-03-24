@@ -66,11 +66,13 @@ class DrinkObject():
         # it was created.
         self.p = p
         # This is the path relative to kindDir
-        self.relpath: Optional[Path] = None
+        self.relpath: Path
         self.state: Optional[ObjectState] = None
-        self.kind: Optional[str] = None
+        self.kind: str = ""
         self.target: Optional[str] = None
+        self.config: Config = c
         self.updateState(c)
+        self.check_complete()
 
     def __str__(self):
         return dedent(f"""\
@@ -79,6 +81,11 @@ class DrinkObject():
               relpath: {self.relpath}
               kind: {self.kind}
               target: {self.target}""")
+
+    def check_complete(self):
+        try: self.relpath, self.state, self.kind, self.target
+        except AttributeError as e:
+            raise InvalidDrinkObject(f"DrinkObject is incomplete: {e}")
 
     def updateState(self, c: Config):
         '''Update state of the drink object from disk'''
