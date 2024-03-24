@@ -1,6 +1,6 @@
 from pathlib import Path
 from pydrink.config import Config, BY_TARGET
-from pydrink.obj import DrinkObject
+from pydrink.obj import GLOBAL_TARGET, DrinkObject
 import pytest
 
 
@@ -26,8 +26,15 @@ def test_detect_kind(tracked_drinkrc_and_drinkdir, obj_p, kind):
     assert obj.kind == kind
 
 
-def test_detect_target():
-    pass
+@pytest.mark.parametrize(
+    "obj_p, target",
+    [(Path("bin") / BY_TARGET / "foo" / "obj1", "foo"),
+     (Path("bin") / "obj2", GLOBAL_TARGET),
+     (Path("conf") / BY_TARGET / "bapf" / "obj4", "bapf")])
+def test_detect_target(tracked_drinkrc_and_drinkdir, obj_p, target):
+    c = Config(tracked_drinkrc_and_drinkdir)
+    obj = DrinkObject(c, c["DRINKDIR"] / obj_p)
+    assert obj.target == target
 
 
 def test_detect_state():
