@@ -1,7 +1,7 @@
 from pydrink.log import debug, err
 from pydrink.config import Config
 import sys
-from typing import Callable
+from typing import Callable, Dict
 from subprocess import CalledProcessError, call, run
 from rich import print
 
@@ -53,8 +53,8 @@ def get_changed_files(c: Config) -> list[str]:
 
 def menu(c: Config, input_function: Callable) -> int:
     '''Interactive menu to run git commands on drink objects'''
-    git = ["git", "-C", str(c["DRINKDIR"])]
-    git_cmd = {
+    git: list[str] = ["git", "-C", str(c["DRINKDIR"])]
+    git_cmd: Dict[str, list[str]] = {
         "2": git + ["fetch", str(c["DRINKBASE"])],
         "3": git + ["push", str(c["DRINKBASE"])],
         "5": git + ["commit", "-a"],
@@ -62,7 +62,9 @@ def menu(c: Config, input_function: Callable) -> int:
         "7": git + ["log", "-p"],
         "8": git + ["diff"],
     }
+    change_actions = ["diff", "commit", "checkout", "add"]
     while True:
+        changed_files = get_changed_files(c)
         print()
         print(" 1) quit")
         print(" 2) fetch from base")
@@ -72,7 +74,15 @@ def menu(c: Config, input_function: Callable) -> int:
         print(" 6) commit")
         print(" 7) log -p")
         print(" 8) diff")
+        i: int = 10
+        for change in changed_files:
+            print(f" ------ ({change}) ------")
+            for action in change_actions:
+                print(f"{i:>2}) {action} {change}")
+                git_cmd[str(i)] = git + [action] + [change]
+                i += 1
         print()
+        debug(f"git_cmd: {git_cmd}")
         try:
             reply = input_function("[dim]git action[/dim]")
         except EOFError:
