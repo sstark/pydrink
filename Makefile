@@ -7,10 +7,10 @@ DEBUG_PORT = 5678
 all: test typecheck
 
 test:
-	@pytest
+	@poetry run pytest
 
 typecheck:
-	@mypy
+	@poetry run mypy
 
 debug:
 	python -m debugpy --wait-for-client --listen 127.0.0.1:$(DEBUG_PORT) \
