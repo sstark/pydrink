@@ -41,6 +41,7 @@ def menu(c: Config, input_function: Callable) -> int:
         "5": git + ["commit", "-a"],
         "6": git + ["commit"],
         "7": git + ["log", "-p"],
+        "8": git + ["diff"],
     }
     while True:
         print()
@@ -51,6 +52,7 @@ def menu(c: Config, input_function: Callable) -> int:
         print(" 5) commit -a")
         print(" 6) commit")
         print(" 7) log -p")
+        print(" 8) diff")
         print()
         try:
             reply = input_function("[dim]git action[/dim]")
