@@ -129,7 +129,7 @@ class DrinkObject():
             return GLOBAL_TARGET
 
     def detect_state(self) -> ObjectState:
-        if self.get_linkpath().exists():
+        if self.get_linkpath().is_symlink():
             if self.target == self.config["TARGET"]:
                 return ObjectState.ManagedHere
             else:
@@ -174,10 +174,14 @@ class DrinkObject():
             shutil.copy(str(self.get_linkpath()), str(self.get_repopath()))
 
     def link(self):
+        if self.target != self.config["TARGET"] and self.target != GLOBAL_TARGET:
+            debug(f"Object target {self.target} is not current nor global target")
+            return
         if self.state == ObjectState.ManagedPending:
             fromm = self.get_linkpath().absolute()
             to = self.get_repopath().absolute()
             debug(f"linking {fromm} -> {to}")
             fromm.symlink_to(to)
+            print(f"{fromm} -> {to}")
         self.update()
         self.check()

@@ -36,10 +36,9 @@ def test_detect_target(tracked_drinkrc_and_drinkdir, obj_p, target):
 
 
 @pytest.mark.parametrize("obj_p, state", [
-    # FIXME: We should rather check if we are on the correct target
-    (Path("bin") / BY_TARGET / "singold" / "obj1", ObjectState.ManagedPending),
+    (Path("bin") / BY_TARGET / "singold" / "obj1", ObjectState.ManagedHere),
     (Path("bin") / "obj2", ObjectState.ManagedOther),
-    (Path("conf") / BY_TARGET / "bapf" / "obj4", ObjectState.ManagedOther)
+    (Path("conf") / BY_TARGET / "bapf" / "obj4", ObjectState.ManagedPending)
 ])
 def test_detect_state(tmppath, monkeypatch, tracked_drinkrc_and_drinkdir,
                       obj_p, state):

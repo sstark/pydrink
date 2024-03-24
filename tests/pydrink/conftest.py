@@ -34,7 +34,7 @@ def drinkdir(tmppath):
         (tmppath / kind).mkdir(parents=True)
     (tmppath / "bin" / BY_TARGET / "foo").mkdir(parents=True)
     (tmppath / "bin" / BY_TARGET / "foo" / "obj1").touch()
-    (tmppath / "bin" / "obj2").touch()
+    (tmppath / "bin" / "objx").touch()
     (tmppath / "bin" / "obj3").touch()
     (tmppath / "bin" / BY_TARGET / "bar").mkdir(parents=True)
     (tmppath / "bin" / BY_TARGET / "bar" / "obj2").touch()
