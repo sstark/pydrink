@@ -18,3 +18,7 @@ debug:
 
 shell:
 	poetry shell
+
+clean:
+	rm -rf dist
+	find . -type d -name __pycache__ -print0 | xargs -0 rm -rf
