@@ -3,14 +3,23 @@ MAKEFLAGS += --no-print-directory
 PROGRAM := drnk
 PROGRAM_FULLPATH := $(shell which $(PROGRAM) 2>/dev/null)
 DEBUG_PORT = 5678
+VERBOSE =
 
 all: test typecheck
 
 test:
+ifdef VERBOSE
+	poetry run pytest -vvv
+else
 	@poetry run pytest
+endif
 
 typecheck:
+ifdef VERBOSE
+	poetry run mypy
+else
 	@poetry run mypy
+endif
 
 debug:
 	python -m debugpy --wait-for-client --listen 127.0.0.1:$(DEBUG_PORT) \
