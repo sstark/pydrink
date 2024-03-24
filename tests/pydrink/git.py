@@ -41,3 +41,25 @@ def test_git_menu_items(tracked_drinkrc_and_drinkdir, test_input, expected):
     sys.stdin.isatty = lambda: False
     c = Config(tracked_drinkrc_and_drinkdir)
     assert menu(c, lambda _: test_input) == expected
+
+
+def test_menu_with_changed_files(capsys, tracked_drinkrc_and_drinkdir):
+    c = Config(tracked_drinkrc_and_drinkdir)
+    changes_pre = get_changed_files(c)
+    assert changes_pre == []
+    changed_objects = [(Path("bin") / BY_TARGET / "foo" / "obj1"),
+                       (Path("bin") / "obj3"),
+                       (Path("conf") / BY_TARGET / "bapf" / "obj4")]
+    sys.stdin.isatty = lambda: False
+    for p in changed_objects:
+        with open(c['DRINKDIR'] / p, 'w') as f:
+            f.write("something")
+    # Here we test that after "git adding" a change from the git menu
+    # we get a different result when doing it a second time, because
+    # the menu numbering as changed.
+    assert menu(c, lambda _: "13") == 0
+    captured = capsys.readouterr()
+    assert captured.out.split('\n')[10] == "10) diff bin/by-target/foo/obj1"
+    assert menu(c, lambda _: "13") == 0
+    captured = capsys.readouterr()
+    assert captured.out.split('\n')[10] == "10) diff bin/obj3"
