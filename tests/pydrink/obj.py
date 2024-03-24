@@ -15,8 +15,15 @@ def test_detect_relpath(tracked_drinkrc_and_drinkdir, obj_p, relpath):
     assert obj.relpath == relpath
 
 
-def test_detect_kind():
-    pass
+@pytest.mark.parametrize(
+    "obj_p, kind",
+    [(Path("bin") / BY_TARGET / "foo" / "obj1", "bin"),
+     (Path("bin") / "obj2", "bin"),
+     (Path("conf") / BY_TARGET / "bapf" / "obj4", "conf")])
+def test_detect_kind(tracked_drinkrc_and_drinkdir, obj_p, kind):
+    c = Config(tracked_drinkrc_and_drinkdir)
+    obj = DrinkObject(c, c["DRINKDIR"] / obj_p)
+    assert obj.kind == kind
 
 
 def test_detect_target():
