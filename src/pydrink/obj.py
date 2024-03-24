@@ -2,9 +2,10 @@ from enum import Enum
 from pathlib import Path
 from textwrap import dedent
 from typing import Optional
+import shutil
 
 from pydrink.config import KINDS, BY_TARGET, Config
-from pydrink.log import debug, warn
+from pydrink.log import debug, warn, err
 
 GLOBAL_TARGET = "global"
 
@@ -210,3 +211,34 @@ class DrinkObject():
                     if potential_link.exists():
                         warn(f"{potential_link} will be overwritten")
                     break
+
+    def get_linkpath(self) -> Optional[Path]:
+        '''Return the path that this objects is or should be linked to'''
+        if self.target == GLOBAL_TARGET:
+            return self.config.kindDir(self.kind) / self.relpath
+        elif self.target:
+            return self.config.kindDir(self.kind) / BY_TARGET / self.target / self.relpath
+        else:
+            return None
+
+    def get_repopath(self) -> Optional[Path]:
+        '''Return the path that this object has or should have inside the repo'''
+        if self.target == GLOBAL_TARGET:
+            return self.config["DRINKDIR"] / self.kind / self.relpath
+        elif self.target:
+            return self.config["DRINKDIR"] / BY_TARGET / self.target / self.relpath
+        else:
+            return None
+
+    def import_object(self):
+        if self.state == ObjectState.ManagedHere:
+            err(f"{self} is already managed.")
+            return
+        if self.state == ObjectState.ManagedOther:
+            err(f"{self} is already managed in other target.")
+            return
+        if self.state == ObjectState.ManagePending:
+            err(f"{self} is already managed, but not linked yet. Run drink -l.")
+            return
+        if self.state == ObjectState.Unmanaged:
+            shutil.copy(str(self.get_linkpath()), str(self.get_repopath()))
