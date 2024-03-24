@@ -40,10 +40,10 @@ def test_detect_target(tracked_drinkrc_and_drinkdir, obj_p, target):
     (Path("bin") / "obj2", ObjectState.ManagedOther),
     (Path("conf") / BY_TARGET / "bapf" / "obj4", ObjectState.ManagedPending)
 ])
-def test_detect_state(tmppath, monkeypatch, tracked_drinkrc_and_drinkdir,
+def test_detect_state(fake_home, monkeypatch, tracked_drinkrc_and_drinkdir,
                       obj_p, state):
     def mock_home():
-        return tmppath
+        return fake_home
     monkeypatch.setattr(Path, "home", mock_home)
     c = Config(tracked_drinkrc_and_drinkdir)
     obj = DrinkObject(c, c["DRINKDIR"] / obj_p)

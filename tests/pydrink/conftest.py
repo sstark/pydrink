@@ -15,6 +15,16 @@ def tmppath():
 
 
 @pytest.fixture
+def fake_home():
+    p = Path(tempfile.TemporaryDirectory().name)
+    p.mkdir()
+    (p / "bin").mkdir()
+    (p / "zfunc").mkdir()
+    yield p
+    rmtree(p)
+
+
+@pytest.fixture
 def base_repo_path():
     p = Path(tempfile.TemporaryDirectory().name)
     yield p
