@@ -23,7 +23,7 @@ class InvalidDrinkObject(Exception):
 class ObjectState(Enum):
     Unmanaged = 1
     ManagedHere = 2
-    ManagePending = 3
+    ManagedPending = 3
     ManagedOther = 4
 
 
@@ -135,7 +135,7 @@ class DrinkObject():
             else:
                 return ObjectState.ManagedOther
         else:
-            return ObjectState.ManagePending
+            return ObjectState.ManagedPending
 
     def update(self):
         if not self.p.is_absolute():
@@ -168,7 +168,7 @@ class DrinkObject():
         if self.state == ObjectState.ManagedOther:
             err(f"{self} is already managed in other target.")
             return
-        if self.state == ObjectState.ManagePending:
+        if self.state == ObjectState.ManagedPending:
             err(f"{self} is already managed, but not linked yet. Run drink -l."
                 )
             return
