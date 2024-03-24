@@ -128,6 +128,15 @@ class DrinkObject():
         else:
             return GLOBAL_TARGET
 
+    def detect_state(self) -> ObjectState:
+        if self.get_linkpath().exists():
+            if self.target == self.config["TARGET"]:
+                return ObjectState.ManagedHere
+            else:
+                return ObjectState.ManagedOther
+        else:
+            return ObjectState.ManagePending
+
     def update(self):
         if not self.p.is_absolute():
             raise InvalidDrinkObject(f"{self.p} is not absolute")
@@ -136,8 +145,9 @@ class DrinkObject():
         self.relpath = self.detect_relpath()
         self.kind = self.detect_kind()
         self.target = self.detect_target()
+        self.state = self.detect_state()
 
-    def get_linkpath(self) -> Optional[Path]:
+    def get_linkpath(self) -> Path:
         '''Return the path that this objects is or should be linked to'''
         return self.config.kindDir(self.kind) / self.relpath
 
