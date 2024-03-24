@@ -151,15 +151,13 @@ class DrinkObject():
         '''Return the path that this objects is or should be linked to'''
         return self.config.kindDir(self.kind) / self.relpath
 
-    def get_repopath(self) -> Optional[Path]:
+    def get_repopath(self) -> Path:
         '''Return the path that this object has or should have inside the repo'''
         if self.target == GLOBAL_TARGET:
             return self.config["DRINKDIR"] / self.kind / self.relpath
-        elif self.target:
+        else:
             return self.config[
                 "DRINKDIR"] / BY_TARGET / self.target / self.relpath
-        else:
-            return None
 
     def import_object(self):
         if self.state == ObjectState.ManagedHere:
