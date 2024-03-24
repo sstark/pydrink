@@ -1,7 +1,7 @@
 from enum import Enum
 from pathlib import Path
 from textwrap import dedent
-from typing_extensions import Optional
+from typing import Optional
 
 from pydrink.config import KINDS, BY_TARGET, Config
 from pydrink.log import debug, warn

@@ -1,6 +1,6 @@
 from pathlib import Path
 from pydrink.log import debug
-from typing_extensions import Any
+from typing import Any
 from configparser import ConfigParser
 
 
