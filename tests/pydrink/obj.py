@@ -88,3 +88,14 @@ def test_import_object(fake_home, monkeypatch, tracked_drinkrc_and_drinkdir):
     obj = DrinkObject.import_object(c, relpath, "zfunc", "global")
     assert obj.state == ObjectState.ManagedPending
     assert obj.relpath == relpath
+
+
+def test_link(fake_home, monkeypatch, tracked_drinkrc_and_drinkdir):
+    def mock_home():
+        return fake_home
+    monkeypatch.setattr(Path, "home", mock_home)
+    c = Config(tracked_drinkrc_and_drinkdir)
+    obj = DrinkObject(c, c["DRINKDIR"] / "bin" / "obj3")
+    assert obj.state == ObjectState.ManagedPending
+    obj.link()
+    assert obj.state == ObjectState.ManagedOther
