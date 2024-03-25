@@ -99,3 +99,6 @@ def test_link(fake_home, monkeypatch, tracked_drinkrc_and_drinkdir):
     assert obj.state == ObjectState.ManagedPending
     obj.link()
     assert obj.state == ObjectState.ManagedOther
+    # second call should do nothing
+    obj.link()
+    assert obj.state == ObjectState.ManagedOther
