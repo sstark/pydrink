@@ -18,6 +18,23 @@ without having to learn the git command line.
 
 A **colorful command line interface** is used to interact with the user.
 
+
+Audience
+--------
+
+This program is for people who:
+
+  - want to have a tidy environment
+  - want to share settings and scripts between different locations
+  - want to use a central git repository as a distribution base
+  - like command line interfaces
+  - who are not using one of the thousand similar programs already
+    and, for some reason, found pydrink and are convinced by a concept that the
+    author has been using daily for 16 years on ever changing systems (mostly
+    Linux, but also Mac and Windows), when it was just a simple zsh script
+  - are not afraid of symlinks
+
+
 Concepts
 --------
 
