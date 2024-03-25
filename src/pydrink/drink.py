@@ -73,6 +73,7 @@ def createArgumentParser():
     args_main = parser.add_mutually_exclusive_group(required=True)
     args_main.add_argument('-i',
                            '--import',
+                           dest="imp",
                            action="store_true",
                            help="import an object")
     args_main.add_argument('-l',
@@ -148,3 +149,6 @@ def cli():
     if args.link:
         o = DrinkObject(c, Path("/home/seb/git/drink/bin/by-target/singold/blabla"))
         o.link()
+    if args.imp:
+        o = DrinkObject.import_object(c, Path("faf"), "bin", "singold")
+        # o.link()

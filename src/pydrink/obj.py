@@ -159,23 +159,32 @@ class DrinkObject():
             return self.config[
                 "DRINKDIR"] / self.kind / BY_TARGET / self.target / self.relpath
 
-    def import_object(self):
-        if self.state == ObjectState.ManagedHere:
-            err(f"{self} is already managed.")
-            return
-        if self.state == ObjectState.ManagedOther:
-            err(f"{self} is already managed in other target.")
-            return
-        if self.state == ObjectState.ManagedPending:
-            err(f"{self} is already managed, but not linked yet. Run drink -l."
-                )
-            return
-        if self.state == ObjectState.Unmanaged:
-            shutil.copy(str(self.get_linkpath()), str(self.get_repopath()))
+    @classmethod
+    def import_object(cls, c: Config, relpath: Path, kind: str,
+                      target: str) -> 'DrinkObject':
+        '''Create a new drink object by copying it into the repository
+           and commit.
+           The path must not be inside DRINKDIR.
+        '''
+        if relpath.is_absolute():
+            raise InvalidDrinkObject(f"{relpath} is an absolute path")
+        if target == GLOBAL_TARGET:
+            dest_target = Path("")
+        else:
+            dest_target = Path(BY_TARGET) / target
+        src_path = Path.home() / kind / relpath
+        dest_path = c["DRINKDIR"] / kind / dest_target / relpath
+        if dest_path.exists():
+            raise InvalidDrinkObject(f"{dest_path} already exists")
+        shutil.copy(src_path, dest_path)
+        return DrinkObject(c, dest_path)
 
     def link(self):
-        if self.target != self.config["TARGET"] and self.target != GLOBAL_TARGET:
-            debug(f"Object target {self.target} is not current nor global target")
+        if self.target != self.config[
+                "TARGET"] and self.target != GLOBAL_TARGET:
+            debug(
+                f"Object target {self.target} is not current nor global target"
+            )
             return
         if self.state == ObjectState.ManagedPending:
             fromm = self.get_linkpath().absolute()
