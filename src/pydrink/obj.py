@@ -177,6 +177,8 @@ class DrinkObject():
         dest_path = c["DRINKDIR"] / kind / dest_target / relpath
         if dest_path.exists():
             raise InvalidDrinkObject(f"{dest_path} already exists")
+        if not kind in KINDS:
+            raise InvalidKind
         if not dest_path.parent.exists():
             dest_path.parent.mkdir(parents=True)
         shutil.copy(src_path, dest_path)
