@@ -7,10 +7,24 @@ management system.
 This will maintain files in a git repository and create symlinks to them in
 appropriate places in your home directory. You will only need a single
 repository for all your different environments. Drink will only symlink the
-files that are configured for a target.
+files that are configured for a _target_.
 
-A target can be the name of a host, a shared file system or your company name,
-whatever makes sense to you in order to group your objects.
+The **interactive git menu** of drink provides a convenient way to manage and
+distribute your shell environment. Using the git menu you can see which of your
+tracked files have changed and quickly decide to keep or discard those changes.
+
+With the drink git menu you can use the distributed content tracking of git
+without having to learn the git command line.
+
+A **colorful command line interface** is used to interact with the user.
+
+Concepts
+--------
+
+A _target_ can be the name of a host, a shared file system or your company
+name, whatever makes sense to you in order to group your objects. The author
+uses a different target for each home directory. At work this is the same for
+all hosts, while at home this is different for all hosts.
 
 Objects are files. Supported kinds are: bin, zfunc, conf. They will be
 symlinked into configurable places in your home.
@@ -20,8 +34,13 @@ symlinked into configurable places in your home.
   - 'conf' are configuration files in your home, e. g. `~/.vimrc` or
     `~/.config/hypr/hyprland.conf`
 
-The interactive git menu of drink provides a convenient way to manage and
-distribute your shell environment.
+Kinds are the different types of objects, currently "bin", "zfunc" and "conf".
+A kind has a specific storage location in the drink repository, and it has a
+dedicated place where it will be linked to in the users home directory.
+
+(The _pydrink_ code is structured such that new kinds could be easily added. For
+example, somebody might want to add a kind for storing bash aliases. Currently
+this needs changes to the code, but with modest effort.)
 
 
 History
@@ -37,7 +56,7 @@ actual shell environment. This rewrite in Python aims to fix that.
 Configuration File
 ------------------
 
-The only configuration file for pydrink is in your home and must be located in
+The only configuration file for _pydrink_ is in your home and must be located in
 one of `$XDG_CONFIG_HOME/drinkrc`, `$HOME/.config/drinkrc` or `$HOME/.drinkrc`.
 
 Example drinkrc with the minimal settings:
@@ -46,11 +65,11 @@ Example drinkrc with the minimal settings:
     DRINKDIR="some/path/to/gitdir"
 
 For TARGET you should chose a value that is unique to the environment in which
-you want to use a certain set of pydrink objects. That could be your hostname
-or workplace name. Pydrink will only link objects that are either in your
+you want to use a certain set of _pydrink_ objects. That could be your hostname
+or workplace name. _Pydrink_ will only link objects that are either in your
 configured target or in the special 'global' target.
 
-DRINKDIR must be a path to the directory where your pydrink object repository
+DRINKDIR must be a path to the directory where your _pydrink_ object repository
 is located. This contains all your files and it will be the place where
 symlinked objects point to. If it is a relative path, $HOME will be prepended
 to it implicitly.
@@ -58,13 +77,24 @@ to it implicitly.
 Values can be put in double quotes. Do not put spaces around the '=' if you
 want to use the _drink zsh completion file.
 
+For historical reasons, configuration keywords (e. g. "TARGET") are in upper
+case. This might change in the future for a more modern look, but has low
+priority.
+
+
+Shell Completion
+----------------
+
+When importing objects, shell completion is extremely helpful when using drink.
+For zsh, a completion file is provided (**_drink**). Just drop that somewhere in
+your fpath and enjoy. Of course import it into your drink repository.
+
 
 'Destination' vs. 'Target'
 --------------------------
 
-For historic reasons the term 'target' in this project is used for the context
-in which an object should be linked or not. Usually this is a hostname or the
-word 'global'.
+The term 'target' in this project is used for the context in which an object
+should be linked or not. Usually this is a hostname or the word 'global'.
 
 The term 'target' as it is normally used for symlinks, refers to the file or
 directory, a symlink points to. It could be a symlink too, but usually is a
@@ -72,3 +102,19 @@ plain file or directory that is the target of the symbolic link.
 
 To avoid confusion, this project uses the word 'dest' or 'destination' when it
 is referring to what is normally a 'target' in symlink world.
+
+
+Development
+-----------
+
+_pydrink_ tries to use modern Python technology:
+
+  - Dependencies and packacking are managed with **poetry**.
+
+  - Typing hints are used and checked using **mypy**.
+
+  - A **Makefile** (the author could not find a pythonic alternative that is not
+    completely over the top for the task) offers targets for typical
+    development tasks like testing, cleaning, running debugpy.
+
+  - Tests should be provided for all functionalities through **pytest**.
