@@ -54,7 +54,7 @@ def get_changed_files(c: Config) -> list[str]:
 def menu(c: Config, input_function: Callable) -> int:
     '''Interactive menu to run git commands on drink objects'''
     git: list[str] = ["git", "-C", str(c["DRINKDIR"])]
-    git_cmd: Dict[str, list[str]] = {
+    git_cmd_base: Dict[str, list[str]] = {
         "2": git + ["fetch", str(c["DRINKBASE"])],
         "3": git + ["push", str(c["DRINKBASE"])],
         "5": git + ["commit", "-a"],
@@ -75,6 +75,10 @@ def menu(c: Config, input_function: Callable) -> int:
         print(" 7) log -p")
         print(" 8) diff")
         i: int = 10
+        # If one of the individual action commands is used,
+        # the corresponding menu entries are still there. So
+        # we need to reset the whole menu on each loop.
+        git_cmd = git_cmd_base
         for change in changed_files:
             print(f" ------ ({change}) ------")
             for action in change_actions:
