@@ -8,7 +8,7 @@ from rich_argparse import RichHelpFormatter
 from pydrink.config import Config, KINDS
 import pydrink.log
 from pydrink.log import warn, err, debug
-from pydrink.obj import GLOBAL_TARGET, DrinkObject
+from pydrink.obj import GLOBAL_TARGET, DrinkObject, InvalidDrinkObject, InvalidKind
 import pydrink.git as git
 
 CONFIG_FILENAME = "drinkrc"
@@ -24,7 +24,8 @@ def tracking_status(c: Config, p: Path) -> int:
     debug(f"target: {c['TARGET']}, path: {p}")
     o = DrinkObject(c, p)
     debug(o)
-    o = DrinkObject(c, Path("/home/seb/git/drink/bin/by-target/singold/blabla"))
+    o = DrinkObject(c,
+                    Path("/home/seb/git/drink/bin/by-target/singold/blabla"))
     debug(o)
     return 0
 
@@ -147,8 +148,29 @@ def cli():
         # TODO: Implement verbose version (include diff in output)
         print("\n".join(git.get_changed_files(c)))
     if args.link:
-        o = DrinkObject(c, Path("/home/seb/git/drink/bin/by-target/singold/blabla"))
+        o = DrinkObject(
+            c, Path("/home/seb/git/drink/bin/by-target/singold/blabla"))
         o.link()
     if args.imp:
-        o = DrinkObject.import_object(c, Path("faf"), "bin", "singold")
-        o.link(overwrite=True)
+        if not args.kind:
+            err("no kind supplied")
+            return 2
+        if not args.target:
+            err("no target supplied")
+            return 2
+        if not args.filename:
+            err("no filename supplied")
+            return 2
+        try:
+            o = DrinkObject.import_object(c, Path(args.filename), args.kind,
+                                          args.target)
+            o.link(overwrite=True)
+        except FileNotFoundError as e:
+            err(f"Import failed: {e}")
+            return 2
+        except InvalidKind:
+            err(f"Import failed: is not a valid kind")
+            return 2
+        except InvalidDrinkObject as e:
+            err(f"Import failed: {e}")
+            return 2
