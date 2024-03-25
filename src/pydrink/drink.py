@@ -68,7 +68,7 @@ def find_drinkrc() -> Path:
 def createArgumentParser():
     parser = argparse.ArgumentParser(
         prog='pydrink',
-        description='--- DRaft symlINKs in your home ---',
+        description='Distributed Reusage of Invaluable Nerd Kit',
         epilog='Please consult the README for more information.',
         formatter_class=RichHelpFormatter)
     args_main = parser.add_mutually_exclusive_group(required=True)

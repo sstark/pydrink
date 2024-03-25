@@ -64,7 +64,6 @@ def menu(c: Config, input_function: Callable) -> int:
     }
     change_actions = ["diff", "commit", "checkout", "add"]
     while True:
-        changed_files = get_changed_files(c)
         print()
         print(" 1) [b]quit[/b]")
         print(" 2) [b]fetch[/b] from base")
@@ -79,6 +78,8 @@ def menu(c: Config, input_function: Callable) -> int:
         # the corresponding menu entries are still there. So
         # we need to reset the whole menu on each loop.
         git_cmd = git_cmd_base
+        # Augment the menu with changed objects
+        changed_files = get_changed_files(c)
         for change in changed_files:
             print(f" [yellow]------ ({change}) ------[/yellow]")
             for action in change_actions:
