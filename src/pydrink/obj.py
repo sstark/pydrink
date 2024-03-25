@@ -3,6 +3,7 @@ from pathlib import Path
 from textwrap import dedent
 from typing import Optional
 import shutil
+import filecmp
 
 from pydrink.config import KINDS, BY_TARGET, Config
 from pydrink.log import debug, err
@@ -181,7 +182,7 @@ class DrinkObject():
         shutil.copy(src_path, dest_path)
         return DrinkObject(c, dest_path)
 
-    def link(self):
+    def link(self, overwrite=False):
         if self.target != self.config[
                 "TARGET"] and self.target != GLOBAL_TARGET:
             debug(
@@ -192,6 +193,12 @@ class DrinkObject():
             fromm = self.get_linkpath().absolute()
             to = self.get_repopath().absolute()
             debug(f"linking {fromm} -> {to}")
+            if fromm.exists() and overwrite:
+                if filecmp.cmp(fromm, to, shallow=False):
+                    fromm.unlink()
+                else:
+                    err(f"{fromm} exists and is different from {to}")
+                    return
             fromm.symlink_to(to)
             print(f"{fromm} -> {to}")
         self.update()

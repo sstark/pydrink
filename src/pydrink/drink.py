@@ -151,4 +151,4 @@ def cli():
         o.link()
     if args.imp:
         o = DrinkObject.import_object(c, Path("faf"), "bin", "singold")
-        # o.link()
+        o.link(overwrite=True)
