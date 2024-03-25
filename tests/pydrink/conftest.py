@@ -82,6 +82,9 @@ def tracked_drinkrc_and_drinkdir(drinkrc_and_drinkdir, git_base_repo):
     c = Config(drinkrc_and_drinkdir)
     git = ["git", "-C", str(c["DRINKDIR"])]
     call(git + ["init", "-b", c["MASTERBRANCH"]])
+    call(git + ["config", "init.defaultBranch", "gookenprien"])
+    call(git + ["config", "user.email", "you@example.com"])
+    call(git + ["config", "user.name", "Your Name"])
     call(git + ["add", "."])
     call(git + ["commit", "-m", "test"])
     for remote in ["hostA", "hostB", "hostC"]:
