@@ -76,3 +76,15 @@ def test_get_repopath(tracked_drinkrc_and_drinkdir, obj_p):
     # We should get out what we put in, except that get_repopath is relative
     assert obj.get_repopath() == obj.p
     assert obj.get_repopath() == c["DRINKDIR"] / obj_p
+
+
+def test_import_object(fake_home, monkeypatch, tracked_drinkrc_and_drinkdir):
+    def mock_home():
+        return fake_home
+    monkeypatch.setattr(Path, "home", mock_home)
+    c = Config(tracked_drinkrc_and_drinkdir)
+    relpath = Path("_stull")
+    (fake_home / "zfunc" / relpath).touch()
+    obj = DrinkObject.import_object(c, relpath, "zfunc", "global")
+    assert obj.state == ObjectState.ManagedPending
+    assert obj.relpath == relpath
