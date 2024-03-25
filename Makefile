@@ -28,6 +28,9 @@ debug:
 shell:
 	poetry shell
 
+push-all:
+	@git remote | xargs -L1 git push --all
+
 clean:
 	rm -rf dist
 	find . -type d -name __pycache__ -print0 | xargs -0 rm -rf
