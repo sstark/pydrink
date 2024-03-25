@@ -66,29 +66,29 @@ def menu(c: Config, input_function: Callable) -> int:
     while True:
         changed_files = get_changed_files(c)
         print()
-        print(" 1) quit")
-        print(" 2) fetch from base")
-        print(" 3) push to base")
-        print(" 4) automerge all remote branches")
-        print(" 5) commit -a")
-        print(" 6) commit")
-        print(" 7) log -p")
-        print(" 8) diff")
+        print(" 1) [b]quit[/b]")
+        print(" 2) [b]fetch[/b] from base")
+        print(" 3) [b]push[/b] to base")
+        print(" 4) [b]automerge[/b] all remote branches")
+        print(" 5) [b]commit -a[/b]")
+        print(" 6) [b]commit[/b]")
+        print(" 7) [b]log -p[/b]")
+        print(" 8) [b]diff[/b]")
         i: int = 10
         # If one of the individual action commands is used,
         # the corresponding menu entries are still there. So
         # we need to reset the whole menu on each loop.
         git_cmd = git_cmd_base
         for change in changed_files:
-            print(f" ------ ({change}) ------")
+            print(f" [yellow]------ ({change}) ------[/yellow]")
             for action in change_actions:
-                print(f"{i:>2}) {action} {change}")
+                print(f"{i:>2}) {action} [dim]{change}[/dim]")
                 git_cmd[str(i)] = git + [action] + [change]
                 i += 1
         print()
         debug(f"git_cmd: {git_cmd}")
         try:
-            reply = input_function("[dim]git action[/dim]")
+            reply = input_function("[dim][i]git action[/i][/dim]")
         except EOFError:
             return 0
         debug(f"reply: {reply}")
