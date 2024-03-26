@@ -28,7 +28,7 @@ debug:
 shell:
 	poetry shell
 
-push-all:
+push-all: test typecheck
 	@git remote | xargs -L1 git push --all
 
 clean:
