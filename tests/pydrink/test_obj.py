@@ -1,6 +1,6 @@
 from pathlib import Path
 from pydrink.config import Config, BY_TARGET
-from pydrink.obj import GLOBAL_TARGET, DrinkObject, ObjectState
+from pydrink.obj import GLOBAL_TARGET, DrinkObject, InvalidDrinkObject, ObjectState
 import pytest
 
 
@@ -102,3 +102,10 @@ def test_link(fake_home, monkeypatch, tracked_drinkrc_and_drinkdir):
     # second call should do nothing
     obj.link()
     assert obj.state == ObjectState.ManagedOther
+
+
+def test_object_init_with_empty_path(drinkrc):
+    # DrinkObject constructor should reject an empty path
+    c = Config(drinkrc)
+    with pytest.raises(InvalidDrinkObject):
+        DrinkObject(c, Path(""))
