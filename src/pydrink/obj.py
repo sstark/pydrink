@@ -170,11 +170,15 @@ class DrinkObject():
         '''
         if relpath.is_absolute():
             raise InvalidDrinkObject(f"{relpath} is an absolute path")
+        debug(f"relpath: {relpath}")
         if target == GLOBAL_TARGET:
             dest_target = Path("")
         else:
             dest_target = Path(BY_TARGET) / target
-        src_path = Path.home() / kind / relpath
+        src_path = Path.home() / c.kindDir(kind) / relpath
+        debug(f"src_path: {src_path}")
+        if src_path.is_dir():
+            raise InvalidDrinkObject(f"{src_path} is a directory")
         dest_path = c["DRINKDIR"] / kind / dest_target / relpath
         if dest_path.exists():
             raise InvalidDrinkObject(f"{dest_path} already exists")
@@ -182,6 +186,7 @@ class DrinkObject():
             raise InvalidKind
         if not dest_path.parent.exists():
             dest_path.parent.mkdir(parents=True)
+        debug(f"copying {src_path} -> {dest_path}")
         shutil.copy(src_path, dest_path)
         return DrinkObject(c, dest_path)
 

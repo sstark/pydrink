@@ -84,10 +84,23 @@ def test_import_object(fake_home, monkeypatch, tracked_drinkrc_and_drinkdir):
     monkeypatch.setattr(Path, "home", mock_home)
     c = Config(tracked_drinkrc_and_drinkdir)
     relpath = Path("_stull")
-    (fake_home / "zfunc" / relpath).touch()
+    importee = (fake_home / ".zfunc" / relpath)
+    importee.touch()
     obj = DrinkObject.import_object(c, relpath, "zfunc", "global")
     assert obj.state == ObjectState.ManagedPending
     assert obj.relpath == relpath
+
+
+def test_import_object_directory(fake_home, monkeypatch, tracked_drinkrc_and_drinkdir):
+    '''We do not support importing directories'''
+    def mock_home():
+        return fake_home
+    monkeypatch.setattr(Path, "home", mock_home)
+    c = Config(tracked_drinkrc_and_drinkdir)
+    relpath = Path(".foo")
+    (fake_home / "." / relpath).mkdir()
+    with pytest.raises(InvalidDrinkObject):
+        DrinkObject.import_object(c, relpath, "conf", "global")
 
 
 def test_link(fake_home, monkeypatch, tracked_drinkrc_and_drinkdir):

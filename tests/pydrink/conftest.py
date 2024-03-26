@@ -19,7 +19,7 @@ def fake_home():
     p = Path(tempfile.TemporaryDirectory(suffix="-HOME").name)
     p.mkdir()
     (p / "bin").mkdir()
-    (p / "zfunc").mkdir()
+    (p / ".zfunc").mkdir()
     yield p
     rmtree(p)
 
