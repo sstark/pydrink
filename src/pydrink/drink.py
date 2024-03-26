@@ -12,7 +12,6 @@ from pydrink.obj import GLOBAL_TARGET, DrinkObject, InvalidDrinkObject, InvalidK
 import pydrink.git as git
 
 CONFIG_FILENAME = "drinkrc"
-DOT_PREFIX = "dot"
 
 
 class NoConfigFound(Exception):

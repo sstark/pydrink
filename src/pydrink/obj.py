@@ -9,7 +9,7 @@ from pydrink.config import KINDS, BY_TARGET, Config
 from pydrink.log import debug, err
 
 GLOBAL_TARGET = "global"
-
+DOT_PREFIX = "dot"
 
 class InvalidKind(Exception):
     '''Raised when an invalid kind is requested or used'''
