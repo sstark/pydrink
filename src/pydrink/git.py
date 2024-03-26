@@ -1,13 +1,11 @@
 from collections.abc import Iterable, Iterator
 from pydrink.log import debug, err
 from pydrink.config import Config, KINDS
+from pydrink.obj import DrinkObject
 import sys
 from typing import Callable, Dict
 from subprocess import CalledProcessError, call, run
 from rich import print
-from pathlib import Path
-
-from pydrink.obj import DrinkObject
 
 
 def unclean(c: Config) -> bool:
@@ -56,7 +54,7 @@ def get_changed_files(c: Config) -> list[str]:
     return []
 
 
-def get_tracked_objects(c: Config, kinds: Iterable = []) -> Iterator[DrinkObject]:
+def get_tracked_objects(c: Config, kinds: Iterable[str] = []) -> Iterator[DrinkObject]:
     '''Return a list of DrinkObjects with all tracked objects'''
     cmd = ["git", "-C", str(c['DRINKDIR']), "ls-files"]
     if kinds == []:
