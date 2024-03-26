@@ -1,6 +1,6 @@
 import sys
 from pydrink.config import Config, BY_TARGET
-from pydrink.git import get_branches, get_changed_files, menu, unclean
+from pydrink.git import get_branches, get_changed_files, get_tracked_objects, menu, unclean
 import pytest
 from pathlib import Path
 
@@ -66,3 +66,25 @@ def test_menu_with_changed_files(capsys, tracked_drinkrc_and_drinkdir):
     # captured = capsys.readouterr()
     # line10 = captured.out.split('\n')[10]
     # assert line10 == "10) diff bin/obj3"
+
+
+def test_get_tracked_objects_all(tracked_drinkrc_and_drinkdir):
+    c = Config(tracked_drinkrc_and_drinkdir)
+    objs = get_tracked_objects(c)
+    # The following is a bit fragile because it depends on the order of the
+    # output of git ls-files
+    assert next(objs).target == "bar"
+    assert next(objs).relpath == Path("obj1")
+    assert next(objs).relpath == Path("obj3")
+    next(objs)
+    assert next(objs).kind == "conf"
+    assert next(objs, "stop") == "stop"
+
+
+def test_get_tracked_objects_by_kind_conf(tracked_drinkrc_and_drinkdir):
+    c = Config(tracked_drinkrc_and_drinkdir)
+    objs = get_tracked_objects(c, kinds={"conf"})
+    o = next(objs)
+    assert o.kind == "conf"
+    assert o.target == "bapf"
+    assert next(objs, "stop") == "stop"
