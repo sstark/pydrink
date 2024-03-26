@@ -148,9 +148,8 @@ def cli():
         # TODO: Implement verbose version (include diff in output)
         print("\n".join(git.get_changed_files(c)))
     if args.link:
-        o = DrinkObject(
-            c, Path("/home/seb/git/drink/bin/by-target/singold/blabla"))
-        o.link()
+        for o in git.get_tracked_objects(c):
+            print(o)
     if args.imp:
         if not args.kind:
             err("no kind supplied")

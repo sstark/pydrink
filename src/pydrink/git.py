@@ -1,9 +1,13 @@
+from collections.abc import Iterable
 from pydrink.log import debug, err
-from pydrink.config import Config
+from pydrink.config import Config, KINDS
 import sys
-from typing import Callable, Dict
+from typing import Callable, Dict, Set
 from subprocess import CalledProcessError, call, run
 from rich import print
+from pathlib import Path
+
+from pydrink.obj import DrinkObject
 
 
 def unclean(c: Config) -> bool:
@@ -35,11 +39,12 @@ def get_branches(c: Config) -> list[str]:
 def get_changed_files(c: Config) -> list[str]:
     '''Return a list of all objects with uncommitted changes'''
     try:
-        result = run(
-            ["git", "-C",
-             str(c['DRINKDIR']), "diff-files", "--name-only", "--no-color"],
-            text=True,
-            capture_output=True)
+        result = run([
+            "git", "-C",
+            str(c['DRINKDIR']), "diff-files", "--name-only", "--no-color"
+        ],
+                     text=True,
+                     capture_output=True)
         result.check_returncode()
         if result.stderr:
             err(f"{result.returncode}\n{result.stderr}")
@@ -48,6 +53,27 @@ def get_changed_files(c: Config) -> list[str]:
             return [x.strip() for x in result.stdout.split("\n") if x]
     except CalledProcessError as e:
         err(e.returncode)
+    return []
+
+
+def get_tracked_objects(c: Config, kinds: Iterable = []) -> list[DrinkObject]:
+    '''Return a list of DrinkObjects with all tracked objects'''
+    cmd = ["git", "-C", str(c['DRINKDIR']), "ls-files"]
+    if kinds == []:
+        kinds = list(KINDS)
+    try:
+        result = run(cmd + list(kinds), text=True, capture_output=True)
+        result.check_returncode()
+        if result.stderr:
+            err(f"{result.returncode}\n{result.stderr}")
+            return []
+        if result.stdout:
+            return [
+                DrinkObject(c, c["DRINKDIR"] / x.strip())
+                for x in result.stdout.split("\n") if x
+            ]
+    except CalledProcessError as e:
+        err(f"listing tracked objects: {e}")
     return []
 
 

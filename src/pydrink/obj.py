@@ -141,7 +141,8 @@ class DrinkObject():
     def update(self):
         if not self.p.is_absolute():
             raise InvalidDrinkObject(f"{self.p} is not absolute")
-        if self.p.is_symlink():
+        # exception for "drink" during transition from zsh drink to pydrink
+        if self.p.is_symlink() and self.p.name != "drink":
             raise InvalidDrinkObject(f"{self.p} is a symlink")
         self.relpath = self.detect_relpath()
         self.kind = self.detect_kind()
