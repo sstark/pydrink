@@ -1,8 +1,8 @@
-from collections.abc import Iterable
+from collections.abc import Iterable, Iterator
 from pydrink.log import debug, err
 from pydrink.config import Config, KINDS
 import sys
-from typing import Callable, Dict, Set
+from typing import Callable, Dict
 from subprocess import CalledProcessError, call, run
 from rich import print
 from pathlib import Path
@@ -56,7 +56,7 @@ def get_changed_files(c: Config) -> list[str]:
     return []
 
 
-def get_tracked_objects(c: Config, kinds: Iterable = []) -> list[DrinkObject]:
+def get_tracked_objects(c: Config, kinds: Iterable = []) -> Iterator[DrinkObject]:
     '''Return a list of DrinkObjects with all tracked objects'''
     cmd = ["git", "-C", str(c['DRINKDIR']), "ls-files"]
     if kinds == []:
@@ -66,15 +66,14 @@ def get_tracked_objects(c: Config, kinds: Iterable = []) -> list[DrinkObject]:
         result.check_returncode()
         if result.stderr:
             err(f"{result.returncode}\n{result.stderr}")
-            return []
         if result.stdout:
-            return [
-                DrinkObject(c, c["DRINKDIR"] / x.strip())
-                for x in result.stdout.split("\n") if x
-            ]
+            debug(f"git ls-files worked")
+            for line in result.stdout.split("\n"):
+                if not line: continue
+                debug(f"next line to process: {line}")
+                yield DrinkObject(c, c["DRINKDIR"] / line.strip())
     except CalledProcessError as e:
         err(f"listing tracked objects: {e}")
-    return []
 
 
 def menu(c: Config, input_function: Callable) -> int:
