@@ -11,6 +11,7 @@ from pydrink.log import debug, err
 GLOBAL_TARGET = "global"
 DOT_PREFIX = "dot"
 
+
 class InvalidKind(Exception):
     '''Raised when an invalid kind is requested or used'''
     pass
@@ -149,9 +150,20 @@ class DrinkObject():
         self.target = self.detect_target()
         self.state = self.detect_state()
 
+    @staticmethod
+    def _dotify(p: Path) -> Path:
+        '''Return same path, but with all elements prefixed with DOT_PREFIX in
+          case they start with a dot'''
+        return Path(*[DOT_PREFIX+x if x.startswith(".") else x for x in p.parts])
+
+    @staticmethod
+    def _undotify(p: Path) -> Path:
+        '''Return same path, but with DOT_PREFIX removed drom all elements'''
+        return Path(*[x.removeprefix(DOT_PREFIX) for x in p.parts])
+
     def get_linkpath(self) -> Path:
         '''Return the path that this objects is or should be linked to'''
-        return self.config.kindDir(self.kind) / self.relpath
+        return self.config.kindDir(self.kind) / self._undotify(self.relpath)
 
     def get_repopath(self) -> Path:
         '''Return the path that this object has or should have inside the repo'''
@@ -180,6 +192,8 @@ class DrinkObject():
         if src_path.is_dir():
             raise InvalidDrinkObject(f"{src_path} is a directory")
         dest_path = c["DRINKDIR"] / kind / dest_target / relpath
+        dest_path = cls._dotify(dest_path)
+        debug(f"dotified dest_path: {dest_path}")
         if dest_path.exists():
             raise InvalidDrinkObject(f"{dest_path} already exists")
         if not kind in KINDS:

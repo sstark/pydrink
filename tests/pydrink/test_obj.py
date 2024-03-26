@@ -1,6 +1,6 @@
 from pathlib import Path
 from pydrink.config import Config, BY_TARGET
-from pydrink.obj import GLOBAL_TARGET, DrinkObject, InvalidDrinkObject, ObjectState
+from pydrink.obj import GLOBAL_TARGET, DrinkObject, InvalidDrinkObject, ObjectState, DOT_PREFIX
 import pytest
 
 
@@ -35,15 +35,17 @@ def test_detect_target(tracked_drinkrc_and_drinkdir, obj_p, target):
     assert obj.target == target
 
 
-@pytest.mark.parametrize("obj_p, state", [
-    (Path("bin") / BY_TARGET / "singold" / "obj1", ObjectState.ManagedHere),
-    (Path("bin") / "obj2", ObjectState.ManagedOther),
-    (Path("conf") / BY_TARGET / "bapf" / "obj4", ObjectState.ManagedPending)
-])
+@pytest.mark.parametrize(
+    "obj_p, state",
+    [(Path("bin") / BY_TARGET / "singold" / "obj1", ObjectState.ManagedHere),
+     (Path("bin") / "obj2", ObjectState.ManagedOther),
+     (Path("conf") / BY_TARGET / "bapf" / "obj4", ObjectState.ManagedPending)])
 def test_detect_state(fake_home, monkeypatch, tracked_drinkrc_and_drinkdir,
                       obj_p, state):
+
     def mock_home():
         return fake_home
+
     monkeypatch.setattr(Path, "home", mock_home)
     c = Config(tracked_drinkrc_and_drinkdir)
     obj = DrinkObject(c, c["DRINKDIR"] / obj_p)
@@ -79,8 +81,10 @@ def test_get_repopath(tracked_drinkrc_and_drinkdir, obj_p):
 
 
 def test_import_object(fake_home, monkeypatch, tracked_drinkrc_and_drinkdir):
+
     def mock_home():
         return fake_home
+
     monkeypatch.setattr(Path, "home", mock_home)
     c = Config(tracked_drinkrc_and_drinkdir)
     relpath = Path("_stull")
@@ -91,10 +95,13 @@ def test_import_object(fake_home, monkeypatch, tracked_drinkrc_and_drinkdir):
     assert obj.relpath == relpath
 
 
-def test_import_object_directory(fake_home, monkeypatch, tracked_drinkrc_and_drinkdir):
+def test_import_object_directory(fake_home, monkeypatch,
+                                 tracked_drinkrc_and_drinkdir):
     '''We do not support importing directories'''
+
     def mock_home():
         return fake_home
+
     monkeypatch.setattr(Path, "home", mock_home)
     c = Config(tracked_drinkrc_and_drinkdir)
     relpath = Path(".foo")
@@ -104,8 +111,10 @@ def test_import_object_directory(fake_home, monkeypatch, tracked_drinkrc_and_dri
 
 
 def test_link(fake_home, monkeypatch, tracked_drinkrc_and_drinkdir):
+
     def mock_home():
         return fake_home
+
     monkeypatch.setattr(Path, "home", mock_home)
     c = Config(tracked_drinkrc_and_drinkdir)
     obj = DrinkObject(c, c["DRINKDIR"] / "bin" / "obj3")
@@ -122,3 +131,23 @@ def test_object_init_with_empty_path(drinkrc):
     c = Config(drinkrc)
     with pytest.raises(InvalidDrinkObject):
         DrinkObject(c, Path(""))
+
+
+@pytest.mark.parametrize(
+    "inp, outp",
+    [(Path("/a/b/.c"), Path(f"/a/b/{DOT_PREFIX}.c")),
+     (Path("/a/.b/c/.d"), Path(f"/a/{DOT_PREFIX}.b/c/{DOT_PREFIX}.d")),
+     (Path("/a/b/c"), Path("/a/b/c"))])
+def test_dotify(inp, outp):
+    out = DrinkObject._dotify(inp)
+    assert out == outp
+
+
+@pytest.mark.parametrize(
+    "inp, outp",
+    [(Path(f"/a/b/{DOT_PREFIX}.c"), Path("/a/b/.c")),
+     (Path(f"/a/{DOT_PREFIX}.b/c/{DOT_PREFIX}.d"), Path("/a/.b/c/.d")),
+     (Path("/a/b/c"), Path("/a/b/c"))])
+def test_undotify(inp, outp):
+    out = DrinkObject._undotify(inp)
+    assert out == outp
