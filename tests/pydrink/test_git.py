@@ -25,7 +25,7 @@ def test_get_changed_files(tracked_drinkrc_and_drinkdir):
     assert changes_pre == []
     changed_objects = [(Path("bin") / BY_TARGET / "foo" / "obj1"),
                        (Path("bin") / "obj3"),
-                       (Path("conf") / BY_TARGET / "bapf" / "obj4")]
+                       (Path("conf") / BY_TARGET / "bapf" / ".obj4")]
     for p in changed_objects:
         with open(c['DRINKDIR'] / p, 'w') as f:
             f.write("something")

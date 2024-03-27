@@ -49,7 +49,7 @@ def drinkdir(tmppath):
     (tmppath / "bin" / BY_TARGET / "bar").mkdir(parents=True)
     (tmppath / "bin" / BY_TARGET / "bar" / "obj2").touch()
     (tmppath / "conf" / BY_TARGET / "bapf").mkdir(parents=True)
-    (tmppath / "conf" / BY_TARGET / "bapf" / "obj4").touch()
+    (tmppath / "conf" / BY_TARGET / "bapf" / ".obj4").touch()
     return tmppath
 
 

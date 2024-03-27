@@ -95,6 +95,23 @@ def test_import_object(fake_home, monkeypatch, tracked_drinkrc_and_drinkdir):
     assert obj.relpath == relpath
 
 
+def test_import_object_with_dot(fake_home, monkeypatch, tracked_drinkrc_and_drinkdir):
+
+    def mock_home():
+        return fake_home
+
+    monkeypatch.setattr(Path, "home", mock_home)
+    c = Config(tracked_drinkrc_and_drinkdir)
+    relpath = Path(".blarc")
+    importee = (fake_home / "." / relpath)
+    importee.touch()
+    obj = DrinkObject.import_object(c, relpath, "conf", "global")
+    assert obj.state == ObjectState.ManagedPending
+    assert obj.relpath == Path("dot.blarc")
+    assert obj.get_linkpath() == fake_home / ".blarc"
+    assert obj.get_repopath() == c["DRINKDIR"] / "conf" / "dot.blarc"
+
+
 def test_import_object_directory(fake_home, monkeypatch,
                                  tracked_drinkrc_and_drinkdir):
     '''We do not support importing directories'''
