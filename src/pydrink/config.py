@@ -1,6 +1,6 @@
 import os
 from pathlib import Path
-from pydrink.log import debug
+from pydrink.log import debug, err
 from typing import Any
 from configparser import ConfigParser
 import platform
@@ -103,15 +103,21 @@ class Config():
         return "\n".join([f"{k}={v}" for k, v in self.config.items()])
 
     @classmethod
-    def create_drinkrc(cls):
+    def create_drinkrc(cls) -> int:
         if xdgch := os.getenv("XDG_CONFIG_HOME"):
             new_drinkrc = Path(xdgch) / CONFIG_FILENAME
         else:
             new_drinkrc = Path.home() / ".config" / CONFIG_FILENAME
         assert not new_drinkrc.exists()
         debug(f"create new drinkrc: {new_drinkrc}")
-        with open(new_drinkrc, "w") as f:
+        try:
+            f = open(new_drinkrc, "w")
+        except OSError as e:
+            err(f"Could not create drinkrc in {new_drinkrc}: {e}")
+            return 4
+        with f:
             f.write(f"TARGET={platform.node()}\n")
             f.write(f"DRINKDIR=git/drink\n")
         print(f"New drinkrc created in {new_drinkrc}.")
         print("Please review or change the contents and run this command again.")
+        return 0
