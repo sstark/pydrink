@@ -144,8 +144,10 @@ def cli():
             err("git menu was cancelled")
             return 1
     if args.changed:
-        # TODO: Implement verbose version (include diff in output)
-        print("\n".join(git.get_changed_files(c)))
+        if args.verbose:
+            git.diff(c)
+        else:
+            print("\n".join(git.get_changed_files(c)))
     if args.link:
         for o in git.get_tracked_objects(c):
             if o.state == ObjectState.ManagedPending:
@@ -164,7 +166,7 @@ def cli():
             o = DrinkObject.import_object(c, Path(args.filename), args.kind,
                                           args.target)
             git.add_object(c, o)
-            o.link(overwrite=True)
+            o.link(overwrite=True, verbose=args.verbose)
         except FileNotFoundError as e:
             err(f"Import failed: {e}")
             return 2

@@ -34,6 +34,11 @@ def get_branches(c: Config) -> list[str]:
     return []
 
 
+def diff(c: Config) -> int:
+    '''Print a list of uncommitted changes'''
+    return call(["git", "-C", str(c['DRINKDIR']), "diff"])
+
+
 def get_changed_files(c: Config) -> list[str]:
     '''Return a list of all objects with uncommitted changes'''
     try:
