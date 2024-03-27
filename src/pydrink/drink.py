@@ -138,6 +138,8 @@ def cli():
         except Exception as e:
             err(f"Unexpected error: {e}")
             return 3
+        # TODO: check if referenced DRINKDIR is a git repository. If not,
+        # initialize it and set up base remote.
         warn(
             f"Configuration found in {drinkrc}. Remove it first if you want to start over."
         )
