@@ -1,3 +1,4 @@
+from enum import Enum
 from pathlib import Path
 import os
 import argparse
@@ -5,13 +6,21 @@ from collections import defaultdict
 from rich.prompt import Prompt
 from rich_argparse import RichHelpFormatter
 
-from pydrink.config import Config, KINDS
+from pydrink.config import BY_TARGET, Config, KINDS
 import pydrink.log
-from pydrink.log import warn, err, debug
+from pydrink.log import err, debug
 from pydrink.obj import GLOBAL_TARGET, DrinkObject, InvalidDrinkObject, InvalidKind, ObjectState
 import pydrink.git as git
 
 CONFIG_FILENAME = "drinkrc"
+
+
+class TrackingState(Enum):
+    Unknown = 1
+    Untracked = 2
+    TrackedGlobal = 3
+    TrackedHere = 4
+    TrackedOther = 5
 
 
 class NoConfigFound(Exception):
@@ -19,14 +28,15 @@ class NoConfigFound(Exception):
     pass
 
 
-def tracking_status(c: Config, p: Path) -> int:
-    debug(f"target: {c['TARGET']}, path: {p}")
-    o = DrinkObject(c, p)
-    debug(o)
-    o = DrinkObject(c,
-                    Path("/home/seb/git/drink/bin/by-target/singold/blabla"))
-    debug(o)
-    return 0
+def tracking_status(c: Config, p: Path) -> TrackingState:
+    if not p.is_symlink():
+        return TrackingState.Untracked
+    if (link_target := p.readlink()).is_relative_to(c["DRINKDIR"]):
+        if BY_TARGET in link_target.parts:
+            return TrackingState.TrackedHere
+        else:
+            return TrackingState.TrackedGlobal
+    return TrackingState.Unknown
 
 
 def show_untracked_files(c: Config, selected_kind: str = ""):
@@ -35,21 +45,15 @@ def show_untracked_files(c: Config, selected_kind: str = ""):
     pat["conf"] = ".*"
 
     for kind, varname in KINDS.items():
-        targetdir = Path.home() / c[varname]
+        checkdir = Path.home() / c[varname]
         # Skip the others, if user has selected only a certain kind
         if selected_kind and selected_kind != kind:
-            warn(f"skipping {kind}")
+            debug(f"skipping {kind}")
             continue
-        for f in Path(targetdir).glob(pat[kind]):
-            rel_path = f.relative_to(targetdir)
-            # TODO: run ignore code here
-            if rel_path == targetdir:
-                warn(
-                    f"Object {rel_path} has the same name as kind {kind}, skipping"
-                )
-                continue
-            # TODO: Return something instead of printing directly
-            tracking_status(c, f)
+        for f in checkdir.glob(pat[kind]):
+            ts = tracking_status(c, f)
+            if ts == TrackingState.Untracked:
+                print(f"{f}")
 
 
 def find_drinkrc() -> Path:
