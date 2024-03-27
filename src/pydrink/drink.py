@@ -66,6 +66,23 @@ def find_drinkrc() -> Path:
     raise NoConfigFound("No drinkrc could be found")
 
 
+def begin_setup() -> int:
+    try:
+        drinkrc = find_drinkrc()
+        c = Config(drinkrc)
+    except NoConfigFound:
+        return Config.create_drinkrc()
+    except Exception as e:
+        err(f"Unexpected error: {e}")
+        return 3
+    # TODO: check if referenced DRINKDIR is a git repository. If not,
+    # initialize it and set up base remote.
+    warn(
+        f"Configuration found in {drinkrc}. Remove it first if you want to start over."
+    )
+    return 0
+
+
 def createArgumentParser():
     parser = argparse.ArgumentParser(
         prog='pydrink',
@@ -130,19 +147,7 @@ def cli():
     pydrink.log.DEBUG = args.debug
 
     if args.begin:
-        try:
-            drinkrc = find_drinkrc()
-            c = Config(drinkrc)
-        except NoConfigFound:
-            return Config.create_drinkrc()
-        except Exception as e:
-            err(f"Unexpected error: {e}")
-            return 3
-        # TODO: check if referenced DRINKDIR is a git repository. If not,
-        # initialize it and set up base remote.
-        warn(
-            f"Configuration found in {drinkrc}. Remove it first if you want to start over."
-        )
+        return begin_setup()
 
     try:
         c = Config(find_drinkrc())
