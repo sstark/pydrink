@@ -70,7 +70,7 @@ class DrinkObject():
         self.relpath: Path
         self.state: Optional[ObjectState] = None
         self.kind: str = ""
-        self.target: Optional[str] = None
+        self.target: str = ""
         self.update()
         self.check()
 
@@ -154,7 +154,8 @@ class DrinkObject():
     def _dotify(p: Path) -> Path:
         '''Return same path, but with all elements prefixed with DOT_PREFIX in
           case they start with a dot'''
-        return Path(*[DOT_PREFIX+x if x.startswith(".") else x for x in p.parts])
+        return Path(
+            *[DOT_PREFIX + x if x.startswith(".") else x for x in p.parts])
 
     @staticmethod
     def _undotify(p: Path) -> Path:
@@ -165,13 +166,19 @@ class DrinkObject():
         '''Return the path that this objects is or should be linked to'''
         return self.config.kindDir(self.kind) / self._undotify(self.relpath)
 
-    def get_repopath(self) -> Path:
+    def get_repopath(self, relative: bool = False) -> Path:
         '''Return the path that this object has or should have inside the repo'''
         if self.target == GLOBAL_TARGET:
-            return self.config["DRINKDIR"] / self.kind / self.relpath
+            if relative:
+                return Path(self.kind) / self.relpath
+            else:
+                return self.config["DRINKDIR"] / self.kind / self.relpath
         else:
-            return self.config[
-                "DRINKDIR"] / self.kind / BY_TARGET / self.target / self.relpath
+            if relative:
+                return Path(self.kind) / BY_TARGET / self.target / self.relpath
+            else:
+                return self.config[
+                    "DRINKDIR"] / self.kind / BY_TARGET / self.target / self.relpath
 
     @classmethod
     def import_object(cls, c: Config, relpath: Path, kind: str,
