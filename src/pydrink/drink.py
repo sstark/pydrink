@@ -6,13 +6,11 @@ from collections import defaultdict
 from rich.prompt import Prompt
 from rich_argparse import RichHelpFormatter
 
-from pydrink.config import BY_TARGET, Config, KINDS
+from pydrink.config import BY_TARGET, Config, KINDS, CONFIG_FILENAME
 import pydrink.log
-from pydrink.log import err, debug
+from pydrink.log import err, debug, warn
 from pydrink.obj import GLOBAL_TARGET, DrinkObject, InvalidDrinkObject, InvalidKind, ObjectState
 import pydrink.git as git
-
-CONFIG_FILENAME = "drinkrc"
 
 
 class TrackingState(Enum):
@@ -75,6 +73,10 @@ def createArgumentParser():
         epilog='Please consult the README for more information.',
         formatter_class=RichHelpFormatter)
     args_main = parser.add_mutually_exclusive_group(required=True)
+    args_main.add_argument('-b',
+                           '--begin',
+                           action="store_true",
+                           help="initialize drink")
     args_main.add_argument('-i',
                            '--import',
                            dest="imp",
@@ -126,6 +128,20 @@ def cli():
     args = parser.parse_args()
     debug(args)
     pydrink.log.DEBUG = args.debug
+
+    if args.begin:
+        try:
+            drinkrc = find_drinkrc()
+            c = Config(drinkrc)
+        except NoConfigFound:
+            return Config.create_drinkrc()
+        except Exception as e:
+            err(f"Unexpected error: {e}")
+            return 3
+        warn(
+            f"Configuration found in {drinkrc}. Remove it first if you want to start over."
+        )
+
     try:
         c = Config(find_drinkrc())
     except Exception as e:

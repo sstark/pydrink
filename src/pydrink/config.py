@@ -1,8 +1,11 @@
+import os
 from pathlib import Path
 from pydrink.log import debug
 from typing import Any
 from configparser import ConfigParser
+import platform
 
+CONFIG_FILENAME = "drinkrc"
 
 # Short names to variable names mapping
 KINDS = {
@@ -98,3 +101,17 @@ class Config():
 
     def __str__(self) -> str:
         return "\n".join([f"{k}={v}" for k, v in self.config.items()])
+
+    @classmethod
+    def create_drinkrc(cls):
+        if xdgch := os.getenv("XDG_CONFIG_HOME"):
+            new_drinkrc = Path(xdgch) / CONFIG_FILENAME
+        else:
+            new_drinkrc = Path.home() / ".config" / CONFIG_FILENAME
+        assert not new_drinkrc.exists()
+        debug(f"create new drinkrc: {new_drinkrc}")
+        with open(new_drinkrc, "w") as f:
+            f.write(f"TARGET={platform.node()}\n")
+            f.write(f"DRINKDIR=git/drink\n")
+        print(f"New drinkrc created in {new_drinkrc}.")
+        print("Please review or change the contents and run this command again.")
