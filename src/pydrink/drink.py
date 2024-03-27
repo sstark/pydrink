@@ -163,6 +163,7 @@ def cli():
         try:
             o = DrinkObject.import_object(c, Path(args.filename), args.kind,
                                           args.target)
+            git.add_object(c, o)
             o.link(overwrite=True)
         except FileNotFoundError as e:
             err(f"Import failed: {e}")

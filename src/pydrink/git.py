@@ -74,6 +74,21 @@ def get_tracked_objects(c: Config, kinds: Iterable[str] = []) -> Iterator[DrinkO
         err(f"listing tracked objects: {e}")
 
 
+def add_object(c: Config, obj: DrinkObject) -> int:
+    '''Add and commit a drink object to the git repository after it was copied.
+    Second step of an import of a new object'''
+    cmd = ["git", "-C", str(c["DRINKDIR"]), "add", obj.get_repopath(relative=True) ]
+    ret = call(cmd)
+    if ret != 0:
+        err(f"Error when adding object to repository. {cmd} failed.")
+        return ret
+    cmd = ["git", "-C", str(c["DRINKDIR"]), "commit" ]
+    ret = call(cmd)
+    if ret != 0:
+        err(f"Error when committing to repository. {cmd} failed.")
+    return ret
+
+
 def menu(c: Config, input_function: Callable) -> int:
     '''Interactive menu to run git commands on drink objects'''
     git: list[str] = ["git", "-C", str(c["DRINKDIR"])]
