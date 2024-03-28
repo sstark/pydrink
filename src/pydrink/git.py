@@ -1,5 +1,5 @@
 from collections.abc import Iterable, Iterator
-from pydrink.log import debug, err
+from pydrink.log import debug, err, warn
 from pydrink.config import Config, KINDS
 from pydrink.obj import DrinkObject
 import sys
@@ -92,6 +92,11 @@ def add_object(c: Config, obj: DrinkObject) -> int:
     if ret != 0:
         err(f"Error when committing to repository. {cmd} failed.")
     return ret
+
+
+def init_repository(c: Config):
+    warn(f'Initializing git repository in {c["DRINKDIR"]}')
+    #c["DRINKDIR"].mkdir(parents=True)
 
 
 def menu(c: Config, input_function: Callable) -> int:

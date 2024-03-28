@@ -75,11 +75,11 @@ def begin_setup() -> int:
     except Exception as e:
         err(f"Unexpected error: {e}")
         return 3
-    # TODO: check if referenced DRINKDIR is a git repository. If not,
-    # initialize it and set up base remote.
-    warn(
-        f"Configuration found in {drinkrc}. Remove it first if you want to start over."
-    )
+    if not (c["DRINKDIR"] / ".git").is_dir():
+        warn(f"Configuration found in {drinkrc}, but the configured git repository does not exist yet.")
+        git.init_repository(c)
+    else:
+        warn(f"Configuration found in {drinkrc}. Remove it first if you want to start over.")
     return 0
 
 
