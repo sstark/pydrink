@@ -2,7 +2,8 @@
 Optional Helpers for Drink
 ==========================
 
-Those are all for zsh. If some kind user of oh-my-zsh wants to make a module out of these, that would be very much appreciated.
+Those are all for zsh. If some kind user of oh-my-zsh wants to make a module
+out of these, that would be very much appreciated.
 
 Porting the command completion and drinkrefresh to bash would be awesome too.
 
@@ -16,6 +17,17 @@ drinkrefresh
 
 Both, a user command and a precmd hook. Provides needed setup for keeping
 prompt info up to date and make change detection work.
+
+When run with no arguments (as you use it for the precmd hook), nothing is
+printed. Just some internal variables are updated.
+
+When run with `-r`, it will cause zsh to be re-executed if the drink repository
+and current zsh session are out of sync.
+
+When `-v` is added, it will print a bit of information about the internal
+state. In combination with `-r`, it will also print a summary of changes in the
+drink recpository since the last shell startup.
+
 
 zshaliases
 ----------
