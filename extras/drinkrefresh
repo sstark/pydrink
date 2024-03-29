@@ -1,0 +1,71 @@
+#WHATIS: Test if drink is up to date
+#WHATIS: Optionally reexec zsh if needed.
+local verbose reexec num_changed di_changed di_update
+zparseopts v=verbose r=reexec
+
+drink_current_headref=${$(git -C ~drink show-ref heads/master)[1]}
+if [[ -z $drink_headref ]]
+then
+    # If drink_headref is not set, we assume drink is not in use
+    # or not installed.
+	return 15
+fi
+
+if (($#verbose))
+then
+	print "current:    $drink_headref"
+	print "repository: $drink_current_headref"
+fi
+
+if [[ $drink_headref == $drink_current_headref ]]
+then
+	if (($#verbose))
+	then
+		print "drink is up-to-date."
+	fi
+	drink_needs_update=0
+else
+	if (($#verbose))
+	then
+		print "repository has other headref"
+		print "drink needs update"
+		print "Changes:"
+		git -C ~drink log --pretty=oneline \
+			--abbrev-commit --no-merges --numstat ${drink_headref}..${drink_current_headref} | cat
+	fi
+	drink_needs_update=1
+	if (($#reexec))
+	then
+		if ((${(%):-%j}))
+		then
+			print "no reexec because background job is running"
+			return 17
+		fi
+		if (($#verbose))
+		then
+			print "reexecing zsh"
+		fi
+		exec zsh
+	fi
+fi
+
+# Prompt info setup
+num_changed=$(git -C ~drink diff-files --name-only 2>/dev/null | wc -l)
+if [[ $num_changed -gt 0 ]]
+then
+    di_changed=" $num_changed"
+else
+    di_changed=""
+fi
+if [[ $drink_needs_update -eq 1 ]]
+then
+    di_update="!"
+else
+    di_update=""
+fi
+if [[ -n $di_changed || -n $di_update ]]
+then
+    drink_prompt_info="${di_changed}${di_update} "
+else
+    drink_prompt_info=""
+fi

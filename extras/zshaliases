@@ -1,0 +1,11 @@
+
+# Show a log of the changes in the drink repository
+alias drinklog="drink -g <<<7"
+# Renew drink by exec'ing zsh.
+# Run this when the "!" appears in your drink prompt.
+alias dr="drinkrefresh -vr"
+# Full upgrade cycle:
+#   1. Fetch and merge from all remotes
+#   2. Add new and remove old symlinks
+#   3. Restart zsh if needed
+alias drinkup="drink -g <<<4 && drink -lv && drinkrefresh -rv"

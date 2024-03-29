@@ -106,12 +106,36 @@ case. This might change in the future for a more modern look, but has low
 priority.
 
 
-Shell Completion
-----------------
+Shell Integration
+------------------
 
 When importing objects, shell completion is extremely helpful when using drink.
-For zsh, a completion file is provided (**_drink**). Just drop that somewhere in
-your fpath and enjoy. Of course import it into your drink repository.
+For zsh (https://zsh.org), a completion file is provided in **extras/_drink**.
+Just drop that somewhere in your fpath and enjoy. Of course import it into your
+drink repository.
+
+For adding drink information to your prompt you can use the $drink_prompt_info
+variable. This is made available by putting **extras/drinkrefresh** in your
+fpath and add it as a precmd hook:
+
+    add-zsh-hook precmd drinkrefresh
+
+$drink_prompt_info will be usually empty. If there are change drink objects, it
+will show the number. If your session is not in sync with the repository it will
+show a "!". In that case you can run
+
+     drinkrefresh -r
+
+to re-exec zsh.
+
+Use a custom **starship** (https://starship.rs) variable to integrate the
+prompt into your starship configuration:
+
+    format = """... $env_var ..."""
+    [env_var.drink_prompt_info]
+    format = '[$env_value]($style)'
+    default = ''
+    style = "green"
 
 
 'Destination' vs. 'Target'
@@ -177,3 +201,8 @@ Bootstrap:
     poetry update
     poetry install
     make
+
+Author
+------
+
+Sebastian Stark
