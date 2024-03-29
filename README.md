@@ -18,6 +18,8 @@ without having to learn the git command line.
 
 A **colorful command line interface** is used to interact with the user.
 
+![drink-menu](https://github.com/sstark/pydrink/assets/837918/b87a6b52-88a4-4df3-b4a9-1c6604705425)
+
 
 Audience
 --------
