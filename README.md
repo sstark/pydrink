@@ -61,6 +61,11 @@ dedicated place where it will be linked to in the users home directory.
 example, somebody might want to add a kind for storing bash aliases. Currently
 this needs changes to the code, but with modest effort.)
 
+Interface
+---------
+
+![drink-help](https://github.com/sstark/pydrink/assets/837918/11d8f0fa-4892-4113-b012-3bfb75cca3be)
+
 
 History
 -------
