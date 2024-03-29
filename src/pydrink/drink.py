@@ -8,7 +8,7 @@ from rich_argparse import RichHelpFormatter
 
 from pydrink.config import BY_TARGET, Config, KINDS, CONFIG_FILENAME
 import pydrink.log
-from pydrink.log import err, debug, warn
+from pydrink.log import err, debug, notice, warn
 from pydrink.obj import GLOBAL_TARGET, DrinkObject, InvalidDrinkObject, InvalidKind, ObjectState
 import pydrink.git as git
 
@@ -178,7 +178,8 @@ def cli():
     if args.link:
         for o in git.get_tracked_objects(c):
             if o.state == ObjectState.ManagedPending:
-                debug(f"linking {o}")
+                notice(f"linking {o.relpath}")
+                o.link()
     if args.imp:
         if not args.kind:
             err("no kind supplied")

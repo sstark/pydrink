@@ -4,6 +4,10 @@ from rich import print
 
 DEBUG = False
 
+def notice(s):
+    print(s)
+
+
 def warn(s):
     print(s)
 

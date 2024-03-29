@@ -137,7 +137,10 @@ class DrinkObject():
             else:
                 return ObjectState.ManagedOther
         else:
-            return ObjectState.ManagedPending
+            if self.target in (self.config["TARGET"], GLOBAL_TARGET):
+                return ObjectState.ManagedPending
+            else:
+                return ObjectState.ManagedOther
 
     def update(self):
         if not self.p.is_absolute():
