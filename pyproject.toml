@@ -28,3 +28,6 @@ addopts = "-ra -q"
 testpaths = [
     "tests/pydrink/*",
 ]
+pythonpath = [
+  "."
+]
