@@ -1,4 +1,5 @@
 from collections.abc import Iterable, Iterator
+from textwrap import dedent
 from pydrink.log import debug, err, notice
 from pydrink.config import Config, KINDS
 from pydrink.obj import DrinkObject
@@ -102,14 +103,26 @@ def add_object(c: Config, obj: DrinkObject) -> int:
 
 def init_repository(c: Config) -> int:
     notice(f'Initializing git repository in {c["DRINKDIR"]}')
-    c["DRINKDIR"].mkdir(parents=True)
-    git = ["git", "-C", str(c["DRINKDIR"])]
+    repo = c["DRINKDIR"]
+    repo.mkdir(parents=True)
+    base = c["DRINKBASE"]
+    target = c["TARGET"]
+    git = ["git", "-C", str(repo)]
     cmd = git + ["init"]
     ret = call(cmd)
     if ret != 0:
         err(f"Error when running {cmd}")
         return ret
-    notice("")
+    notice("A basic drink repository has been created.")
+    notice(dedent(f"""\
+        In order to use the push/fetch features of drink, you will need to
+        configure a base remote URL. Run the following commands to do that:
+
+        git -C {repo} remote add {base} <URL>
+        git -C {repo} config remote.{base}.push "refs/heads/*:refs/remotes/{target}/*"
+        drink -g <<<4
+        drink -lv
+        """))
     return 0
 
 
