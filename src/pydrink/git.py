@@ -4,6 +4,7 @@ from pydrink.log import debug, err, notice
 from pydrink.config import Config, KINDS
 from pydrink.obj import DrinkObject
 import sys
+import getpass
 from typing import Callable, Dict
 from subprocess import CalledProcessError, call, run
 
@@ -107,6 +108,7 @@ def init_repository(c: Config) -> int:
     repo.mkdir(parents=True)
     base = c["DRINKBASE"]
     target = c["TARGET"]
+    username = getpass.getuser()
     git = ["git", "-C", str(repo)]
     cmd = git + ["init"]
     ret = call(cmd)
@@ -116,12 +118,23 @@ def init_repository(c: Config) -> int:
     notice("A basic drink repository has been created.")
     notice(dedent(f"""\
         In order to use the push/fetch features of drink, you will need to
-        configure a base remote URL. Run the following commands to do that:
+        configure a base remote URL. Run the following commands (or some
+        variant of it) to do that. <URL> depends on how and where you created
+        the base repository.
 
-        git -C {repo} remote add {base} <URL>
-        git -C {repo} config remote.{base}.push "refs/heads/*:refs/remotes/{target}/*"
-        drink -g <<<4
-        drink -lv
+          git -C {repo} remote add {base} <URL>
+          git -C {repo} config remote.{base}.push "refs/heads/*:refs/remotes/{target}/*"
+          git -C {repo} config user.name "{username}"
+          git -C {repo} config user.email "{target}"
+
+        Afterwards you should be able to automerge from all remotes:
+
+          drink -g <<<4
+
+        Add all symlinks:
+
+          drink -lv
+
         """))
     return 0
 
