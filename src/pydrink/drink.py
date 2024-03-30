@@ -1,3 +1,4 @@
+from collections.abc import Iterator
 from enum import Enum
 from pathlib import Path
 import os
@@ -59,6 +60,28 @@ def show_untracked_files(c: Config, selected_kind: str = ""):
             ts = tracking_status(c, f)
             if ts == TrackingState.Untracked:
                 print(f"{f}")
+
+
+def get_dangling_links(c: Config, selected_kind: str) -> Iterator[Path]:
+    """Return an Iterator of Paths, if those paths are:
+    1. absolute
+    2. are in a valid kindDir
+    3. resolve to a non-existing Path in DRINKDIR
+    """
+    dir = c.kindDir(selected_kind)
+    verbose(f"pruning {dir}")
+    for p in dir.iterdir():
+        if not p.is_symlink():
+            debug(f"{p} is not a symlink")
+            continue
+        dest = p.readlink()
+        debug(f"{p} points to {dest}")
+        if not dest.is_relative_to(c["DRINKDIR"] / selected_kind):
+            continue
+        if dest.exists():
+            continue
+        debug(f"{p} is dangling")
+        yield p
 
 
 def find_drinkrc() -> Path:
