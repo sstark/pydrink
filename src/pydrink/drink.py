@@ -212,7 +212,10 @@ def cli():
         for o in git.get_tracked_objects(c):
             if o.state == ObjectState.ManagedPending:
                 verbose(f"linking {o.relpath}")
-                o.link()
+                try:
+                    o.link()
+                except OSError as e:
+                    err(f"could not link {o.relpath}: {e}")
         prune(c)
     if args.imp:
         if not args.kind:
@@ -230,7 +233,7 @@ def cli():
             )
             git.add_object(c, o)
             o.link(overwrite=True)
-        except FileNotFoundError as e:
+        except OSError as e:
             err(f"Import failed: {e}")
             return 2
         except InvalidKind:
