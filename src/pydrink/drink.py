@@ -237,7 +237,7 @@ def cli():
             err(f"Import failed: {e}")
             return 2
         except InvalidKind:
-            err(f"Import failed: is not a valid kind")
+            err(f"Import failed: {args.kind} is not a valid kind")
             return 2
         except InvalidDrinkObject as e:
             err(f"Import failed: {e}")

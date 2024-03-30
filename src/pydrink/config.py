@@ -118,7 +118,7 @@ class Config:
             return 4
         with f:
             f.write(f"TARGET={platform.node()}\n")
-            f.write(f"DRINKDIR=git/drink\n")
+            f.write("DRINKDIR=git/drink\n")
         notice(f"New drinkrc created in {new_drinkrc}.")
         notice("Please review or change the contents and run this command again.")
         return 0

@@ -6,15 +6,16 @@ DEBUG = False
 QUIET = False
 VERBOSE = False
 
+
 def notice(s):
-    '''Print normal info messages'''
+    """Print normal info messages"""
     # verbose should override quiet
     if (not QUIET) or VERBOSE:
         print(s)
 
 
 def verbose(s):
-    '''Print additional info that is not strictly necessary'''
+    """Print additional info that is not strictly necessary"""
     if VERBOSE:
         print(s)
 

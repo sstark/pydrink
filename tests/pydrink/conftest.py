@@ -66,7 +66,7 @@ def drinkrc_and_drinkdir(drinkdir):
 def drinkrc(tmpfile):
     with open(tmpfile, 'w') as f:
         f.write('TARGET="somehost"\n')
-        f.write(f'DRINKDIR="relative/path"\n')
+        f.write('DRINKDIR="relative/path"\n')
     return tmpfile
 
 

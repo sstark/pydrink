@@ -12,7 +12,7 @@ from subprocess import CalledProcessError, call, run
 def unclean(c: Config) -> bool:
     ret = call(["git", "-C", str(c["DRINKDIR"]), "diff", "--quiet"])
     if ret != 0:
-        err(f"drink repository is dirty")
+        err("drink repository is dirty")
     return ret != 0
 
 
@@ -77,7 +77,7 @@ def get_tracked_objects(c: Config, kinds: Iterable[str] = []) -> Iterator[DrinkO
         if result.stderr:
             err(f"{result.returncode}\n{result.stderr}")
         if result.stdout:
-            debug(f"git ls-files worked")
+            debug("git ls-files worked")
             for line in result.stdout.split("\n"):
                 if not line:
                     continue
