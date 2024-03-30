@@ -22,21 +22,22 @@ VARNAMES = {
     "BINDIR": "bin",
     "ZFUNCDIR": ".zfunc",
     "CONFDIR": ".",
-    "SUPPORTED_KINDS": f"'{' '.join(sorted(KINDS.keys()))}'", # used by _drink completion
+    "SUPPORTED_KINDS": f"'{' '.join(sorted(KINDS.keys()))}'",  # used by _drink completion
 }
 
 # The subdirectory within DRINKDIR in which per target objects are located
 BY_TARGET = "by-target"
 
-class Config():
-    '''The Config class holds the drink configuration and can update its
+
+class Config:
+    """The Config class holds the drink configuration and can update its
     default values from a configuration file in drinkrc format.
 
     This configuration file is in shell format and is sourced several times.
-    '''
+    """
 
     def __init__(self, f: Path):
-        '''Initialize Config
+        """Initialize Config
 
         Parameters
         ----------
@@ -51,7 +52,7 @@ class Config():
         --------
         >>> c = Config(pathlib.Path.home() / '.drinkrc')
         >>> val = c['TARGET']
-        '''
+        """
         self.configFileName = f
         self.config = VARNAMES
         # Override the defaults from config file
@@ -59,7 +60,7 @@ class Config():
         self.sourceConfigFile(f)
 
     def sourceConfigFile(self, f: Path):
-        '''Read a drink configuration file and populate the config object'''
+        """Read a drink configuration file and populate the config object"""
         ini = ConfigParser()
         with open(f) as cf:
             # Unfortunately the python ini parser wants a section header
@@ -83,9 +84,9 @@ class Config():
         return self.config[item]
 
     def kindDir(self, kind: str, relative=False) -> Path:
-        '''Return the symlink directory for a given kind
-           with relative=True return relative path (e. g. "bin").
-        '''
+        """Return the symlink directory for a given kind
+        with relative=True return relative path (e. g. "bin").
+        """
         d = self.config[KINDS[kind]]
         if relative:
             return Path(d)
