@@ -84,6 +84,15 @@ def get_dangling_links(c: Config, selected_kind: str) -> Iterator[Path]:
         yield p
 
 
+def prune(c: Config):
+    """Remove all dangling symlinks from $HOME that are likely to
+    be leftovers from removed drink objects"""
+    for kind in KINDS:
+        for l in get_dangling_links(c, kind):
+            verbose(f"dangling symlink {l}")
+            l.unlink()
+
+
 def find_drinkrc() -> Path:
     """Find a drink configuration file and return its path"""
     if xdgch := os.getenv("XDG_CONFIG_HOME"):
@@ -204,6 +213,7 @@ def cli():
             if o.state == ObjectState.ManagedPending:
                 verbose(f"linking {o.relpath}")
                 o.link()
+        prune(c)
     if args.imp:
         if not args.kind:
             err("no kind supplied")
