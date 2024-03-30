@@ -24,3 +24,19 @@ def test_get_dangling_links(monkeypatch, tracked_drinkrc_and_drinkdir, fake_home
     for obj in get_tracked_objects(c):
         assert obj.get_linkpath() not in dangle_bin
         assert obj.get_linkpath() not in dangle_conf
+
+
+# def test_find_drinkrc():
+#     pass
+
+
+# def test_tracking_status():
+#     pass
+
+
+# def test_show_untracked_files():
+#     pass
+
+
+# def test_cli():
+#     pass
