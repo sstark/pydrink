@@ -108,8 +108,9 @@ def init_repository(c: Config) -> int:
     repo.mkdir(parents=True)
     base = c["DRINKBASE"]
     target = c["TARGET"]
+    mb = c["MASTERBRANCH"]
     username = getpass.getuser()
-    cmd = ["git", "-C", str(repo), "init", "-b", c["MASTERBRANCH"]]
+    cmd = ["git", "-C", str(repo), "init", "-b", mb]
     ret = call(cmd)
     if ret != 0:
         err(f"Error when running {cmd}")
@@ -122,7 +123,8 @@ def init_repository(c: Config) -> int:
         the base repository.
 
           git -C {repo} remote add {base} <URL>
-          git -C {repo} config remote.{base}.push "refs/heads/*:refs/remotes/{target}/*"
+          git -C {repo} config remote.{base}.push "+refs/heads/*:refs/remotes/{target}/*"
+          git -C {repo} config remote.{base}.fetch "+refs/remotes/*/{mb}:refs/remotes/*/{mb}"
           git -C {repo} config user.name "{username}"
           git -C {repo} config user.email "{target}"
 
