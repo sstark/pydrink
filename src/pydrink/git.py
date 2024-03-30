@@ -109,8 +109,7 @@ def init_repository(c: Config) -> int:
     base = c["DRINKBASE"]
     target = c["TARGET"]
     username = getpass.getuser()
-    git = ["git", "-C", str(repo)]
-    cmd = git + ["init"]
+    cmd = ["git", "-C", str(repo), "init", "-b", c["MASTERBRANCH"]]
     ret = call(cmd)
     if ret != 0:
         err(f"Error when running {cmd}")

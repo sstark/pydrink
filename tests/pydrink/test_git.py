@@ -15,8 +15,9 @@ def test_unclean_repo(tracked_drinkrc_and_drinkdir):
 
 def test_get_branches(tracked_drinkrc_and_drinkdir):
     c = Config(tracked_drinkrc_and_drinkdir)
+    mb = c["MASTERBRANCH"]
     branches = sorted(get_branches(c))
-    assert branches == ["hostA/master", "hostB/master", "hostC/master"]
+    assert branches == [f"hostA/{mb}", f"hostB/{mb}", f"hostC/{mb}"]
 
 
 def test_get_changed_files(tracked_drinkrc_and_drinkdir):
