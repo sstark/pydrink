@@ -1,11 +1,10 @@
 from collections.abc import Iterable, Iterator
-from pydrink.log import debug, err, warn
+from pydrink.log import debug, err, notice
 from pydrink.config import Config, KINDS
 from pydrink.obj import DrinkObject
 import sys
 from typing import Callable, Dict
 from subprocess import CalledProcessError, call, run
-from rich import print
 
 
 def unclean(c: Config) -> bool:
@@ -95,7 +94,7 @@ def add_object(c: Config, obj: DrinkObject) -> int:
 
 
 def init_repository(c: Config):
-    warn(f'Initializing git repository in {c["DRINKDIR"]}')
+    notice(f'Initializing git repository in {c["DRINKDIR"]}')
     #c["DRINKDIR"].mkdir(parents=True)
 
 
@@ -112,15 +111,15 @@ def menu(c: Config, input_function: Callable) -> int:
     }
     change_actions = ["diff", "commit", "checkout", "add"]
     while True:
-        print()
-        print(" 1) [b]quit[/b]")
-        print(" 2) [b]fetch[/b] from base")
-        print(" 3) [b]push[/b] to base")
-        print(" 4) [b]automerge[/b] all remote branches")
-        print(" 5) [b]commit -a[/b]")
-        print(" 6) [b]commit[/b]")
-        print(" 7) [b]log -p[/b]")
-        print(" 8) [b]diff[/b]")
+        notice("")
+        notice(" 1) [b]quit[/b]")
+        notice(" 2) [b]fetch[/b] from base")
+        notice(" 3) [b]push[/b] to base")
+        notice(" 4) [b]automerge[/b] all remote branches")
+        notice(" 5) [b]commit -a[/b]")
+        notice(" 6) [b]commit[/b]")
+        notice(" 7) [b]log -p[/b]")
+        notice(" 8) [b]diff[/b]")
         i: int = 10
         # If one of the individual action commands is used,
         # the corresponding menu entries are still there. So
@@ -129,12 +128,12 @@ def menu(c: Config, input_function: Callable) -> int:
         # Augment the menu with changed objects
         changed_files = get_changed_files(c)
         for change in changed_files:
-            print(f" [yellow]------ ({change}) ------[/yellow]")
+            notice(f" [yellow]------ ({change}) ------[/yellow]")
             for action in change_actions:
-                print(f"{i:>2}) {action} [dim]{change}[/dim]")
+                notice(f"{i:>2}) {action} [dim]{change}[/dim]")
                 git_cmd[str(i)] = git + [action] + [change]
                 i += 1
-        print()
+        notice("")
         debug(f"git_cmd: {git_cmd}")
         try:
             reply = input_function("[dim][i]git action[/i][/dim]")

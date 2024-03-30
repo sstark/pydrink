@@ -1,6 +1,6 @@
 import os
 from pathlib import Path
-from pydrink.log import debug, err
+from pydrink.log import debug, err, notice
 from typing import Any
 from configparser import ConfigParser
 import platform
@@ -118,6 +118,6 @@ class Config():
         with f:
             f.write(f"TARGET={platform.node()}\n")
             f.write(f"DRINKDIR=git/drink\n")
-        print(f"New drinkrc created in {new_drinkrc}.")
-        print("Please review or change the contents and run this command again.")
+        notice(f"New drinkrc created in {new_drinkrc}.")
+        notice("Please review or change the contents and run this command again.")
         return 0

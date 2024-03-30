@@ -214,7 +214,7 @@ class DrinkObject():
         shutil.copy(src_path, dest_path)
         return DrinkObject(c, dest_path)
 
-    def link(self, overwrite: bool = False, verbose: bool = False):
+    def link(self, overwrite: bool = False):
         if self.target != self.config[
                 "TARGET"] and self.target != GLOBAL_TARGET:
             debug(
@@ -232,7 +232,5 @@ class DrinkObject():
                     err(f"{fromm} exists and is different from {to}")
                     return
             fromm.symlink_to(to)
-            if verbose:
-                print(f"{fromm} -> {to}")
         self.update()
         self.check()

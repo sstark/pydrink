@@ -8,7 +8,7 @@ from rich_argparse import RichHelpFormatter
 
 from pydrink.config import BY_TARGET, Config, KINDS, CONFIG_FILENAME
 import pydrink.log
-from pydrink.log import err, debug, notice, warn
+from pydrink.log import err, debug, verbose, warn
 from pydrink.obj import GLOBAL_TARGET, DrinkObject, InvalidDrinkObject, InvalidKind, ObjectState
 import pydrink.git as git
 
@@ -145,6 +145,8 @@ def cli():
     args = parser.parse_args()
     debug(args)
     pydrink.log.DEBUG = args.debug
+    pydrink.log.QUIET = args.quiet
+    pydrink.log.VERBOSE = args.verbose
 
     if args.begin:
         return begin_setup()
@@ -178,7 +180,7 @@ def cli():
     if args.link:
         for o in git.get_tracked_objects(c):
             if o.state == ObjectState.ManagedPending:
-                notice(f"linking {o.relpath}")
+                verbose(f"linking {o.relpath}")
                 o.link()
     if args.imp:
         if not args.kind:
@@ -194,7 +196,7 @@ def cli():
             o = DrinkObject.import_object(c, Path(args.filename), args.kind,
                                           args.target)
             git.add_object(c, o)
-            o.link(overwrite=True, verbose=args.verbose)
+            o.link(overwrite=True)
         except FileNotFoundError as e:
             err(f"Import failed: {e}")
             return 2

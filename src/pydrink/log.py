@@ -3,9 +3,20 @@ from pathlib import Path
 from rich import print
 
 DEBUG = False
+QUIET = False
+VERBOSE = False
 
 def notice(s):
-    print(s)
+    '''Print normal info messages'''
+    # verbose should override quiet
+    if (not QUIET) or VERBOSE:
+        print(s)
+
+
+def verbose(s):
+    '''Print additional info that is not strictly necessary'''
+    if VERBOSE:
+        print(s)
 
 
 def warn(s):
