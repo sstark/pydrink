@@ -29,5 +29,5 @@ testpaths = [
     "tests/pydrink/*",
 ]
 pythonpath = [
-  "."
+    "src"
 ]
