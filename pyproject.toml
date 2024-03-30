@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pydrink"
-version = "0.2.0"
+version = "0.3.0"
 description = "Python implementation of drink dotfile management system"
 authors = ["Sebastian Stark <sstark@mailbox.org>"]
 license = "ISC"
