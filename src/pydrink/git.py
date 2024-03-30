@@ -93,9 +93,17 @@ def add_object(c: Config, obj: DrinkObject) -> int:
     return ret
 
 
-def init_repository(c: Config):
+def init_repository(c: Config) -> int:
     notice(f'Initializing git repository in {c["DRINKDIR"]}')
-    #c["DRINKDIR"].mkdir(parents=True)
+    c["DRINKDIR"].mkdir(parents=True)
+    git = ["git", "-C", str(c["DRINKDIR"])]
+    cmd = git + ["init"]
+    ret = call(cmd)
+    if ret != 0:
+        err(f"Error when running {cmd}")
+        return ret
+    notice("")
+    return 0
 
 
 def menu(c: Config, input_function: Callable) -> int:
