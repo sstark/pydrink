@@ -15,6 +15,7 @@ rich-argparse = "^1.4.0"
 pytest = "*"
 mypy = "^1.9.0"
 debugpy = "^1.8.1"
+coverage = "^7.4.4"
 
 [tool.poetry.scripts]
 drink = "pydrink.drink:cli"

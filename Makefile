@@ -34,6 +34,10 @@ push-all: test typecheck
 build: test typecheck
 	poetry build -f wheel
 
+coverage:
+	coverage run -m pytest
+	coverage report -m
+
 clean:
 	rm -rf dist
 	find . -type d -name __pycache__ -print0 | xargs -0 rm -rf
