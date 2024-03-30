@@ -26,6 +26,17 @@ def test_get_dangling_links(monkeypatch, tracked_drinkrc_and_drinkdir, fake_home
         assert obj.get_linkpath() not in dangle_conf
 
 
+def test_get_dangling_links_not_existing_dir(drinkrc):
+    c = Config(drinkrc)
+    # reconfigure BINDIR to be in some not existing location
+    # This tests the case where somebody has no e. g. zfunc
+    # items, so .zfunc was never created.
+    c.config["BINDIR"] = "notexisting"
+    dangle_notexisting = list(get_dangling_links(c, "bin"))
+    # Expected outcome is an empty list and no exception or error
+    assert dangle_notexisting == []
+
+
 # def test_find_drinkrc():
 #     pass
 

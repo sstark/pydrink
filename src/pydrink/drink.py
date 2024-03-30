@@ -69,6 +69,8 @@ def get_dangling_links(c: Config, selected_kind: str) -> Iterator[Path]:
     3. resolve to a non-existing Path in DRINKDIR
     """
     dir = c.kindDir(selected_kind)
+    if not dir.exists():
+        return
     verbose(f"pruning {dir}")
     for p in dir.iterdir():
         if not p.is_symlink():
