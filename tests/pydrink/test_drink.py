@@ -37,6 +37,8 @@ def test_get_dangling_links_not_existing_dir(drinkrc):
     dangle_notexisting = list(get_dangling_links(c, "bin"))
     # Expected outcome is an empty list and no exception or error
     assert dangle_notexisting == []
+    # HACK: WHY has this influence on other tests!?
+    c.config["BINDIR"] = "bin"
 
 
 @pytest.mark.parametrize(
