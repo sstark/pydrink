@@ -31,6 +31,9 @@ shell:
 push-all: test typecheck
 	@git remote | xargs -L1 git push --all
 
+build: test typecheck
+	poetry build -f wheel
+
 clean:
 	rm -rf dist
 	find . -type d -name __pycache__ -print0 | xargs -0 rm -rf
