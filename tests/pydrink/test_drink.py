@@ -1,8 +1,8 @@
-from pydrink.config import Config
-from pydrink.drink import get_dangling_links
-from pathlib import Path
-from pydrink.config import BY_TARGET
+from pydrink.config import Config, CONFIG_FILENAME, BY_TARGET
+from pydrink.drink import find_drinkrc, get_dangling_links
 from pydrink.git import get_tracked_objects
+from pathlib import Path
+import pytest
 
 
 def test_get_dangling_links(monkeypatch, tracked_drinkrc_and_drinkdir, fake_home):
@@ -15,7 +15,9 @@ def test_get_dangling_links(monkeypatch, tracked_drinkrc_and_drinkdir, fake_home
     for obj in get_tracked_objects(c):
         obj.link()
     (Path.home() / "bin" / "dangle1").symlink_to(c["DRINKDIR"] / "bin" / "dangle1")
-    (Path.home() / ".dangle2").symlink_to(c["DRINKDIR"] / "conf" / BY_TARGET / "singold" / "dangle2")
+    (Path.home() / ".dangle2").symlink_to(
+        c["DRINKDIR"] / "conf" / BY_TARGET / "singold" / "dangle2"
+    )
     dangle_bin = list(get_dangling_links(c, "bin"))
     assert dangle_bin == [Path.home() / "bin" / "dangle1"]
     dangle_conf = list(get_dangling_links(c, "conf"))
@@ -37,8 +39,33 @@ def test_get_dangling_links_not_existing_dir(drinkrc):
     assert dangle_notexisting == []
 
 
-# def test_find_drinkrc():
-#     pass
+@pytest.mark.parametrize(
+    "present_rcs, found_rc",
+    [
+        ([Path(".config") / CONFIG_FILENAME], Path(".config") / CONFIG_FILENAME),
+        (
+            [Path(".config") / CONFIG_FILENAME, Path(f".{CONFIG_FILENAME}")],
+            Path(".config") / CONFIG_FILENAME,
+        ),
+        (
+            [Path(".foo") / CONFIG_FILENAME, Path(f".{CONFIG_FILENAME}")],
+            Path(".foo") / CONFIG_FILENAME,
+        ),
+    ],
+)
+def test_find_drinkrc(monkeypatch, fake_home, present_rcs, found_rc):
+
+    def mock_home():
+        return fake_home
+
+    monkeypatch.setattr(Path, "home", mock_home)
+    xdg_foo = Path.home() / ".foo"
+    xdg_foo.mkdir(parents=True)
+    monkeypatch.setenv("XDG_CONFIG_HOME", str(xdg_foo))
+    for rc in present_rcs:
+        (Path.home() / rc).parent.mkdir(parents=True, exist_ok=True)
+        (Path.home() / rc).touch()
+    assert find_drinkrc() == Path.home() / found_rc
 
 
 # def test_tracking_status():
