@@ -17,7 +17,7 @@ mypy = "^1.9.0"
 debugpy = "^1.8.1"
 
 [tool.poetry.scripts]
-drnk = "pydrink.drink:cli"
+drink = "pydrink.drink:cli"
 
 [build-system]
 requires = ["poetry-core"]
