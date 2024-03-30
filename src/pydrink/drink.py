@@ -9,7 +9,13 @@ from rich_argparse import RichHelpFormatter
 from pydrink.config import BY_TARGET, Config, KINDS, CONFIG_FILENAME
 import pydrink.log
 from pydrink.log import err, debug, verbose, warn
-from pydrink.obj import GLOBAL_TARGET, DrinkObject, InvalidDrinkObject, InvalidKind, ObjectState
+from pydrink.obj import (
+    GLOBAL_TARGET,
+    DrinkObject,
+    InvalidDrinkObject,
+    InvalidKind,
+    ObjectState,
+)
 import pydrink.git as git
 
 
@@ -22,7 +28,8 @@ class TrackingState(Enum):
 
 
 class NoConfigFound(Exception):
-    '''Raised when no valid configuration could be found'''
+    """Raised when no valid configuration could be found"""
+
     pass
 
 
@@ -38,7 +45,7 @@ def tracking_status(c: Config, p: Path) -> TrackingState:
 
 
 def show_untracked_files(c: Config, selected_kind: str = ""):
-    '''Show untracked files / possible drink candidates'''
+    """Show untracked files / possible drink candidates"""
     pat = defaultdict(lambda: "*")
     pat["conf"] = ".*"
 
@@ -55,7 +62,7 @@ def show_untracked_files(c: Config, selected_kind: str = ""):
 
 
 def find_drinkrc() -> Path:
-    '''Find a drink configuration file and return its path'''
+    """Find a drink configuration file and return its path"""
     if xdgch := os.getenv("XDG_CONFIG_HOME"):
         if (xdgch_p := Path(xdgch) / CONFIG_FILENAME).exists():
             return xdgch_p
@@ -76,67 +83,59 @@ def begin_setup() -> int:
         err(f"Unexpected error: {e}")
         return 3
     if not (c["DRINKDIR"] / ".git").is_dir():
-        warn(f"Configuration found in {drinkrc}, but the configured git repository does not exist yet.")
+        warn(
+            f"Configuration found in {drinkrc}, but the configured git repository does not exist yet."
+        )
         git.init_repository(c)
     else:
-        warn(f"Configuration found in {drinkrc}. Remove it first if you want to start over.")
+        warn(
+            f"Configuration found in {drinkrc}. Remove it first if you want to start over."
+        )
     return 0
 
 
 def createArgumentParser():
     parser = argparse.ArgumentParser(
-        prog='pydrink',
-        description='Distributed Reusage of Invaluable Nerd Kit',
-        epilog='Please consult the README for more information.',
-        formatter_class=RichHelpFormatter)
+        prog="pydrink",
+        description="Distributed Reusage of Invaluable Nerd Kit",
+        epilog="Please consult the README for more information.",
+        formatter_class=RichHelpFormatter,
+    )
     args_main = parser.add_mutually_exclusive_group(required=True)
-    args_main.add_argument('-b',
-                           '--begin',
-                           action="store_true",
-                           help="initialize drink")
-    args_main.add_argument('-i',
-                           '--import',
-                           dest="imp",
-                           action="store_true",
-                           help="import an object")
-    args_main.add_argument('-l',
-                           '--link',
-                           action="store_true",
-                           help="add missing symlinks")
-    args_main.add_argument('-s',
-                           '--show',
-                           action="store_true",
-                           help="show untracked files")
-    args_main.add_argument('-c',
-                           '--changed',
-                           action="store_true",
-                           help="show objects with changes")
-    args_main.add_argument('-g',
-                           '--git',
-                           action="store_true",
-                           help="interactive git menu")
-    args_main.add_argument('-u',
-                           '--dump',
-                           action="store_true",
-                           help="dump config")
+    args_main.add_argument(
+        "-b", "--begin", action="store_true", help="initialize drink"
+    )
+    args_main.add_argument(
+        "-i", "--import", dest="imp", action="store_true", help="import an object"
+    )
+    args_main.add_argument(
+        "-l", "--link", action="store_true", help="add missing symlinks"
+    )
+    args_main.add_argument(
+        "-s", "--show", action="store_true", help="show untracked files"
+    )
+    args_main.add_argument(
+        "-c", "--changed", action="store_true", help="show objects with changes"
+    )
+    args_main.add_argument(
+        "-g", "--git", action="store_true", help="interactive git menu"
+    )
+    args_main.add_argument("-u", "--dump", action="store_true", help="dump config")
     args_selector = parser.add_argument_group("selectors")
-    args_selector.add_argument('-k', '--kind', help=f"one of {set(KINDS)}")
+    args_selector.add_argument("-k", "--kind", help=f"one of {set(KINDS)}")
     args_selector.add_argument(
-        '-t', '--target', help=f"one of your targets or '{GLOBAL_TARGET}'")
+        "-t", "--target", help=f"one of your targets or '{GLOBAL_TARGET}'"
+    )
     args_flags = parser.add_argument_group("flags")
-    args_flags.add_argument('-v',
-                            '--verbose',
-                            action="store_true",
-                            help="be louder")
-    args_flags.add_argument('-q',
-                            '--quiet',
-                            action="store_true",
-                            help="be quieter")
-    args_flags.add_argument('-d',
-                            '--debug',
-                            action="store_true",
-                            help="print a lot of debugging information")
-    parser.add_argument('filename', nargs="?")
+    args_flags.add_argument("-v", "--verbose", action="store_true", help="be louder")
+    args_flags.add_argument("-q", "--quiet", action="store_true", help="be quieter")
+    args_flags.add_argument(
+        "-d",
+        "--debug",
+        action="store_true",
+        help="print a lot of debugging information",
+    )
+    parser.add_argument("filename", nargs="?")
     return parser
 
 
@@ -193,8 +192,9 @@ def cli():
             err("no filename supplied")
             return 2
         try:
-            o = DrinkObject.import_object(c, Path(args.filename), args.kind,
-                                          args.target)
+            o = DrinkObject.import_object(
+                c, Path(args.filename), args.kind, args.target
+            )
             git.add_object(c, o)
             o.link(overwrite=True)
         except FileNotFoundError as e:
