@@ -74,7 +74,7 @@ def get_dangling_links(c: Config, selected_kind: str) -> Iterator[Path]:
     dir = c.kindDir(selected_kind)
     if not dir.exists():
         return
-    verbose(f"pruning {dir}")
+    debug(f"pruning {dir}")
     for p in dir.iterdir():
         if not p.is_symlink():
             debug(f"{p} is not a symlink")
@@ -92,10 +92,22 @@ def get_dangling_links(c: Config, selected_kind: str) -> Iterator[Path]:
 def prune(c: Config):
     """Remove all dangling symlinks from $HOME that are likely to
     be leftovers from removed drink objects"""
+    verbose("pruning...")
     for kind in KINDS:
         for dl in get_dangling_links(c, kind):
             verbose(f"dangling symlink {dl}")
             dl.unlink()
+
+
+def link_all(c: Config):
+    verbose("linking...")
+    for o in git.get_tracked_objects(c):
+        if o.state == ObjectState.ManagedPending:
+            verbose(f"linking {o.relpath}")
+            try:
+                o.link()
+            except OSError as e:
+                err(f"could not link {o.relpath}: {e}")
 
 
 def find_drinkrc() -> Path:
@@ -221,13 +233,7 @@ def cli():
         else:
             print("\n".join(git.get_changed_files(c)))
     if args.link:
-        for o in git.get_tracked_objects(c):
-            if o.state == ObjectState.ManagedPending:
-                verbose(f"linking {o.relpath}")
-                try:
-                    o.link()
-                except OSError as e:
-                    err(f"could not link {o.relpath}: {e}")
+        link_all(c)
         prune(c)
     if args.imp:
         if not args.kind:
