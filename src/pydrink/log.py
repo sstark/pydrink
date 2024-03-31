@@ -11,11 +11,14 @@ VERBOSE = False
 c = console.Console()
 
 
-def notice(s):
+def notice(s, no_dedent=False):
     """Print normal info messages"""
     # verbose should override quiet
     if (not QUIET) or VERBOSE:
-        c.print(dedent(s))
+        if no_dedent:
+            c.print(s)
+        else:
+            c.print(dedent(s))
 
 
 def verbose(s):

@@ -155,14 +155,14 @@ def menu(c: Config, input_function: Callable) -> int:
     change_actions = ["diff", "commit", "checkout", "add"]
     while True:
         notice("")
-        notice(" 1) [b]quit[/b]")
-        notice(" 2) [b]fetch[/b] from base")
-        notice(" 3) [b]push[/b] to base")
-        notice(" 4) [b]automerge[/b] all remote branches")
-        notice(" 5) [b]commit -a[/b]")
-        notice(" 6) [b]commit[/b]")
-        notice(" 7) [b]log -p[/b]")
-        notice(" 8) [b]diff[/b]")
+        notice(" 1) [b]quit[/b]", no_dedent=True)
+        notice(" 2) [b]fetch[/b] from base", no_dedent=True)
+        notice(" 3) [b]push[/b] to base", no_dedent=True)
+        notice(" 4) [b]automerge[/b] all remote branches", no_dedent=True)
+        notice(" 5) [b]commit -a[/b]", no_dedent=True)
+        notice(" 6) [b]commit[/b]", no_dedent=True)
+        notice(" 7) [b]log -p[/b]", no_dedent=True)
+        notice(" 8) [b]diff[/b]", no_dedent=True)
         i: int = 10
         # If one of the individual action commands is used,
         # the corresponding menu entries are still there. So
