@@ -42,4 +42,4 @@ def debug(s):
 
 
 def err(s):
-    c.print("[red]" + dedent(s) + "[/red]")
+    c.print("[bright_red]" + dedent(s) + "[/bright_red]")
