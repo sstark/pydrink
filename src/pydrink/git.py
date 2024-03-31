@@ -112,7 +112,7 @@ def init_repository(c: Config) -> int:
     cf_email = target = c["TARGET"]
     cf_username = getpass.getuser()
     cf_push = f"+refs/heads/*:refs/remotes/{target}/*"
-    cf_fetch = f"+refs/remotes/*/{mb}:refs/remotes/*/{mb}v"
+    cf_fetch = f"+refs/remotes/*/{mb}:refs/remotes/*/{mb}"
     cmd = ["git", "-C", str(repo), "init", "-b", mb]
     ret = call(cmd)
     if ret != 0:
