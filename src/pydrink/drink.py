@@ -4,12 +4,15 @@ from pathlib import Path
 import os
 import argparse
 from collections import defaultdict
+from importlib.metadata import metadata, version
 from rich.prompt import Prompt
+from rich.markdown import Markdown
+from rich import print
 from rich_argparse import RichHelpFormatter
 
 from pydrink.config import BY_TARGET, Config, KINDS, CONFIG_FILENAME
 import pydrink.log
-from pydrink.log import err, debug, verbose, warn
+from pydrink.log import err, debug, verbose, warn, notice
 from pydrink.obj import (
     GLOBAL_TARGET,
     DrinkObject,
@@ -137,6 +140,9 @@ def createArgumentParser():
     )
     args_main = parser.add_mutually_exclusive_group(required=True)
     args_main.add_argument(
+        "-r", "--readme", action="store_true", help="show readme"
+    )
+    args_main.add_argument(
         "-b", "--begin", action="store_true", help="initialize drink"
     )
     args_main.add_argument(
@@ -153,6 +159,9 @@ def createArgumentParser():
     )
     args_main.add_argument(
         "-g", "--git", action="store_true", help="interactive git menu"
+    )
+    args_main.add_argument(
+        "-V", "--version", action="store_true", help="show version"
     )
     args_main.add_argument("-u", "--dump", action="store_true", help="dump config")
     args_selector = parser.add_argument_group("selectors")
@@ -180,6 +189,7 @@ def cli():
     pydrink.log.DEBUG = args.debug
     pydrink.log.QUIET = args.quiet
     pydrink.log.VERBOSE = args.verbose
+    p_name = __package__ or __name__
 
     if args.begin:
         return begin_setup()
@@ -244,3 +254,9 @@ def cli():
         except InvalidDrinkObject as e:
             err(f"Import failed: {e}")
             return 2
+    if args.readme:
+        meta = metadata(p_name)
+        print(Markdown(meta["Description"]))
+    if args.version:
+        p_version = version(p_name)
+        notice(f"{p_name} {p_version}")
