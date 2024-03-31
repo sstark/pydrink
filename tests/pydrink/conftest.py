@@ -56,7 +56,7 @@ def drinkdir(tmppath):
 @pytest.fixture
 def drinkrc_and_drinkdir(drinkdir):
     rcfile = drinkdir / ".drinkrc"
-    with open(rcfile, 'w') as f:
+    with open(rcfile, "w") as f:
         f.write('TARGET="singold"\n')
         f.write(f'DRINKDIR="{drinkdir}"\n')
     return rcfile
@@ -64,7 +64,7 @@ def drinkrc_and_drinkdir(drinkdir):
 
 @pytest.fixture
 def drinkrc(tmpfile):
-    with open(tmpfile, 'w') as f:
+    with open(tmpfile, "w") as f:
         f.write('TARGET="somehost"\n')
         f.write('DRINKDIR="relative/path"\n')
     return tmpfile
@@ -93,13 +93,16 @@ def tracked_drinkrc_and_drinkdir(drinkrc_and_drinkdir, git_base_repo):
         with open(ref, "w") as f:
             f.write("060c2e38b7147abbc8279f90e06d122aaaa72bad\n")
     call(git + ["config", "remote.base.url", str(git_base_repo)])
-    call(git + [
-        "config", "remote.base.push",
-        f"+refs/heads/*:refs/remotes/{c['TARGET']}/*"
-    ])
-    call(git + [
-        "config",
-        "remote.base.fetch",
-        f"+refs/remotes/*/{c['MASTERBRANCH']}:refs/remotes/*/{c['MASTERBRANCH']}",
-    ])
+    call(
+        git
+        + ["config", "remote.base.push", f"+refs/heads/*:refs/remotes/{c['TARGET']}/*"]
+    )
+    call(
+        git
+        + [
+            "config",
+            "remote.base.fetch",
+            f"+refs/remotes/*/{c['MASTERBRANCH']}:refs/remotes/*/{c['MASTERBRANCH']}",
+        ]
+    )
     return drinkrc_and_drinkdir

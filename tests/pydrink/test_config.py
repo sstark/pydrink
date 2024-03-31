@@ -15,7 +15,7 @@ def test_drinkrc_drinkdir_is_absolute(drinkrc):
 
 def test_managed_targets(drinkrc_and_drinkdir):
     c = Config(drinkrc_and_drinkdir)
-    assert c.managedTargets() == {'bapf', 'foo', 'bar'}
+    assert c.managedTargets() == {"bapf", "foo", "bar"}
 
 
 def test_dump_config(drinkrc):
