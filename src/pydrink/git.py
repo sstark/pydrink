@@ -103,8 +103,9 @@ def add_object(c: Config, obj: DrinkObject) -> int:
 
 
 def init_repository(c: Config) -> int:
-    notice(f'Initializing git repository in {c["DRINKDIR"]}')
+    notice(f'Initializing git repository in {c["DRINKDIR"]}:')
     repo = c["DRINKDIR"]
+    debug(f"creating directory {repo}")
     repo.mkdir(parents=True)
     base = c["DRINKBASE"]
     mb = c["MASTERBRANCH"]
@@ -119,10 +120,9 @@ def init_repository(c: Config) -> int:
         return ret
     notice("A basic drink repository has been created.")
     notice(dedent(f"""\
-        In order to use the push/fetch features of drink, you will need to
-        configure a base remote URL. Run the following commands (or some
-        variant of it) to do that. <URL> depends on how and where you created
-        the base repository.
+        In order to use the push/fetch features of drink, you will need to configure
+        a base remote URL. Run the following commands (or some variant of it) to do
+        that. <URL> depends on how and where you created the base repository.
 
           git -C {repo} remote add {base} <URL>
           git -C {repo} config remote.{base}.push "{cf_push}"
@@ -137,7 +137,6 @@ def init_repository(c: Config) -> int:
         Add all symlinks:
 
           drink -lv
-
         """))
     return 0
 

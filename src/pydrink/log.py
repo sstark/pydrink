@@ -1,27 +1,31 @@
 import inspect
 from pathlib import Path
 from rich import print
+from rich import console
+from textwrap import dedent
 
 DEBUG = False
 QUIET = False
 VERBOSE = False
+
+c = console.Console()
 
 
 def notice(s):
     """Print normal info messages"""
     # verbose should override quiet
     if (not QUIET) or VERBOSE:
-        print(s)
+        c.print(dedent(s))
 
 
 def verbose(s):
     """Print additional info that is not strictly necessary"""
     if VERBOSE:
-        print(s)
+        c.print("[dim]" + dedent(s) + "[/dim]")
 
 
 def warn(s):
-    print(s)
+    c.print("! [yellow]" + dedent(s) + "[/yellow]")
 
 
 def debug(s):
@@ -35,4 +39,4 @@ def debug(s):
 
 
 def err(s):
-    print(f"Error: {s}")
+    c.print("[red]" + dedent(s) + "[/red]")

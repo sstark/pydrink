@@ -4,7 +4,6 @@ from pathlib import Path
 import os
 import argparse
 from collections import defaultdict
-from textwrap import dedent
 from rich.prompt import Prompt
 from rich_argparse import RichHelpFormatter
 
@@ -118,22 +117,14 @@ def begin_setup() -> int:
         err(f"Unexpected error: {e}")
         return 3
     if not (c["DRINKDIR"] / ".git").is_dir():
-        warn(
-            dedent(
-                f"""\
+        warn(f"""\
             Configuration found in {drinkrc}, but the configured git repository does
-            not exist yet."""
-            )
-        )
+            not exist yet.""")
         git.init_repository(c)
     else:
-        warn(
-            dedent(
-                f"""\
+        warn(f"""\
             Configuration found in {drinkrc}. Remove it first if you want to start
-            over."""
-            )
-        )
+            over.""")
     return 0
 
 
