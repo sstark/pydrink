@@ -118,20 +118,28 @@ def begin_setup() -> int:
         err(f"Unexpected error: {e}")
         return 3
     if not (c["DRINKDIR"] / ".git").is_dir():
-        warn(dedent(f"""\
+        warn(
+            dedent(
+                f"""\
             Configuration found in {drinkrc}, but the configured git repository does
-            not exist yet."""))
+            not exist yet."""
+            )
+        )
         git.init_repository(c)
     else:
-        warn(dedent(f"""\
+        warn(
+            dedent(
+                f"""\
             Configuration found in {drinkrc}. Remove it first if you want to start
-            over."""))
+            over."""
+            )
+        )
     return 0
 
 
 def createArgumentParser():
     parser = argparse.ArgumentParser(
-        prog="pydrink",
+        prog="drink",
         description="Distributed Reusage of Invaluable Nerd Kit",
         epilog="Please consult the README for more information.",
         formatter_class=RichHelpFormatter,
