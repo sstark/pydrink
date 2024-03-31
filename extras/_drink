@@ -42,24 +42,30 @@ _drink_importable () {
 
 _drinkargs () {
     _arguments \
-        '-v[be more verbose sometimes]' \
-        '-q[be more quiet sometimes]' \
-        '-d[turn on debugging output]' \
-        '-h[show help]' \
-        '-k[select kind]:kind:_drink_kinds' \
-        '-t[select target]:target:_drink_targets' \
+        {-v,--verbose}'[be more verbose sometimes]' \
+        {-q,--quiet}'[be more quiet sometimes]' \
+        {-d,--debug}'[turn on debugging output]' \
+        {-h,--help}'[show help]' \
+        {-k,--kind}'[select kind]:kind:_drink_kinds' \
+        {-t,--target}'[select target]:target:_drink_targets' \
+        - readme \
+        {-r,--readme}'[show readme]' \
+        - begin \
+        {-b,--begin}'[initialize drink]' \
         - import \
-        '-i[import files into drink]:file(s) to import:_drink_importable' \
+        {-i,--import}'[import files into drink]:file(s) to import:_drink_importable' \
         - link \
-        '-l[generate symlinks for tracked files]' \
+        {-l,--link}'[generate symlinks for tracked files]' \
         - show_untracked \
-        '-s[show untracked files]' \
+        {-s,--show}'[show untracked files]' \
         - show_changed \
-        '-c[show changed drink objects]' \
+        {-c,--changed}'[show changed drink objects]' \
         - git_menu \
-        '-g[git menu]' \
+        {-g,--git}'[git menu]' \
+        - version \
+        {-V,--version}'[show version]' \
         - dump \
-        '-u[dump config]'
+        {-u,--dump}'[dump config]'
 }
 
 # Use the command that was used to trigger the completion.
