@@ -5,7 +5,7 @@ PROGRAM_FULLPATH := $(shell which $(PROGRAM) 2>/dev/null)
 DEBUG_PORT = 5678
 VERBOSE =
 
-all: test typecheck
+all: test typecheck lint
 
 test:
 ifdef VERBOSE
@@ -21,6 +21,13 @@ else
 	@poetry run mypy
 endif
 
+lint:
+ifdef VERBOSE
+	flake8
+else
+	@flake8
+endif
+
 debug:
 	python -m debugpy --wait-for-client --listen 127.0.0.1:$(DEBUG_PORT) \
 		$(PROGRAM_FULLPATH) $(OPTS)
@@ -28,10 +35,10 @@ debug:
 shell:
 	poetry shell
 
-push-all: test typecheck
+push-all: test typecheck lint
 	@git remote | xargs -L1 git push --all
 
-build: test typecheck
+build: test typecheck lint
 	poetry build -f wheel
 
 coverage:

@@ -107,9 +107,11 @@ def init_repository(c: Config) -> int:
     repo = c["DRINKDIR"]
     repo.mkdir(parents=True)
     base = c["DRINKBASE"]
-    target = c["TARGET"]
     mb = c["MASTERBRANCH"]
-    username = getpass.getuser()
+    cf_email = target = c["TARGET"]
+    cf_username = getpass.getuser()
+    cf_push = f"+refs/heads/*:refs/remotes/{target}/*"
+    cf_fetch = f"+refs/remotes/*/{mb}:refs/remotes/*/{mb}v"
     cmd = ["git", "-C", str(repo), "init", "-b", mb]
     ret = call(cmd)
     if ret != 0:
@@ -123,10 +125,10 @@ def init_repository(c: Config) -> int:
         the base repository.
 
           git -C {repo} remote add {base} <URL>
-          git -C {repo} config remote.{base}.push "+refs/heads/*:refs/remotes/{target}/*"
-          git -C {repo} config remote.{base}.fetch "+refs/remotes/*/{mb}:refs/remotes/*/{mb}"
-          git -C {repo} config user.name "{username}"
-          git -C {repo} config user.email "{target}"
+          git -C {repo} config remote.{base}.push "{cf_push}"
+          git -C {repo} config remote.{base}.fetch "{cf_fetch}"
+          git -C {repo} config user.name "{cf_username}"
+          git -C {repo} config user.email "{cf_email}"
 
         Afterwards you should be able to automerge from all remotes:
 

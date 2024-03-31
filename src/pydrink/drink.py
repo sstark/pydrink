@@ -4,6 +4,7 @@ from pathlib import Path
 import os
 import argparse
 from collections import defaultdict
+from textwrap import dedent
 from rich.prompt import Prompt
 from rich_argparse import RichHelpFormatter
 
@@ -90,9 +91,9 @@ def prune(c: Config):
     """Remove all dangling symlinks from $HOME that are likely to
     be leftovers from removed drink objects"""
     for kind in KINDS:
-        for l in get_dangling_links(c, kind):
-            verbose(f"dangling symlink {l}")
-            l.unlink()
+        for dl in get_dangling_links(c, kind):
+            verbose(f"dangling symlink {dl}")
+            dl.unlink()
 
 
 def find_drinkrc() -> Path:
@@ -117,14 +118,14 @@ def begin_setup() -> int:
         err(f"Unexpected error: {e}")
         return 3
     if not (c["DRINKDIR"] / ".git").is_dir():
-        warn(
-            f"Configuration found in {drinkrc}, but the configured git repository does not exist yet."
-        )
+        warn(dedent(f"""\
+            Configuration found in {drinkrc}, but the configured git repository does
+            not exist yet."""))
         git.init_repository(c)
     else:
-        warn(
-            f"Configuration found in {drinkrc}. Remove it first if you want to start over."
-        )
+        warn(dedent(f"""\
+            Configuration found in {drinkrc}. Remove it first if you want to start
+            over."""))
     return 0
 
 

@@ -22,7 +22,8 @@ VARNAMES = {
     "BINDIR": "bin",
     "ZFUNCDIR": ".zfunc",
     "CONFDIR": ".",
-    "SUPPORTED_KINDS": f"'{' '.join(sorted(KINDS.keys()))}'",  # used by _drink completion
+    # used by _drink completion
+    "SUPPORTED_KINDS": f"'{' '.join(sorted(KINDS.keys()))}'",
 }
 
 # The subdirectory within DRINKDIR in which per target objects are located
