@@ -1,6 +1,5 @@
 from collections.abc import Iterable, Iterator
-from textwrap import dedent
-from pydrink.log import debug, err, notice
+from pydrink.log import debug, err, notice, warn
 from pydrink.config import Config, KINDS
 from pydrink.obj import DrinkObject
 import sys
@@ -108,36 +107,57 @@ def init_repository(c: Config) -> int:
     debug(f"creating directory {repo}")
     repo.mkdir(parents=True)
     base = c["DRINKBASE"]
+    baseurl = c["DRINKBASEURL"]
     mb = c["MASTERBRANCH"]
     cf_email = target = c["TARGET"]
     cf_username = getpass.getuser()
     cf_push = f"+refs/heads/*:refs/remotes/{target}/*"
     cf_fetch = f"+refs/remotes/*/{mb}:refs/remotes/*/{mb}"
-    cmd = ["git", "-C", str(repo), "init", "-b", mb]
+    git = ["git", "-C", str(repo)]
+    cmd = git + ["init", "-b", mb]
     ret = call(cmd)
     if ret != 0:
-        err(f"Error when running {cmd}")
+        err(f"Could not initialize repository: {cmd}")
         return ret
-    notice("A basic drink repository has been created.")
-    notice(dedent(f"""\
-        In order to use the push/fetch features of drink, you will need to configure
-        a base remote URL. Run the following commands (or some variant of it) to do
-        that. <URL> depends on how and where you created the base repository.
+    notice("A drink repository has been created.")
+    if baseurl:
+        notice("Configuring git remote.")
+        cmd = git + ["remote", "add", base, baseurl]
+        ret = call(cmd)
+        if ret != 0:
+            err(f"Could not add remote: {cmd}")
+            return ret
+        cmd = git + ["config", f"remote.{base}.push", cf_push]
+        ret = call(cmd)
+        if ret != 0:
+            err(f"Could not configure push mode: {cmd}")
+            return ret
+        cmd = git + ["config", f"remote.{base}.fetch", cf_fetch]
+        ret = call(cmd)
+        if ret != 0:
+            err(f"Could not configure fetch mode: {cmd}")
+            return ret
+        cmd = git + ["config", "user.name", cf_username]
+        ret = call(cmd)
+        if ret != 0:
+            err(f"Could not configure username: {cmd}")
+            return ret
+        cmd = git + ["config", "user.email", cf_email]
+        ret = call(cmd)
+        if ret != 0:
+            err(f"Could not configure email: {cmd}")
+            return ret
+        notice("""\
+            Now you should be able to automerge from all remotes:
 
-          git -C {repo} remote add {base} <URL>
-          git -C {repo} config remote.{base}.push "{cf_push}"
-          git -C {repo} config remote.{base}.fetch "{cf_fetch}"
-          git -C {repo} config user.name "{cf_username}"
-          git -C {repo} config user.email "{cf_email}"
+              drink -g <<<4
 
-        Afterwards you should be able to automerge from all remotes:
+            And add all (missing) symlinks:
 
-          drink -g <<<4
-
-        Add all symlinks:
-
-          drink -lv
-        """))
+              drink -lv
+            """)
+    else:
+        warn("No DRINKBASEURL is defined, remote features will be unavailable.")
     return 0
 
 

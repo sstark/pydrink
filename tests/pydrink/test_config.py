@@ -25,6 +25,7 @@ def test_dump_config(drinkrc):
         "BINDIR=bin",
         "CONFDIR=.",
         "DRINKBASE=base",
+        "DRINKBASEURL=",
         "DRINKDIR=relative/path",
         "MASTERBRANCH=main",
         "SUPPORTED_KINDS='bin conf zfunc'",

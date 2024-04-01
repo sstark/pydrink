@@ -18,6 +18,7 @@ VARNAMES = {
     "TARGET": "localhost",
     "DRINKDIR": "git/drink",
     "DRINKBASE": "base",  # The central git remote
+    "DRINKBASEURL": "",  # The URL for the central git remote
     "MASTERBRANCH": "main",
     "BINDIR": "bin",
     "ZFUNCDIR": ".zfunc",

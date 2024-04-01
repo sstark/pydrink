@@ -70,10 +70,10 @@ Screenshot of the `drink --help` output:
 ![drink-help](https://github.com/sstark/pydrink/assets/837918/11d8f0fa-4892-4113-b012-3bfb75cca3be)
 
 
-Get Started
------------
+Getting Started
+----------------
 
-If you have never used drink before, you need to create a configuration file
+If you have not used drink before, you need to create a configuration file
 and a repository. For both, drink offers you some assistance:
 
      $ drink -b
@@ -82,7 +82,9 @@ and a repository. For both, drink offers you some assistance:
 
 Now you can open `drinkrc` and customize it before proceeding. See next chapter
 for details. Most importantly you will want to add the DRINKBASEURL parameter
-to it.
+to it. If you have a shared home directory (e. g. NFS) and your drink
+repository is located on it, you likely want to adjust your TARGET parameter to
+not use the hostname, but some broader term.
 
 If you are happy with your `drinkrc`, run `drink -b` again:
 
@@ -90,11 +92,20 @@ If you are happy with your `drinkrc`, run `drink -b` again:
     Configuration found in /home/user/.config/drinkrc, but the configured git repository does not exist yet.
     Initializing git repository in /home/user/git/drink
     Initialized empty Git repository in /home/user/git/drink/.git/
-    A basic drink repository has been created.
-    [...]
-    FIXME
+    A drink repository has been created.
+    Configuring git remote.
+    Now you should be able to automerge from all remotes:
 
-At this point we have a working drink repository for local usage.
+      drink -g <<<4
+
+    And add all (missing) symlinks:
+
+      drink -lv
+
+At this point we have a fully operable drink setup.
+
+Above process needs to be repeated in all locations where you want to use
+drink. This does not apply to locations sharing your home directory.
 
 
 Configuration File
