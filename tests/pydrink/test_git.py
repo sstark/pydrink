@@ -50,7 +50,7 @@ def test_git_menu_items(tracked_drinkrc_and_drinkdir, test_input, expected):
     # So let's pretend we are not on a tty.
     sys.stdin.isatty = lambda: False
     c = Config(tracked_drinkrc_and_drinkdir)
-    assert menu(c, lambda _: test_input) == expected
+    assert menu(c, lambda: test_input) == expected
 
 
 def test_menu_with_changed_files(capsys, tracked_drinkrc_and_drinkdir):
@@ -69,7 +69,7 @@ def test_menu_with_changed_files(capsys, tracked_drinkrc_and_drinkdir):
     # Here we test that after "git adding" a change from the git menu
     # we get a different result when doing it a second time, because
     # the menu numbering as changed.
-    assert menu(c, lambda _: "") == 99
+    assert menu(c, lambda: "") == 99
     captured = capsys.readouterr()
     line10 = captured.out.split("\n")[10]
     assert line10 == "10) diff bin/by-target/foo/obj1"

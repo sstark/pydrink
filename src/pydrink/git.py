@@ -179,7 +179,7 @@ def menu(c: Config, input_function: Callable) -> int:
         notice("")
         debug(f"git_cmd: {git_cmd}")
         try:
-            reply = input_function("[dim][i]git action[/i][/dim]")
+            reply = input_function()
         except EOFError:
             return 0
         debug(f"reply: {reply}")

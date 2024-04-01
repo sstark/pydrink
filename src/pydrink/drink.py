@@ -222,8 +222,10 @@ def cli():
             err(e)
             return 1
     if args.git:
+        prompt = Prompt("" if args.quiet else "[dim][i]git action[/i][/dim]: ")
+        prompt.prompt_suffix = ""
         try:
-            return git.menu(c, Prompt.ask)
+            return git.menu(c, prompt)
         except KeyboardInterrupt:
             err("git menu was cancelled")
             return 1
