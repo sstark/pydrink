@@ -81,10 +81,16 @@ and a repository. For both, drink offers you some assistance:
      Please review or change the contents and run this command again.
 
 Now you can open `drinkrc` and customize it before proceeding. See next chapter
-for details. Most importantly you will want to add the DRINKBASEURL parameter
-to it. If you have a shared home directory (e. g. NFS) and your drink
-repository is located on it, you likely want to adjust your TARGET parameter to
-not use the hostname, but some broader term.
+for details (and then jump back here). Most importantly you will want to make
+at least one of these changes to it before proceeding:
+
+  - Add a **DRINKBASEURL** parameter to it.
+  - If you have a shared home directory (e. g. NFS) and your drink repository
+    is located on it, you likely want to adjust your **TARGET** parameter to
+    not use the hostname, but some broader term.
+  - Adjust the location where your drink repository will be created. For that,
+    change to **DRINKDIR** parameter to point to some (not yet existing)
+    directory. This can be relative to your home.
 
 If you are happy with your `drinkrc`, run `drink -b` again:
 
@@ -143,7 +149,7 @@ just one simple example you could use:
     cd dotfiles
     git init --bare
 
-And then use `ssh://myserver/~/git/dotfiles` as URL for above commands.
+And then use `ssh://myserver/~/git/dotfiles` as DRINKBASEURL.
 
 
 Shell Integration
