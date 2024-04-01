@@ -1,8 +1,7 @@
 pydrink
 =======
 
-Very much "WORK IN PROGRESS" Python implemenation of the drink dotfile
-management system.
+Python implemenation of the *drink* dotfile management system.
 
 This will maintain files in a git repository and create symlinks to them in
 appropriate places in your home directory. You will only need a single
@@ -13,10 +12,10 @@ The **interactive git menu** of drink provides a convenient way to manage and
 distribute your shell environment. Using the git menu you can see which of your
 tracked files have changed and quickly decide to keep or discard those changes.
 
-With the drink git menu you can use the distributed content tracking of git
-without having to learn the git command line.
-
 A **colorful command line interface** is used to interact with the user.
+
+With the drink git menu you can use the distributed content tracking of git
+without having to learn the git command line:
 
 ![drink-menu](https://github.com/sstark/pydrink/assets/837918/b87a6b52-88a4-4df3-b4a9-1c6604705425)
 
@@ -27,6 +26,7 @@ Audience
 This program is for people who:
 
   - want to have a tidy environment
+  - want to stay in control of their configuration files
   - want to share settings and scripts between different locations
   - want to use a central git repository as a distribution base
   - like command line interfaces
@@ -34,7 +34,7 @@ This program is for people who:
     reason, found pydrink and are convinced by a concept that the author has
     been using daily for 16 years on ever changing systems (mostly Linux, but
     also Mac and Windows), when it was just a simple zsh script
-  - are not afraid of symlinks
+  - are not afraid of many symlinks in their home directory
 
 
 Concepts
@@ -61,20 +61,40 @@ dedicated place where it will be linked to in the users home directory.
 example, somebody might want to add a kind for storing bash aliases. Currently
 this needs changes to the code, but with modest effort.)
 
+
 Interface
 ---------
+
+Screenshot of the `drink --help` output:
 
 ![drink-help](https://github.com/sstark/pydrink/assets/837918/11d8f0fa-4892-4113-b012-3bfb75cca3be)
 
 
-History
--------
+Get Started
+-----------
 
-This is yet another dotfile management system. I wrote this originally in zsh
-(first commit Mar 14 2008) and use it daily since then.
+If you have never used drink before, you need to create a configuration file
+and a repository. For both, drink offers you some assistance:
 
-The zsh version was never published because it is too much entangeled with my
-actual shell environment. This rewrite in Python aims to fix that.
+     $ drink -b
+     New drinkrc created in /home/user/.config/drinkrc.
+     Please review or change the contents and run this command again.
+
+Now you can open `drinkrc` and customize it before proceeding. See next chapter
+for details. Most importantly you will want to add the DRINKBASEURL parameter
+to it.
+
+If you are happy with your `drinkrc`, run `drink -b` again:
+
+    $ drink -b
+    Configuration found in /home/user/.config/drinkrc, but the configured git repository does not exist yet.
+    Initializing git repository in /home/user/git/drink
+    Initialized empty Git repository in /home/user/git/drink/.git/
+    A basic drink repository has been created.
+    [...]
+    FIXME
+
+At this point we have a working drink repository for local usage.
 
 
 Configuration File
@@ -88,6 +108,9 @@ Example drinkrc with the minimal settings:
     TARGET=somestring
     DRINKDIR="some/path/to/gitdir"
 
+Values can be put in double quotes. Do not put spaces around the '=' if you
+want to use the _drink zsh completion file.
+
 For TARGET you should chose a value that is unique to the environment in which
 you want to use a certain set of _pydrink_ objects. That could be your hostname
 or workplace name. _Pydrink_ will only link objects that are either in your
@@ -98,12 +121,18 @@ is located. This contains all your files and it will be the place where
 symlinked objects point to. If it is a relative path, $HOME will be prepended
 to it implicitly.
 
-Values can be put in double quotes. Do not put spaces around the '=' if you
-want to use the _drink zsh completion file.
+DRINKBASEURL should contain the URL for your base repository. This should have
+read and write permissions for your user. It's beyond this document to describe
+all possible ways to create and reference another git repository, so here is
+just one simple example you could use:
 
-For historical reasons, configuration keywords (e. g. "TARGET") are in upper
-case. This might change in the future for a more modern look, but has low
-priority.
+    ssh myserver
+    cd git
+    mkdir dotfiles
+    cd dotfiles
+    git init --bare
+
+And then use `ssh://myserver/~/git/dotfiles` as URL for above commands.
 
 
 Shell Integration
@@ -191,16 +220,30 @@ Run a debugpy server, suitable for connecting with e. g. nvim-dap:
 
     make debug OPTS="-s -d"
 
-Bootstrap:
+Bootstrap development environment:
 
-    git clone https://github.com/sstark/pydrink
-    cd pydrink
     <distro-specific-tool> install pipx
     pipx install poetry
+    git clone https://github.com/sstark/pydrink
+    cd pydrink
     poetry shell
     poetry update
-    poetry install
     make
+
+
+History
+-------
+
+This is yet another dotfile management system. I wrote this originally in zsh
+(first commit Mar 14 2008) and use it daily since then.
+
+The zsh version was never published because it is too much entangeled with my
+actual shell environment. This rewrite in Python aims to fix that.
+
+Configuration keywords (e. g. "TARGET") are still in upper case to be
+compatible with the old shell version of drink. This might change in the future
+for a more modern look, but has low priority.
+
 
 Author
 ------
