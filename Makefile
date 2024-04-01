@@ -45,6 +45,9 @@ coverage:
 	coverage run -m pytest
 	coverage report -m
 
+release-test: build
+	poetry publish -r test-pypi
+
 clean:
 	rm -rf dist
 	find . -type d -name __pycache__ -print0 | xargs -0 rm -rf
