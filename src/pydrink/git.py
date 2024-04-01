@@ -141,9 +141,8 @@ def init_repository(c: Config) -> int:
     return 0
 
 
-def menu(c: Config, input_function: Callable) -> int:
-    """Interactive menu to run git commands on drink objects"""
-    git: list[str] = ["git", "-C", str(c["DRINKDIR"])]
+def git_menu_items(c: Config, git: list[str]) -> dict[str, list[str]]:
+    """Return a dictionary of user selectable git commands, indexed by a number."""
     git_cmd_base: Dict[str, list[str]] = {
         "2": git + ["fetch", str(c["DRINKBASE"])],
         "3": git + ["push", str(c["DRINKBASE"])],
@@ -153,30 +152,39 @@ def menu(c: Config, input_function: Callable) -> int:
         "8": git + ["diff"],
     }
     change_actions = ["diff", "commit", "checkout", "add"]
+    notice("")
+    notice(" 1) [b]quit[/b]", no_dedent=True)
+    notice(" 2) [b]fetch[/b] from base", no_dedent=True)
+    notice(" 3) [b]push[/b] to base", no_dedent=True)
+    notice(" 4) [b]automerge[/b] all remote branches", no_dedent=True)
+    notice(" 5) [b]commit -a[/b]", no_dedent=True)
+    notice(" 6) [b]commit[/b]", no_dedent=True)
+    notice(" 7) [b]log -p[/b]", no_dedent=True)
+    notice(" 8) [b]diff[/b]", no_dedent=True)
+    i: int = 10
+    # If one of the individual action commands is used,
+    # the corresponding menu entries are still there. So
+    # we need to reset the whole menu on each loop.
+    git_cmd = git_cmd_base
+    # Augment the menu with changed objects
+    changed_files = get_changed_files(c)
+    for change in changed_files:
+        notice(f" [yellow]------ ({change}) ------[/yellow]")
+        for action in change_actions:
+            notice(f"{i:>2}) {action} [dim]{change}[/dim]")
+            git_cmd[str(i)] = git + [action] + [change]
+            i += 1
+    notice("")
+    return git_cmd
+
+
+def menu(c: Config, input_function: Callable) -> int:
+    """Interactive menu to run git commands on drink objects"""
     while True:
-        notice("")
-        notice(" 1) [b]quit[/b]", no_dedent=True)
-        notice(" 2) [b]fetch[/b] from base", no_dedent=True)
-        notice(" 3) [b]push[/b] to base", no_dedent=True)
-        notice(" 4) [b]automerge[/b] all remote branches", no_dedent=True)
-        notice(" 5) [b]commit -a[/b]", no_dedent=True)
-        notice(" 6) [b]commit[/b]", no_dedent=True)
-        notice(" 7) [b]log -p[/b]", no_dedent=True)
-        notice(" 8) [b]diff[/b]", no_dedent=True)
-        i: int = 10
-        # If one of the individual action commands is used,
-        # the corresponding menu entries are still there. So
-        # we need to reset the whole menu on each loop.
-        git_cmd = git_cmd_base
-        # Augment the menu with changed objects
-        changed_files = get_changed_files(c)
-        for change in changed_files:
-            notice(f" [yellow]------ ({change}) ------[/yellow]")
-            for action in change_actions:
-                notice(f"{i:>2}) {action} [dim]{change}[/dim]")
-                git_cmd[str(i)] = git + [action] + [change]
-                i += 1
-        notice("")
+        # The git base command which is the same for all menu items
+        git = ["git", "-C", str(c["DRINKDIR"])]
+        # Populate the menu
+        git_cmd = git_menu_items(c, git)
         debug(f"git_cmd: {git_cmd}")
         try:
             reply = input_function()
