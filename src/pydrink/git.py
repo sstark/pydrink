@@ -123,30 +123,23 @@ def init_repository(c: Config) -> int:
     if baseurl:
         notice("Configuring git remote.")
         cmd = git + ["remote", "add", base, baseurl]
-        ret = call(cmd)
-        if ret != 0:
+        if (ret := call(cmd)) != 0:
             err(f"Could not add remote: {cmd}")
             return ret
         cmd = git + ["config", f"remote.{base}.push", cf_push]
-        ret = call(cmd)
-        if ret != 0:
+        if (ret := call(cmd)) != 0:
             err(f"Could not configure push mode: {cmd}")
             return ret
         cmd = git + ["config", f"remote.{base}.fetch", cf_fetch]
-        ret = call(cmd)
-        if ret != 0:
+        if (ret := call(cmd)) != 0:
             err(f"Could not configure fetch mode: {cmd}")
             return ret
         cmd = git + ["config", "user.name", cf_username]
-        ret = call(cmd)
-        if ret != 0:
-            err(f"Could not configure username: {cmd}")
-            return ret
+        if (ret := call(cmd)) != 0:
+            warn(f"Could not configure username: {cmd}")
         cmd = git + ["config", "user.email", cf_email]
-        ret = call(cmd)
-        if ret != 0:
-            err(f"Could not configure email: {cmd}")
-            return ret
+        if (ret := call(cmd)) != 0:
+            warn(f"Could not configure email: {cmd}")
         notice("""\
             Now you should be able to automerge from all remotes:
 
