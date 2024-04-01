@@ -45,6 +45,9 @@ coverage:
 	coverage run -m pytest
 	coverage report -m
 
+release: build
+	poetry publish -r pypi
+
 release-test: build
 	poetry publish -r test-pypi
 
