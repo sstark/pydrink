@@ -46,7 +46,7 @@ coverage:
 	coverage report -m
 
 release: build
-	poetry publish -r pypi
+	poetry publish
 
 release-test: build
 	poetry publish -r test-pypi
