@@ -89,17 +89,22 @@ def get_dangling_links(c: Config, selected_kind: str) -> Iterator[Path]:
         yield p
 
 
-def prune(c: Config):
+def prune(c: Config) -> int:
     """Remove all dangling symlinks from $HOME that are likely to
     be leftovers from removed drink objects"""
     verbose("pruning...")
     for kind in KINDS:
         for dl in get_dangling_links(c, kind):
             verbose(f"dangling symlink {dl}")
-            dl.unlink()
+            try:
+                dl.unlink()
+            except OSError as e:
+                err(f"Could not remove dangling symlink {dl}: {e}")
+                return 4
+    return 0
 
 
-def link_all(c: Config):
+def link_all(c: Config) -> int:
     verbose("linking...")
     for o in git.get_tracked_objects(c):
         if o.state == ObjectState.ManagedPending:
@@ -108,6 +113,8 @@ def link_all(c: Config):
                 o.link()
             except OSError as e:
                 err(f"could not link {o.relpath}: {e}")
+                return 4
+    return 0
 
 
 def find_drinkrc() -> Path:
@@ -231,12 +238,16 @@ def cli():
             return 1
     if args.changed:
         if args.verbose:
-            git.diff(c)
+            return git.diff(c)
         else:
             print("\n".join(git.get_changed_files(c)))
+            return 0
     if args.link:
-        link_all(c)
-        prune(c)
+        if (ret := link_all(c)) != 0:
+            return ret
+        if (ret := prune(c)) != 0:
+            return ret
+        return 0
     if args.imp:
         if not args.kind:
             err("no kind supplied")
@@ -265,6 +276,8 @@ def cli():
     if args.readme:
         meta = metadata(p_name)
         print(Markdown(meta["Description"]))
+        return 0
     if args.version:
         p_version = version(p_name)
         notice(f"{p_name} {p_version}")
+        return 0
