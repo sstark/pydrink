@@ -1,10 +1,11 @@
 [tool.poetry]
 name = "pydrink"
-version = "0.3.0"
+version = "0.3.1a1"
 description = "Python implementation of drink dotfile management system"
 authors = ["Sebastian Stark <sstark@mailbox.org>"]
 license = "ISC"
 readme = "README.md"
+repository = "https://github.com/sstark/pydrink"
 
 [tool.poetry.dependencies]
 python = "^3.9"
