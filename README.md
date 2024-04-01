@@ -19,6 +19,13 @@ without having to learn the git command line:
 
 ![drink-menu](https://github.com/sstark/pydrink/assets/837918/b87a6b52-88a4-4df3-b4a9-1c6604705425)
 
+**This is prerelease software**. Please be careful and make sure you have
+understood the concept and have read the `README.md` file thoroughly. drink
+will move around and symlink files in your home directory, and while many
+precautions are implemented to not cause any harm, there is still the
+possibility of bugs. So let this be said until the 1.x.x release: **Do not use
+pydrink without a backup of your home directory.**
+
 
 Audience
 --------
