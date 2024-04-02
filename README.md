@@ -1,7 +1,7 @@
 pydrink
 =======
 
-Python implemenation of the *drink* dotfile management system.
+Python implementation of the *drink* dotfile management system.
 
 This will maintain files in a git repository and create symlinks to them in
 appropriate places in your home directory. You will only need a single
