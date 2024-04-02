@@ -77,6 +77,16 @@ Screenshot of the `drink --help` output:
 ![drink-help](https://github.com/sstark/pydrink/assets/837918/11d8f0fa-4892-4113-b012-3bfb75cca3be)
 
 
+Install
+-------
+
+The recommended way is to use pipx:
+
+    pipx install pydrink
+
+Visit the project page on pypi for all releases: https://pypi.org/project/pydrink/
+
+
 Getting Started
 ----------------
 
