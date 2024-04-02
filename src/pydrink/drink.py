@@ -209,6 +209,7 @@ def cli():
     pydrink.log.QUIET = args.quiet
     pydrink.log.VERBOSE = args.verbose
     p_name = __package__ or __name__
+    debug(f"p_name: {p_name}")
 
     if args.begin:
         return begin_setup()
@@ -273,6 +274,13 @@ def cli():
         except InvalidDrinkObject as e:
             err(f"Import failed: {e}")
             return 2
+    if args.readme:
+        if descr := metadata(p_name).get("Description"):
+            print(Markdown(descr))
+            return 0
+        else:
+            err("You need Python >= 3.10 to use this feature.")
+            return 5
     if args.readme:
         meta = metadata(p_name)
         print(Markdown(meta["Description"]))
