@@ -7,6 +7,7 @@ out of these, that would be very much appreciated.
 
 Porting the command completion and drinkrefresh to bash would be awesome too.
 
+
 _drink
 ------
 
@@ -27,6 +28,21 @@ and current zsh session are out of sync.
 When `-v` is added, it will print a bit of information about the internal
 state. In combination with `-r`, it will also print a summary of changes in the
 drink recpository since the last shell startup.
+
+**Installation**: Copy the drinkrefresh file into a directory in your fpath and
+put the following into your `.zshrc`:
+
+    whence drink >/dev/null && {
+        # drinkrefresh will reference DRINKDIR as ~drink
+        hash -d drink="$HOME/$(source ~/.drinkrc; echo $DRINKDIR)"
+        # Exported for e. g. starship
+        export drink_prompt_info
+        # Register this also as a precmd:
+        add-zsh-hook precmd drinkrefresh
+        drinkrefresh
+        # Set drink_headref once as the baseline for this shell session.
+        drink_headref=$drink_current_headref
+    }
 
 
 zshaliases
