@@ -1,7 +1,8 @@
 pydrink
 =======
 
-Python implementation of the *drink* dotfile management system.
+Simple, low friction Python implementation of the *drink* dotfile management
+system. Almost no configuration required. Closely integrated with your shell.
 
 This will maintain files in a git repository and create symlinks to them in
 appropriate places in your home directory. You will only need a single
@@ -69,6 +70,19 @@ example, somebody might want to add a kind for storing bash aliases. Currently
 this needs changes to the code, but with modest effort.)
 
 
+Why Symlinks?
+-------------
+
+  - Symlinks make it very easy to see whether a file is managed by drink or
+    not.
+
+  - With symlinks it is extremely simple to check what has changed, because
+    everything just happens within the git repository.
+
+  - Saving space is probably not a point for everyone, since the kind of files
+    we are dealing with here are usually very small, but still it's a point.
+
+
 Interface
 ---------
 
@@ -83,6 +97,8 @@ Install
 The recommended way is to use pipx:
 
     pipx install pydrink
+
+pip should also work.
 
 Visit the project page on pypi for all releases: https://pypi.org/project/pydrink/
 
@@ -101,7 +117,8 @@ Now you can open `drinkrc` and customize it before proceeding. See next chapter
 for details (and then jump back here). Most importantly you will want to make
 at least one of these changes to it before proceeding:
 
-  - Add a **DRINKBASEURL** parameter to it.
+  - Add a **DRINKBASEURL** parameter to it, if you want to use the distribution
+    features of drink.
   - If you have a shared home directory (e. g. NFS) and your drink repository
     is located on it, you likely want to adjust your **TARGET** parameter to
     not use the hostname, but some broader term.
