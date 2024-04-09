@@ -20,7 +20,7 @@ import pytest
 )
 def test_detect_relpath(tracked_drinkrc_and_drinkdir, obj_p, relpath):
     c = Config(tracked_drinkrc_and_drinkdir)
-    obj = DrinkObject(c, c["DRINKDIR"] / obj_p)
+    obj = DrinkObject(c, c.drinkdir / obj_p)
     assert obj.relpath == relpath
 
 
@@ -34,7 +34,7 @@ def test_detect_relpath(tracked_drinkrc_and_drinkdir, obj_p, relpath):
 )
 def test_detect_kind(tracked_drinkrc_and_drinkdir, obj_p, kind):
     c = Config(tracked_drinkrc_and_drinkdir)
-    obj = DrinkObject(c, c["DRINKDIR"] / obj_p)
+    obj = DrinkObject(c, c.drinkdir / obj_p)
     assert obj.kind == kind
 
 
@@ -48,7 +48,7 @@ def test_detect_kind(tracked_drinkrc_and_drinkdir, obj_p, kind):
 )
 def test_detect_target(tracked_drinkrc_and_drinkdir, obj_p, target):
     c = Config(tracked_drinkrc_and_drinkdir)
-    obj = DrinkObject(c, c["DRINKDIR"] / obj_p)
+    obj = DrinkObject(c, c.drinkdir / obj_p)
     assert obj.target == target
 
 
@@ -70,7 +70,7 @@ def test_detect_state(
 
     monkeypatch.setattr(Path, "home", mock_home)
     c = Config(tracked_drinkrc_and_drinkdir)
-    obj = DrinkObject(c, c["DRINKDIR"] / obj_p)
+    obj = DrinkObject(c, c.drinkdir / obj_p)
     # Skip one .link to provoke a ManagedPending state
     if obj.relpath != Path("objx"):
         obj.link()
@@ -87,7 +87,7 @@ def test_detect_state(
 )
 def test_get_linkpath(tracked_drinkrc_and_drinkdir, obj_p, str_p):
     c = Config(tracked_drinkrc_and_drinkdir)
-    obj = DrinkObject(c, c["DRINKDIR"] / obj_p)
+    obj = DrinkObject(c, c.drinkdir / obj_p)
     print(obj)
     assert str(obj.get_linkpath()) == str(str_p)
 
@@ -102,11 +102,11 @@ def test_get_linkpath(tracked_drinkrc_and_drinkdir, obj_p, str_p):
 )
 def test_get_repopath(tracked_drinkrc_and_drinkdir, obj_p):
     c = Config(tracked_drinkrc_and_drinkdir)
-    obj = DrinkObject(c, c["DRINKDIR"] / obj_p)
+    obj = DrinkObject(c, c.drinkdir / obj_p)
     print(obj)
     # We should get out what we put in, except that get_repopath is relative
     assert obj.get_repopath() == obj.p
-    assert obj.get_repopath() == c["DRINKDIR"] / obj_p
+    assert obj.get_repopath() == c.drinkdir / obj_p
 
 
 def test_import_object(fake_home, monkeypatch, tracked_drinkrc_and_drinkdir):
@@ -138,7 +138,7 @@ def test_import_object_with_dot(fake_home, monkeypatch, tracked_drinkrc_and_drin
     assert obj.state == ObjectState.ManagedPending
     assert obj.relpath == Path("dot.blarc")
     assert obj.get_linkpath() == fake_home / ".blarc"
-    assert obj.get_repopath() == c["DRINKDIR"] / "conf" / "dot.blarc"
+    assert obj.get_repopath() == c.drinkdir / "conf" / "dot.blarc"
 
 
 def test_import_object_directory(fake_home, monkeypatch, tracked_drinkrc_and_drinkdir):
@@ -162,7 +162,7 @@ def test_link(fake_home, monkeypatch, tracked_drinkrc_and_drinkdir):
 
     monkeypatch.setattr(Path, "home", mock_home)
     c = Config(tracked_drinkrc_and_drinkdir)
-    obj = DrinkObject(c, c["DRINKDIR"] / "bin" / "obj3")
+    obj = DrinkObject(c, c.drinkdir / "bin" / "obj3")
     assert obj.state == ObjectState.ManagedPending
     obj.link()
     assert obj.state == ObjectState.ManagedOther

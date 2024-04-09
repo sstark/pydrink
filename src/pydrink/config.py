@@ -85,6 +85,10 @@ class Config:
                 return Path(self.config[item])
         return self.config[item]
 
+    @property
+    def drinkdir(self) -> Path:
+        return self["DRINKDIR"]
+
     def kindDir(self, kind: str, relative=False) -> Path:
         """Return the symlink directory for a given kind
         with relative=True return relative path (e. g. "bin").

@@ -80,7 +80,7 @@ def git_base_repo(base_repo_path):
 @pytest.fixture
 def tracked_drinkrc_and_drinkdir(drinkrc_and_drinkdir, git_base_repo):
     c = Config(drinkrc_and_drinkdir)
-    git = ["git", "-C", str(c["DRINKDIR"])]
+    git = ["git", "-C", str(c.drinkdir)]
     call(git + ["init", "-b", c["MASTERBRANCH"]])
     call(git + ["config", "init.defaultBranch", "gookenprien"])
     call(git + ["config", "user.email", "you@example.com"])
@@ -88,7 +88,7 @@ def tracked_drinkrc_and_drinkdir(drinkrc_and_drinkdir, git_base_repo):
     call(git + ["add", "."])
     call(git + ["commit", "-m", "test"])
     for remote in ["hostA", "hostB", "hostC"]:
-        ref = c["DRINKDIR"] / ".git" / "refs" / "remotes" / remote / c["MASTERBRANCH"]
+        ref = c.drinkdir / ".git" / "refs" / "remotes" / remote / c["MASTERBRANCH"]
         ref.parent.mkdir(parents=True)
         with open(ref, "w") as f:
             f.write("060c2e38b7147abbc8279f90e06d122aaaa72bad\n")

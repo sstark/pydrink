@@ -40,7 +40,7 @@ class NoConfigFound(Exception):
 def tracking_status(c: Config, p: Path) -> TrackingState:
     if not p.is_symlink():
         return TrackingState.Untracked
-    if (link_target := p.readlink()).is_relative_to(c["DRINKDIR"]):
+    if (link_target := p.readlink()).is_relative_to(c.drinkdir):
         if BY_TARGET in link_target.parts:
             return TrackingState.TrackedHere
         else:
@@ -81,7 +81,7 @@ def get_dangling_links(c: Config, selected_kind: str) -> Iterator[Path]:
             continue
         dest = p.readlink()
         debug(f"{p} points to {dest}")
-        if not dest.is_relative_to(c["DRINKDIR"] / selected_kind):
+        if not dest.is_relative_to(c.drinkdir / selected_kind):
             continue
         if dest.exists():
             continue
@@ -138,7 +138,7 @@ def begin_setup() -> int:
     except Exception as e:
         err(f"Unexpected error: {e}")
         return 3
-    if not (c["DRINKDIR"] / ".git").is_dir():
+    if not (c.drinkdir / ".git").is_dir():
         warn(f"""\
             Configuration found in {drinkrc}, but the configured git repository does
             not exist yet.""")

@@ -102,7 +102,7 @@ class DrinkObject:
         target node. Target node could be absent.
         """
         c = self.config
-        relpath = self.p.relative_to(c["DRINKDIR"])
+        relpath = self.p.relative_to(c.drinkdir)
         debug(f"relpath: {relpath}")
         if relpath.parts[1] == BY_TARGET:
             debug(f"{relpath} has BY_TARGET")
@@ -114,7 +114,7 @@ class DrinkObject:
     def detect_kind(self) -> str:
         """Return the kind of the object as derived from the path"""
         c = self.config
-        kind = self.p.relative_to(c["DRINKDIR"]).parts[0]
+        kind = self.p.relative_to(c.drinkdir).parts[0]
         if kind in KINDS:
             return kind
         else:
@@ -125,7 +125,7 @@ class DrinkObject:
         If there is no target, return the global target
         """
         c = self.config
-        parts = self.p.relative_to(c["DRINKDIR"]).parts
+        parts = self.p.relative_to(c.drinkdir).parts
         if parts[1] == BY_TARGET:
             target = parts[2]
             debug(f"target is {target}")
@@ -209,7 +209,7 @@ class DrinkObject:
         debug(f"src_path: {src_path}")
         if src_path.is_dir():
             raise InvalidDrinkObject(f"{src_path} is a directory")
-        dest_path = c["DRINKDIR"] / kind / dest_target / relpath
+        dest_path = c.drinkdir / kind / dest_target / relpath
         dest_path = cls._dotify(dest_path)
         debug(f"dotified dest_path: {dest_path}")
         if dest_path.exists():

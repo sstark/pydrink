@@ -14,9 +14,9 @@ def test_get_dangling_links(monkeypatch, tracked_drinkrc_and_drinkdir, fake_home
     c = Config(tracked_drinkrc_and_drinkdir)
     for obj in get_tracked_objects(c):
         obj.link()
-    (Path.home() / "bin" / "dangle1").symlink_to(c["DRINKDIR"] / "bin" / "dangle1")
+    (Path.home() / "bin" / "dangle1").symlink_to(c.drinkdir / "bin" / "dangle1")
     (Path.home() / ".dangle2").symlink_to(
-        c["DRINKDIR"] / "conf" / BY_TARGET / "singold" / "dangle2"
+        c.drinkdir / "conf" / BY_TARGET / "singold" / "dangle2"
     )
     dangle_bin = list(get_dangling_links(c, "bin"))
     assert dangle_bin == [Path.home() / "bin" / "dangle1"]

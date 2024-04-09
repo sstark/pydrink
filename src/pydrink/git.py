@@ -9,7 +9,7 @@ from subprocess import CalledProcessError, call, run
 
 
 def unclean(c: Config) -> bool:
-    ret = call(["git", "-C", str(c["DRINKDIR"]), "diff", "--quiet"])
+    ret = call(["git", "-C", str(c.drinkdir), "diff", "--quiet"])
     if ret != 0:
         err("drink repository is dirty")
     return ret != 0
@@ -19,7 +19,7 @@ def get_branches(c: Config) -> list[str]:
     """Return a list of all remote branches found in drink repository"""
     try:
         result = run(
-            ["git", "-C", str(c["DRINKDIR"]), "branch", "-r", "--no-color"],
+            ["git", "-C", str(c.drinkdir), "branch", "-r", "--no-color"],
             text=True,
             capture_output=True,
         )
@@ -36,7 +36,7 @@ def get_branches(c: Config) -> list[str]:
 
 def diff(c: Config) -> int:
     """Print a list of uncommitted changes"""
-    return call(["git", "-C", str(c["DRINKDIR"]), "diff"])
+    return call(["git", "-C", str(c.drinkdir), "diff"])
 
 
 def get_changed_files(c: Config) -> list[str]:
@@ -46,7 +46,7 @@ def get_changed_files(c: Config) -> list[str]:
             [
                 "git",
                 "-C",
-                str(c["DRINKDIR"]),
+                str(c.drinkdir),
                 "diff-files",
                 "--name-only",
                 "--no-color",
@@ -67,7 +67,7 @@ def get_changed_files(c: Config) -> list[str]:
 
 def get_tracked_objects(c: Config, kinds: Iterable[str] = []) -> Iterator[DrinkObject]:
     """Return a list of DrinkObjects with all tracked objects"""
-    cmd = ["git", "-C", str(c["DRINKDIR"]), "ls-files"]
+    cmd = ["git", "-C", str(c.drinkdir), "ls-files"]
     if kinds == []:
         kinds = list(KINDS)
     try:
@@ -81,7 +81,7 @@ def get_tracked_objects(c: Config, kinds: Iterable[str] = []) -> Iterator[DrinkO
                 if not line:
                     continue
                 debug(f"next line to process: {line}")
-                yield DrinkObject(c, c["DRINKDIR"] / line.strip())
+                yield DrinkObject(c, c.drinkdir / line.strip())
     except CalledProcessError as e:
         err(f"listing tracked objects: {e}")
 
@@ -89,12 +89,12 @@ def get_tracked_objects(c: Config, kinds: Iterable[str] = []) -> Iterator[DrinkO
 def add_object(c: Config, obj: DrinkObject) -> int:
     """Add and commit a drink object to the git repository after it was copied.
     Second step of an import of a new object"""
-    cmd = ["git", "-C", str(c["DRINKDIR"]), "add", obj.get_repopath(relative=True)]
+    cmd = ["git", "-C", str(c.drinkdir), "add", obj.get_repopath(relative=True)]
     ret = call(cmd)
     if ret != 0:
         err(f"Error when adding object to repository. {cmd} failed.")
         return ret
-    cmd = ["git", "-C", str(c["DRINKDIR"]), "commit"]
+    cmd = ["git", "-C", str(c.drinkdir), "commit"]
     ret = call(cmd)
     if ret != 0:
         err(f"Error when committing to repository. {cmd} failed.")
@@ -102,8 +102,8 @@ def add_object(c: Config, obj: DrinkObject) -> int:
 
 
 def init_repository(c: Config) -> int:
-    notice(f'Initializing git repository in {c["DRINKDIR"]}:')
-    repo = c["DRINKDIR"]
+    notice(f'Initializing git repository in {c.drinkdir}:')
+    repo = c.drinkdir
     debug(f"creating directory {repo}")
     repo.mkdir(parents=True)
     base = c["DRINKBASE"]
@@ -195,7 +195,7 @@ def menu(c: Config, input_function: Callable) -> int:
     """Interactive menu to run git commands on drink objects"""
     while True:
         # The git base command which is the same for all menu items
-        git = ["git", "-C", str(c["DRINKDIR"])]
+        git = ["git", "-C", str(c.drinkdir)]
         # Populate the menu
         git_cmd = git_menu_items(c, git)
         debug(f"git_cmd: {git_cmd}")

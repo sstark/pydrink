@@ -14,7 +14,7 @@ from pathlib import Path
 def test_unclean_repo(tracked_drinkrc_and_drinkdir):
     c = Config(tracked_drinkrc_and_drinkdir)
     assert not unclean(c)
-    with open(c["DRINKDIR"] / "bin" / BY_TARGET / "bar" / "obj2", "a") as f:
+    with open(c.drinkdir / "bin" / BY_TARGET / "bar" / "obj2", "a") as f:
         f.write("newly added line\n")
     assert unclean(c)
 
@@ -36,7 +36,7 @@ def test_get_changed_files(tracked_drinkrc_and_drinkdir):
         (Path("conf") / BY_TARGET / "bapf" / ".obj4"),
     ]
     for p in changed_objects:
-        with open(c["DRINKDIR"] / p, "w") as f:
+        with open(c.drinkdir / p, "w") as f:
             f.write("something")
     changes_post = sorted(get_changed_files(c))
     assert changes_post == sorted(map(str, changed_objects))
@@ -64,7 +64,7 @@ def test_menu_with_changed_files(capsys, tracked_drinkrc_and_drinkdir):
     ]
     sys.stdin.isatty = lambda: False
     for p in changed_objects:
-        with open(c["DRINKDIR"] / p, "w") as f:
+        with open(c.drinkdir / p, "w") as f:
             f.write("something")
     # Here we test that after "git adding" a change from the git menu
     # we get a different result when doing it a second time, because
