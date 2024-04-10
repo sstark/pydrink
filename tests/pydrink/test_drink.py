@@ -54,6 +54,7 @@ def test_get_dangling_links_not_existing_dir(drinkrc):
             Path(".foo") / CONFIG_FILENAME,
         ),
     ],
+    ids=["xdg-def", "xdg-def+classic", "xdg-special+classic"],
 )
 def test_find_drinkrc(monkeypatch, fake_home, present_rcs, found_rc):
 
