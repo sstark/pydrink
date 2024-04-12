@@ -220,6 +220,8 @@ class DrinkObject:
             dest_path.parent.mkdir(parents=True)
         debug(f"copying {src_path} -> {dest_path}")
         shutil.copy(src_path, dest_path)
+        # FIXME: here we should probably call git.add_object(newobject) before
+        # returning
         return DrinkObject(c, dest_path)
 
     def link(self, overwrite: bool = False):
