@@ -168,7 +168,7 @@ def createArgumentParser():
         "-i", "--import", dest="imp", action="store_true", help="import an object"
     )
     args_main.add_argument(
-        "-l", "--link", action="store_true", help="add missing symlinks"
+        "-l", "--link", action="store_true", help="add missing and prune symlinks"
     )
     args_main.add_argument(
         "-s", "--show", action="store_true", help="show untracked files"
