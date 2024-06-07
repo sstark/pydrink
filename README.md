@@ -185,9 +185,19 @@ just one simple example you could use:
 
 And then use `ssh://myserver/~/git/dotfiles` as DRINKBASEURL.
 
+With the `-u` switch, you can dump the current configuration file.
+
+With no argument, the full config file will be printed, with values as set in
+the configuration file. Variables which are not set in the configuration file
+will be printed with their default values.
+
+With argument, the value of only this variable will be printed. The value will
+be expanded as it is used internally in drink. E. g. DRINKDIR will have $HOME
+prepended.
+
 
 Shell Integration
-------------------
+-----------------
 
 When importing objects, shell completion is extremely helpful when using drink.
 For zsh (https://zsh.org), a completion file is provided in **extras/_drink**.

@@ -182,7 +182,9 @@ def createArgumentParser():
     args_main.add_argument(
         "-V", "--version", action="store_true", help="show version"
     )
-    args_main.add_argument("-u", "--dump", action="store_true", help="dump config")
+    args_main.add_argument("-u", "--dump", nargs="?", const="_ALL", action="store",
+                           help="dump config. With argument, dump only that single \
+                           variable's expanded value")
     args_selector = parser.add_argument_group("selectors")
     args_selector.add_argument("-k", "--kind", help=f"one of {set(KINDS)}")
     args_selector.add_argument(
@@ -221,7 +223,15 @@ def cli():
         return 1
     debug(c)
     if args.dump:
-        print(c)
+        debug(args.dump)
+        if args.dump == "_ALL":
+            print(c)
+        else:
+            try:
+                print(c[args.dump])
+            except KeyError:
+                err(f"No such variable: {args.dump}")
+                return 6
         return 0
     if args.show:
         try:
