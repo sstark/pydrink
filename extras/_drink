@@ -15,6 +15,13 @@ _drink_targets () {
     compadd $targets
 }
 
+_drink_vars () {
+    local vars
+    _message "select variable"
+    vars=(${${(f)${"$(drink -u)"}}//=*/})
+    compadd $vars
+}
+
 _drink_importable () {
     _message "files to import"
     case "$opt_args[-k]"
@@ -65,7 +72,7 @@ _drinkargs () {
         - version \
         {-V,--version}'[show version]' \
         - dump \
-        {-u,--dump}'[dump config]'
+        {-u,--dump}'[dump config]:variable:_drink_vars'
 }
 
 # Use the command that was used to trigger the completion.
