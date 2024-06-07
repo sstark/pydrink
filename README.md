@@ -193,7 +193,12 @@ will be printed with their default values.
 
 With argument, the value of only this variable will be printed. The value will
 be expanded as it is used internally in drink. E. g. DRINKDIR will have $HOME
-prepended.
+prepended. Example usage:
+
+    hash -d drink=$(drink -u DRINKDIR)
+
+With the above line in your `~/.zshrc` you can change to your drink
+repository using the command `cd ~drink`.
 
 
 Shell Integration
