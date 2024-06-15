@@ -25,6 +25,14 @@ def fake_home():
 
 
 @pytest.fixture
+def fake_home_no_linkdirs():
+    p = Path(tempfile.TemporaryDirectory(suffix="-HOME").name)
+    p.mkdir()
+    yield p
+    rmtree(p)
+
+
+@pytest.fixture
 def base_repo_path():
     p = Path(tempfile.TemporaryDirectory(suffix="-REPO").name)
     yield p

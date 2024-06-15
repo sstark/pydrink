@@ -230,6 +230,8 @@ class DrinkObject:
             return
         if self.state == ObjectState.ManagedPending:
             fromm = self.get_linkpath().absolute()
+            debug(f"creating directory {fromm.parent}")
+            fromm.parent.mkdir(parents=True, exist_ok=True)
             to = self.get_repopath().absolute()
             debug(f"linking {fromm} -> {to}")
             if fromm.exists() and overwrite:

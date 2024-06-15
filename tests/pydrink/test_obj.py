@@ -161,10 +161,10 @@ def test_import_object_directory(fake_home, monkeypatch, tracked_drinkrc_and_dri
         DrinkObject.import_object(c, relpath, "conf", "global")
 
 
-def test_link(fake_home, monkeypatch, tracked_drinkrc_and_drinkdir):
+def test_link(fake_home_no_linkdirs, monkeypatch, tracked_drinkrc_and_drinkdir):
 
     def mock_home():
-        return fake_home
+        return fake_home_no_linkdirs
 
     monkeypatch.setattr(Path, "home", mock_home)
     c = Config(tracked_drinkrc_and_drinkdir)
