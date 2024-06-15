@@ -203,25 +203,9 @@ def createArgumentParser():
     return parser
 
 
-def cli():
-    parser = createArgumentParser()
-    args = parser.parse_args()
-    debug(args)
-    pydrink.log.DEBUG = args.debug
-    pydrink.log.QUIET = args.quiet
-    pydrink.log.VERBOSE = args.verbose
+def handleArgs(c: Config, args: argparse.Namespace) -> int:
     p_name = __package__ or __name__
     debug(f"p_name: {p_name}")
-
-    if args.begin:
-        return begin_setup()
-
-    try:
-        c = Config(find_drinkrc())
-    except Exception as e:
-        err(e)
-        return 1
-    debug(c)
     if args.dump:
         debug(args.dump)
         if args.dump == "_ALL":
@@ -236,6 +220,7 @@ def cli():
     if args.show:
         try:
             show_untracked_files(c, selected_kind=args.kind)
+            return 0
         except Exception as e:
             err(e)
             return 1
@@ -275,6 +260,7 @@ def cli():
             )
             git.add_object(c, o)
             o.link(overwrite=True)
+            return 0
         except OSError as e:
             err(f"Import failed: {e}")
             return 2
@@ -299,3 +285,28 @@ def cli():
         p_version = version(p_name)
         notice(f"{p_name} {p_version}")
         return 0
+    err(f"Invalid arguments: {args}")
+    return 9
+
+
+def cli() -> int:
+    parser = createArgumentParser()
+    args = parser.parse_args()
+    debug(args)
+    pydrink.log.DEBUG = args.debug
+    pydrink.log.QUIET = args.quiet
+    pydrink.log.VERBOSE = args.verbose
+
+    # We probably have no config yet if this is called,
+    # so handleArgs() would be too late.
+    if args.begin:
+        return begin_setup()
+
+    try:
+        c = Config(find_drinkrc())
+    except Exception as e:
+        err(e)
+        return 1
+    debug(c)
+
+    return handleArgs(c, args)
