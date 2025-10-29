@@ -11,7 +11,7 @@ VERBOSE = False
 c = console.Console()
 
 
-def notice(s, no_dedent=False):
+def notice(s: str, no_dedent=False):
     """Print normal info messages"""
     # verbose should override quiet
     if (not QUIET) or VERBOSE:
@@ -21,17 +21,17 @@ def notice(s, no_dedent=False):
             c.print(dedent(s))
 
 
-def verbose(s):
+def verbose(s: str):
     """Print additional info that is not strictly necessary"""
     if VERBOSE:
         c.print("[dim]" + dedent(s) + "[/dim]")
 
 
-def warn(s):
+def warn(s: str):
     c.print("! [yellow]" + dedent(s) + "[/yellow]")
 
 
-def debug(s):
+def debug(s: str):
     if not DEBUG:
         return
     caller_frame_record = inspect.stack()[1]
@@ -41,5 +41,5 @@ def debug(s):
     print(f"{file}:{info.lineno} {info.function}(): {s}")
 
 
-def err(s):
+def err(s: str):
     c.print("[bright_red]" + dedent(s) + "[/bright_red]")

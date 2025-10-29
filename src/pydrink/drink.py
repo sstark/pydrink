@@ -222,7 +222,7 @@ def handleArgs(c: Config, args: argparse.Namespace) -> int:
             show_untracked_files(c, selected_kind=args.kind)
             return 0
         except Exception as e:
-            err(e)
+            err(str(e))
             return 1
     if args.git:
         prompt = Prompt("" if args.quiet else "[dim][i]git action[/i][/dim]: ")
@@ -305,7 +305,7 @@ def cli() -> int:
     try:
         c = Config(find_drinkrc())
     except Exception as e:
-        err(e)
+        err(str(e))
         return 1
     debug(c)
 
