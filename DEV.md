@@ -18,7 +18,7 @@ Development
 
 _pydrink_ tries to use modern Python technology:
 
-  - Dependencies and packaging are managed with **poetry**.
+  - Dependencies and packaging are managed with **uv**.
 
   - Typing hints are used and checked with **mypy**.
 
@@ -54,10 +54,7 @@ Run a debugpy server, suitable for connecting with e. g. nvim-dap:
 
 Bootstrap development environment:
 
-    <distro-specific-tool> install pipx
-    pipx install poetry
+    <distro-specific-tool> install uv
     git clone https://github.com/sstark/pydrink
     cd pydrink
-    poetry shell
-    poetry update
     make

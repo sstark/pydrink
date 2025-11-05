@@ -158,9 +158,7 @@ def createArgumentParser():
         formatter_class=RichHelpFormatter,
     )
     args_main = parser.add_mutually_exclusive_group(required=True)
-    args_main.add_argument(
-        "-r", "--readme", action="store_true", help="show readme"
-    )
+    args_main.add_argument("-r", "--readme", action="store_true", help="show readme")
     args_main.add_argument(
         "-b", "--begin", action="store_true", help="initialize drink"
     )
@@ -179,12 +177,16 @@ def createArgumentParser():
     args_main.add_argument(
         "-g", "--git", action="store_true", help="interactive git menu"
     )
+    args_main.add_argument("-V", "--version", action="store_true", help="show version")
     args_main.add_argument(
-        "-V", "--version", action="store_true", help="show version"
+        "-u",
+        "--dump",
+        nargs="?",
+        const="_ALL",
+        action="store",
+        help="dump config. With argument, dump only that single \
+                           variable's expanded value",
     )
-    args_main.add_argument("-u", "--dump", nargs="?", const="_ALL", action="store",
-                           help="dump config. With argument, dump only that single \
-                           variable's expanded value")
     args_selector = parser.add_argument_group("selectors")
     args_selector.add_argument("-k", "--kind", help=f"one of {set(KINDS)}")
     args_selector.add_argument(

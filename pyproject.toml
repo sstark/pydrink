@@ -1,29 +1,36 @@
-[tool.poetry]
+[project]
 name = "pydrink"
 version = "0.3.3"
 description = "Distributed Reusage of Invaluable Nerd Kit (dotfile management)"
-authors = ["Sebastian Stark <sstark@mailbox.org>"]
-license = "ISC"
+authors = [{ name = "Sebastian Stark", email = "sstark@mailbox.org" }]
+requires-python = ">=3.9, <4"
 readme = "README.md"
-repository = "https://github.com/sstark/pydrink"
+license = "ISC"
+dependencies = [
+    "rich>=13.7.1,<14",
+    "rich-argparse>=1.4.0,<2",
+]
 
-[tool.poetry.dependencies]
-python = "^3.9"
-rich = "^13.7.1"
-rich-argparse = "^1.4.0"
+[tool.hatch.build.targets.wheel]
+packages = ["src/pydrink"]
 
-[tool.poetry.group.dev.dependencies]  
-pytest = "*"
-mypy = "^1.9.0"
-debugpy = "^1.8.1"
-coverage = "^7.4.4"
+[project.urls]
+Repository = "https://github.com/sstark/pydrink"
 
-[tool.poetry.scripts]
+[project.scripts]
 drink = "pydrink.drink:cli"
 
+[dependency-groups]
+dev = [
+    "pytest",
+    "mypy>=1.9.0,<2",
+    "debugpy>=1.8.1,<2",
+    "coverage>=7.4.4,<8",
+]
+
 [build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+requires = ["hatchling"]
+build-backend = "hatchling.build"
 
 [tool.pytest.ini_options]
 addopts = "-ra -q"
@@ -33,3 +40,9 @@ testpaths = [
 pythonpath = [
     "src"
 ]
+
+[[tool.uv.index]]
+name = "test-pypi"
+url = "https://test.pypi.org/simple/"
+publish-url = "https://test.pypi.org/legacy/"
+explicit = true

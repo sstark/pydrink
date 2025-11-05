@@ -102,7 +102,7 @@ def add_object(c: Config, obj: DrinkObject) -> int:
 
 
 def init_repository(c: Config) -> int:
-    notice(f'Initializing git repository in {c.drinkdir}:')
+    notice(f"Initializing git repository in {c.drinkdir}:")
     repo = c.drinkdir
     debug(f"creating directory {repo}")
     repo.mkdir(parents=True)

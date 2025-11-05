@@ -6,7 +6,6 @@ import pytest
 
 
 def test_get_dangling_links(monkeypatch, tracked_drinkrc_and_drinkdir, fake_home):
-
     def mock_home():
         return fake_home
 
@@ -57,7 +56,6 @@ def test_get_dangling_links_not_existing_dir(drinkrc):
     ids=["xdg-def", "xdg-def+classic", "xdg-special+classic"],
 )
 def test_find_drinkrc(monkeypatch, fake_home, present_rcs, found_rc):
-
     def mock_home():
         return fake_home
 

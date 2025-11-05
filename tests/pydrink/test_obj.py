@@ -47,7 +47,7 @@ def test_detect_kind(tracked_drinkrc_and_drinkdir, obj_p, kind):
         (Path("bin") / "obj2", GLOBAL_TARGET),
         (Path("conf") / BY_TARGET / "bapf" / "obj4", "bapf"),
     ],
-    ids=[f"bin/{BY_TARGET}/foo/obj1", "bin/obj2", f"conf/{BY_TARGET}/bapf/obj4"]
+    ids=[f"bin/{BY_TARGET}/foo/obj1", "bin/obj2", f"conf/{BY_TARGET}/bapf/obj4"],
 )
 def test_detect_target(tracked_drinkrc_and_drinkdir, obj_p, target):
     c = Config(tracked_drinkrc_and_drinkdir)
@@ -63,12 +63,11 @@ def test_detect_target(tracked_drinkrc_and_drinkdir, obj_p, target):
         (Path("conf") / BY_TARGET / "bapf" / "obj4", ObjectState.ManagedOther),
         (Path("bin") / "objx", ObjectState.ManagedPending),
     ],
-    ids=["own-target", "global", "other-target", "not-linked"]
+    ids=["own-target", "global", "other-target", "not-linked"],
 )
 def test_detect_state(
     fake_home, monkeypatch, tracked_drinkrc_and_drinkdir, obj_p, state
 ):
-
     def mock_home():
         return fake_home
 
@@ -88,7 +87,7 @@ def test_detect_state(
         (Path("bin") / "obj2", str(Path.home() / "bin" / "obj2")),
         (Path("conf") / BY_TARGET / "bapf" / "obj4", str(Path.home() / "." / "obj4")),
     ],
-    ids=[f"bin/{BY_TARGET}/foo/obj1", "bin/obj2", f"conf/{BY_TARGET}/bapf/obj4"]
+    ids=[f"bin/{BY_TARGET}/foo/obj1", "bin/obj2", f"conf/{BY_TARGET}/bapf/obj4"],
 )
 def test_get_linkpath(tracked_drinkrc_and_drinkdir, obj_p, str_p):
     c = Config(tracked_drinkrc_and_drinkdir)
@@ -104,7 +103,7 @@ def test_get_linkpath(tracked_drinkrc_and_drinkdir, obj_p, str_p):
         Path("bin") / "obj2",
         Path("conf") / BY_TARGET / "bapf" / "obj4",
     ],
-    ids=[f"bin/{BY_TARGET}/foo/obj1", "bin/obj2", f"conf/{BY_TARGET}/bapf/obj4"]
+    ids=[f"bin/{BY_TARGET}/foo/obj1", "bin/obj2", f"conf/{BY_TARGET}/bapf/obj4"],
 )
 def test_get_repopath(tracked_drinkrc_and_drinkdir, obj_p):
     c = Config(tracked_drinkrc_and_drinkdir)
@@ -116,7 +115,6 @@ def test_get_repopath(tracked_drinkrc_and_drinkdir, obj_p):
 
 
 def test_import_object(fake_home, monkeypatch, tracked_drinkrc_and_drinkdir):
-
     def mock_home():
         return fake_home
 
@@ -131,7 +129,6 @@ def test_import_object(fake_home, monkeypatch, tracked_drinkrc_and_drinkdir):
 
 
 def test_import_object_with_dot(fake_home, monkeypatch, tracked_drinkrc_and_drinkdir):
-
     def mock_home():
         return fake_home
 
@@ -162,7 +159,6 @@ def test_import_object_directory(fake_home, monkeypatch, tracked_drinkrc_and_dri
 
 
 def test_link(fake_home_no_linkdirs, monkeypatch, tracked_drinkrc_and_drinkdir):
-
     def mock_home():
         return fake_home_no_linkdirs
 
@@ -191,7 +187,7 @@ def test_object_init_with_empty_path(drinkrc):
         (Path("/a/.b/c/.d"), Path(f"/a/{DOT_PREFIX}.b/c/{DOT_PREFIX}.d")),
         (Path("/a/b/c"), Path("/a/b/c")),
     ],
-    ids=["/a/b/.c", "/a/.b/c/.d", "/a/b/c"]
+    ids=["/a/b/.c", "/a/.b/c/.d", "/a/b/c"],
 )
 def test_dotify(inp, outp):
     out = DrinkObject._dotify(inp)
@@ -205,7 +201,7 @@ def test_dotify(inp, outp):
         (Path(f"/a/{DOT_PREFIX}.b/c/{DOT_PREFIX}.d"), Path("/a/.b/c/.d")),
         (Path("/a/b/c"), Path("/a/b/c")),
     ],
-    ids=[f"/a/b/{DOT_PREFIX}.c", f"/a/{DOT_PREFIX}.b/c/{DOT_PREFIX}.d", "/a/b/c"]
+    ids=[f"/a/b/{DOT_PREFIX}.c", f"/a/{DOT_PREFIX}.b/c/{DOT_PREFIX}.d", "/a/b/c"],
 )
 def test_undotify(inp, outp):
     out = DrinkObject._undotify(inp)
