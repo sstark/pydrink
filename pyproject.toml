@@ -1,6 +1,6 @@
 [project]
 name = "pydrink"
-version = "0.3.3"
+version = "0.4.0"
 description = "Distributed Reusage of Invaluable Nerd Kit (dotfile management)"
 authors = [{ name = "Sebastian Stark", email = "sstark@mailbox.org" }]
 requires-python = ">=3.9, <4"
